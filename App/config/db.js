@@ -10,11 +10,14 @@ if (!dbURI) {
 
 const connectDB = async () => {
   try {
+    console.log("⏳ Waiting 5 seconds before attempting MongoDB connection...");
+    
+    await new Promise(resolve => setTimeout(resolve, 15000)); // 5s buffer time
+    
     await mongoose.connect(dbURI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
       bufferCommands: false, // Prevent queries before connection
     });
+
     console.log("✅ Connected to MongoDB successfully!");
   } catch (error) {
     console.error("❌ MongoDB Connection Error:", error);
@@ -22,5 +25,5 @@ const connectDB = async () => {
   }
 };
 
-// ❌ Don't execute here → Export the function
+// Export the function without executing it immediately
 module.exports = connectDB;
