@@ -577,7 +577,11 @@ class userPagesController {
     myprofile = async (req, res) => {
         try {
             const userId = req.user;
+            
             const user = await User.findOne({ _id: userId.id }).lean();
+            if (!user || !user._id) {
+                return res.status(404).json({ message: "User not found!" });
+            }
     
             const requirement = await Registration.findOne({ userId: new mongoose.Types.ObjectId(userId) })
                 .populate("userId", "name email randomId")
@@ -619,7 +623,7 @@ class userPagesController {
             });
         } catch (error) {
             console.error("Error in myprofile:", error);
-            res.status(500).send("Internal Server Error");
+           res.redirect("/login")
         }
     };
     

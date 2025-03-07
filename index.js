@@ -54,7 +54,7 @@ app.use("/", require("./App/routes/user/index"));
 // admin routes
 app.use("/", require("./App/routes/Admin/index"));
 // Start server after database connections are established
-const PORT =  5100;
+const PORT =  5000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
   console.log(`http://localhost:${PORT} `);
