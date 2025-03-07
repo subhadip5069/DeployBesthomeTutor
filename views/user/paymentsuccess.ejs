@@ -1,0 +1,65 @@
+<%- include('layout/navbar') %>
+
+         
+
+
+            <div class="payment-success-container">
+                <div class="payment-success-card">
+                  <h2>Payment Successful!</h2>
+                  <p>Thank you for your payment. Your transaction was completed successfully.</p>
+                  <a href="/myprofile#acc" class="payment-success-btn">Back to Profile</a>
+                </div>
+              </div>
+              
+<style>
+    .payment-success-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f9f9f9;
+  padding: 20px;
+}
+
+.payment-success-card {
+  background-color: #fff;
+  padding: 40px 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  max-width: 400px;
+  width: 100%;
+}
+
+.payment-success-card h2 {
+  font-size: 28px;
+  margin-bottom: 15px;
+  color: #28a745; /* Green success color */
+}
+
+.payment-success-card p {
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 30px;
+}
+
+.payment-success-btn {
+  display: inline-block;
+  padding: 12px 24px;
+  background-color: #007bff; /* Blue button */
+  color: #fff;
+  text-decoration: none;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.payment-success-btn:hover {
+  background-color: #0056b3;
+}
+
+</style>
+
+        </main>
+		
+     <%- include('layout/footer') %>

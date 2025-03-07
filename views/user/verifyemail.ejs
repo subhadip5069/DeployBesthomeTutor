@@ -1,0 +1,49 @@
+
+<%- include('layout/navbar') %>
+<%- include('layout/header') %>
+
+  <style>
+    .body{
+            height: 50vh;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f8f9fa;
+        }
+
+    .card {
+      max-width: 400px;
+      width: 100%;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .btn-custom {
+      background-color: #007bff;
+      color: white;
+    }
+    .btn-custom:hover {
+      background-color: #0056b3;
+    }
+  </style>
+<section class="container body mt-5">
+  <div class="card p-4">
+    <h2 class="text-center">Verify OTP</h2>
+    <form action="/auth/verify" method="POST">
+      <input type="hidden" name="email" value="<%= email %>">
+      <div class="form-group">
+        <label for="otp">Enter OTP</label>
+        <input type="text" class="form-control" name="otp" id="otp" placeholder="Enter your OTP" required>
+      </div>
+      <% if (typeof message !== 'undefined') { %>
+        <div class="alert alert-info">
+          <%= message %>
+        </div>
+      <% } %>
+      <button type="submit" class="btn btn-custom btn-block">Verify OTP</button>
+    </form>
+  </div>
+</section>
+<%- include('layout/footer') %>

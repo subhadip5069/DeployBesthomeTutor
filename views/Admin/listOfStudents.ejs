@@ -1,0 +1,99 @@
+<%- include('partial/header') %>
+<div class="container d-flex justify-content-center align-items-center flex-column min-vh-100">
+    <div class="container p-4 rounded" style="background-color: rgba(0, 0, 0, 0.63); backdrop-filter: blur(15px);">
+        <h2 class="text-center mb-4 text-white">Student List</h2>
+
+        <!-- Search Bar -->
+        <div class="mb-3 d-flex">
+            <input type="text" id="searchInput" class="form-control text-success" placeholder="Search by Name or Email...">
+            <button type="submit" id="searchButton" class="btn btn-primary ms-2">Search</button>
+        </div>
+
+        <!-- Scrollable Table -->
+        <div style="max-height: 400px; overflow-y: auto; background-color: rgba(255, 255, 255, 0.1); border-radius: 10px;">
+            <table class="table table-bordered table-hover text-center">
+                <thead class="table-dark" style="position: sticky; top: 0; background-color: rgba(0, 0, 0, 0.8); color: white;">
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="userTableBody">
+                    <% users.forEach(user => { %>
+                        <% if (user.role === 'student'){ %>
+                        <tr>
+                            <td><%= user._id %></td>
+                            <td class="user-name"><%= user.name %></td>
+                            <td class="user-email"><%= user.email %></td>
+                            <td><%= user.role %></td>
+                            <td>
+                                <div class="form-check form-switch">
+                                    <input 
+                                        class="form-check-input status-switch" 
+                                        type="checkbox" 
+                                        data-userid="<%= user._id %>" 
+                                        <%= user.status === 'active' ? 'checked' : '' %>
+                                    >
+                                    <label class="form-check-label">
+                                        <%= user.status.charAt(0).toUpperCase() + user.status.slice(1) %>
+                                    </label>
+                                </div>
+                            </td>
+                        </tr>
+                        <% } %>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        // Status Toggle Switch
+        $(".status-switch").on("change", function() {
+            let userId = $(this).data("userid");
+            let newStatus = $(this).prop("checked") ? "active" : "inactive";
+
+            $.ajax({
+                url: "/update-status",
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({ userId, newStatus }),
+                success: function(response) {
+                    alert("User status updated successfully!");
+                },
+                error: function(err) {
+                    alert("Error updating status");
+                    console.log(err);
+                }
+            });
+        });
+
+        // Search Filter
+        $("#searchInput").on("keyup", function() {
+            let value = $(this).val().toLowerCase();
+            $("#userTableBody tr").filter(function() {
+                $(this).toggle(
+                    $(this).find(".user-name").text().toLowerCase().includes(value) ||
+                    $(this).find(".user-email").text().toLowerCase().includes(value)
+                );
+            });
+        });
+    });
+</script>
+</div>
+    <div class="py-6 px-6 text-center " style="background-color: rgba(0, 0, 0, 0.884); backdrop-filter: blur(15px); color: white;">
+        <p class="mb-0 fs-4">Design and Developed by <a href="https://adminmart.com/" target="_blank"
+            class="pe-1 text-primary text-decoration-underline">AdminMart.com</a>Distributed by <a href="https://themewagon.com/" target="_blank"
+            class="pe-1 text-primary text-decoration-underline">ThemeWagon</a></p>
+    </div>
+
+<%- include('partial/footer') %>
+     
+
+   

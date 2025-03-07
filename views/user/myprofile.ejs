@@ -1,0 +1,648 @@
+<%- include('layout/navbar') %>
+<%- include('layout/header') %>
+
+            
+
+<!-- main section -->
+<style>
+    /* * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+    } */
+
+    .account-page {
+        background-color: #f4f4f4;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        
+    }
+
+    .profile-container {
+        width: 95%;
+        max-width: 800px;
+        background: white;
+        /* padding: 20px; */
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        min-height: 655px;
+    }
+
+    .profile-tabs {
+        display: flex;
+        justify-content: space-around;
+        background: #004080;
+        padding: 10px;
+        border-radius: 8px 8px 0 0;
+    }
+
+    .profile-tab-button {
+        flex: 1;
+        text-align: center;
+        padding: 10px;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        border: none;
+        background: transparent;
+    }
+
+    .profile-tab-button.active {
+        background: #0066cc;
+        border-radius: 5px;
+    }
+
+    .profile-tab-content {
+        display: none;
+        
+    }
+
+    .profile-tab-content.active {
+        display: block;
+    }
+
+    .profile-myprofile-section {
+            width: 100%;
+            max-width: 900px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-myprofile-header {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 12px;
+            color: #754c24;
+            
+        }
+
+        .profile-myprofile-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 20px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+        }
+
+        .profile-myprofile-table {
+            flex: 1;
+           
+        }
+
+        .profile-myprofile-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .profile-myprofile-item {
+            width: 48%;
+            display: flex;
+            flex-direction: row;
+            font-size: 20px;
+            gap: 10px;
+        }
+
+        .profile-myprofile-item label {
+            font-weight: bold;
+        }
+
+        .profile-myprofile-changes {
+            display: flex;
+            justify-content: space-between;
+            text-align: center;
+
+            padding: 10px;
+            flex-basis: 100%;
+            margin-bottom: 3%;
+        }
+
+        .profile-myprofile-changes button {
+            padding: 9px 12px;
+            align-self: center;
+        }
+
+        .profile-myprofile-changes img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+        }
+
+        .profile-myprofile-name {
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .profile-myprofile-edit {
+            background-color: #ffc107;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        /* tuition-info */
+        .tuition-info-section {
+  width: 97%;
+  /* max-width: 800px; */
+  margin: 20px auto;
+  /* padding: 10px; */
+  /* font-family: Arial, sans-serif; */
+}
+
+
+.tuition-info-title {
+    text-align: center;
+    font-size: 3vh;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #754c24;
+    font-family: Arial, sans-serif;
+    border: 1px solid #ccc;
+  padding: 15px;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.tuition-info-box {
+  border: 1px solid #ccc;
+  padding: 15px;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.tuition-info-header {
+  background-color: #325b81;
+  color: #fff;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  border-radius: 3px;
+  margin-bottom: 15px;
+  font-weight: bold;
+}
+
+.tuition-info-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+  margin-bottom: 15px;
+  color: #555;
+}
+
+.tuition-info-detail-item {
+  width: calc(33.333% - 20px);
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  gap: 6px;
+}
+
+.tuition-info-icon {
+  margin-right: 5px;
+}
+
+.tuition-info-description {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 15px;
+  background-color: #fff;
+  border-radius: 3px;
+}
+
+.tuition-info-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.tuition-info-btn {
+  padding: 8px 12px;
+  border: none;
+  background-color: #ddd;
+  cursor: pointer;
+  border-radius: 3px;
+  font-size: 14px;
+}
+
+.tuition-info-btn:hover {
+  background-color: #ccc;
+}
+
+.tuition-info-edit {
+  background-color: #ffc107;
+  color: #fff;
+}
+
+.tuition-info-edit:hover {
+  background-color: #084bff;
+}
+
+/* Account-info */
+
+.account-info-section {
+  width: 97%;
+  /* max-width: 650px; */
+  margin: 20px auto;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.account-info-box {
+  border: 1px solid #ccc;
+  padding: 15px;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.account-info-heading {
+  font-size: 18px;
+  margin-bottom: 15px;
+  color: #8b5c18;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.account-info-membership {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.account-info-type-label {
+  font-size: 14px;
+  color: #555;
+}
+
+.account-info-type-status {
+  background-color: #dff0ff;
+  padding: 5px 10px;
+  border-radius: 15px;
+  font-size: 12px;
+  color: #555;
+}
+
+.account-info-btn {
+  padding: 8px 12px;
+  border: none;
+  background-color: #ffc107;
+  color: #fff;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.account-info-btn:hover {
+  background-color: #ffc107;
+}
+
+.account-info-credits {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.account-info-credit-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #555;
+}
+
+.account-info-link {
+  font-size: 14px;
+  color: #007bff;
+  text-decoration: none;
+}
+
+.account-info-link:hover {
+  text-decoration: underline;
+}
+
+
+
+        @media (max-width: 600px) {
+            .profile-myprofile-row {
+                flex-direction: column;
+            }
+            .profile-myprofile-item {
+                width: 100%;
+            }
+            /* .profile-myprofile-changes {
+                flex-basis: auto;
+            } */
+            /* .tuition-info-details {
+                display: flex;
+                flex-direction: column;
+            } */
+            .tuition-info-detail-item {
+                width: 100%;
+                font-size: 15px;
+            }
+            .tuition-info-actions {
+                justify-content: center;
+            }
+            .tuition-info-box{
+                padding: 7px;
+            }
+        }
+</style>
+
+<div class="account-page">
+        <div class="profile-container">
+            <div class="profile-tabs">
+                <button class="profile-tab-button active" onclick="showTab('profile-tuitions')">Tuitions</button>
+                <button class="profile-tab-button" onclick="showTab('profile-profile')">My Profile</button>
+                <button class="profile-tab-button" id="acc" onclick="showTab('profile-account')">Account Info</button>
+            </div>
+
+            <div id="profile-tuitions" class="profile-tab-content active">
+              <div id="profile-tuitions" class="profile-tab-content active">
+                <div class="tuition-info-section">
+                   <h3 class="text-center">My Tuitions</h3>
+            
+                    <% if (orders.length > 0) { %>
+                        <% orders.forEach(order => { %>
+                            <div class="tuition-info-box" style="border: 1px solid #ddd; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                                <div class="tuition-info-header" style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span style="font-weight: bold;">🔖 <%= order.userId.randomId || 'N/A' %> : Wanted home tutor for <%= order.subject || 'N/A' %></span>
+                                    <span>📅 <strong><%= new Date(order.createdAt).toLocaleDateString() %></strong></span>
+                                </div>
+            
+                                <div class="tuition-info-details" style="margin-top: 10px;">
+                                    <p><strong>👤 Name:</strong> <%= order.userId.name || 'N/A' %></p>
+                                    <p><strong>📧 Email:</strong> <%= order.userId.email || 'N/A' %></p>
+                                    <p><strong>📍 Location:</strong> <%= order.tuitionLocation || 'N/A' %></p>
+                                    <p><strong>⏰ Preferred Time:</strong> <%= order.preferredTime || 'AnyTime' %></p>
+                                    <p><strong>💰 Fee Type:</strong> <%= order.feeType || 'N/A' %></p>
+                                    <p><strong>💵 Fee Amount:</strong> Rs <%= order.feeAmount || 'N/A' %></p>
+                                    <p><strong>🌎 State:</strong> <%= order.state || 'N/A' %></p>
+                                    <p><strong>🏙️ City:</strong> <%= order.city || 'N/A' %></p>
+                                </div>
+            
+                                
+                            </div>
+                        <% }) %>
+                    <% } else { %>
+                        <p>No tuition orders found.</p>
+                    <% } %>
+            
+                    <!-- Pagination Section -->
+                    <% if (totalPages > 1) { %>
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination" style="margin-top: 20px;">
+                                <!-- Previous Button -->
+                                <% if (currentPage > 1) { %>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page=<%= currentPage - 1 %>&limit=<%= limit %>" style="color: #007bff;">« Previous</a>
+                                    </li>
+                                <% } else { %>
+                                    <li class="page-item disabled">
+                                        <span class="page-link">« Previous</span>
+                                    </li>
+                                <% } %>
+            
+                                <!-- Page Numbers -->
+                                <% for (let i = 1; i <= totalPages; i++) { %>
+                                  <li class="page-item <%= (i == currentPage) ? 'active' : '' %>">
+                                      <a class="page-link" href="?page=<%= i %>&limit=<%= limit %>" 
+                                         style="<%= (i == currentPage) ? 'background-color: #007bff; color: white;' : '' %>">
+                                          <%= i %>
+                                      </a>
+                                  </li>
+                              <% } %>
+                              
+            
+                                <!-- Next Button -->
+                                <% if (currentPage < totalPages) { %>
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page=<%= currentPage + 1 %>&limit=<%= limit %>" style="color: #007bff;">Next »</a>
+                                    </li>
+                                <% } else { %>
+                                    <li class="page-item disabled">
+                                        <span class="page-link">Next »</span>
+                                    </li>
+                                <% } %>
+                            </ul>
+                        </nav>
+                    <% } %>
+            
+                </div>
+            </div>
+            
+          </div>
+          
+            <div id="profile-profile" class="profile-tab-content">
+                <section class="profile-myprofile-section">
+                    <% if (requirement) { %>
+                    <div class="tuition-info-title"><%= requirement.userId.name %>/Profile Id: <%= requirement.userId.randomId %>[<%= requirement.status %> ] </div>
+                    <div class="profile-myprofile-container">
+                        <div class="profile-myprofile-changes">
+                            
+                            <img src="<%= user.profileimage ? '/uploads/profile_images/' + user.profileimage : '/user/profile.png' %>" alt="Profile Picture">
+
+                            <!-- <p class="profile-myprofile-name">Siddhartha</p> -->
+                            <a href="/updatereg/<%= requirement._id %>" class=" btn btn-yellow">Edit Profile</a>
+                        </div>
+                       
+                            <div class="profile-myprofile-table">
+                              <!-- User Information -->
+                              <div class="profile-myprofile-row">
+                                <div class="profile-myprofile-item">
+                                  <label>First Name:</label>
+                                  <p><%= requirement.userId.name %></p>
+                                </div>
+                                <div class="profile-myprofile-item">
+                                  <label>Email:</label>
+                                  <p><%= requirement.userId.email %></p>
+                                </div>
+                              </div>
+                              <!-- Tutor Preference & Age -->
+                              <div class="profile-myprofile-row">
+                                <div class="profile-myprofile-item">
+                                  <label>Gender:</label>
+                                  <p><%= requirement.preferredTutor ? requirement.preferredTutor : "N/A" %></p>
+                                </div>
+                                <div class="profile-myprofile-item">
+                                  <label>Age:</label>
+                                  <p><%= requirement.age ? requirement.age : "N/A" %></p>
+                                </div>
+                              </div>
+                              <!-- City & Locality -->
+                              <div class="profile-myprofile-row">
+                                <div class="profile-myprofile-item">
+                                  <label>City:</label>
+                                  <p><%= requirement.city ? requirement.city : "N/A" %></p>
+                                </div>
+                                <div class="profile-myprofile-item">
+                                  <label>Locality:</label>
+                                  <p><%= requirement.locality ? requirement.locality : "N/A" %></p>
+                                </div>
+                              </div>
+                              <!-- Tuition Location & Pincode -->
+                              <div class="profile-myprofile-row">
+                                <div class="profile-myprofile-item">
+                                  <label>Tuition Location:</label>
+                                  <p>
+                                    <%= requirement.tuitionLocation && requirement.tuitionLocation.length > 0 
+                                          ? requirement.tuitionLocation.join(', ') 
+                                          : "N/A" %>
+                                  </p>
+                                </div>
+                                <div class="profile-myprofile-item">
+                                  <label>Pincode:</label>
+                                  <p><%= requirement.pincode ? requirement.pincode : "N/A" %></p>
+                                </div>
+                              </div>
+                              <!-- Subject & Class -->
+                              <div class="profile-myprofile-row">
+                                <div class="profile-myprofile-item">
+                                  <label>Subject:</label>
+                                  <p><%= requirement.subject ? requirement.subject : "N/A" %></p>
+                                </div>
+                                <div class="profile-myprofile-item">
+                                  <label>Class:</label>
+                                  <p><%= requirement.class ? requirement.class : "N/A" %></p>
+                                </div>
+                              </div>
+                              <!-- Qualification & Experience -->
+                              <div class="profile-myprofile-row">
+                                <div class="profile-myprofile-item">
+                                  <label>Qualification:</label>
+                                  <p><%= requirement.qualification ? requirement.qualification : "N/A" %></p>
+                                </div>
+                                <div class="profile-myprofile-item">
+                                  <label>Experience:</label>
+                                  <p>
+                                    <%= requirement.experience ? requirement.experience + " years" : "N/A" %>
+                                  </p>
+                                </div>
+                              </div>
+                              <!-- Fee & Preferred Time -->
+                              <div class="profile-myprofile-row">
+                                <div class="profile-myprofile-item">
+                                  <label>Hourly Price:</label>
+                                  <p><%= requirement.feeAmount ? requirement.feeAmount : "N/A" %></p>
+                                </div>
+                                <div class="profile-myprofile-item">
+                                  <label>Preferred Time:</label>
+                                  <p>
+                                    <%= requirement.preferredTime && requirement.preferredTime.length > 0 
+                                          ? requirement.preferredTime.join(', ') 
+                                          : "N/A" %>
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          
+                          
+                       
+                    </div>
+                    <% } else if(user) { %>
+                      <div class="tuition-info-title">
+                          <h2>Profile Details</h2>
+                          <div class="profilepicture">
+                            <img src="/uploads/profile_images/<%= user.profileimage || '/user/profile.png' %>" style="height: 100px;" class="img-fluid rounded-circle" alt="">
+                          </div>
+                          <a href="/updatereg/<%= user._id %>">
+                              <button class="btn btn-primary">Add Details</button>
+                          </a>
+                          <p><%= user.name %> || <%= user.randomId %></p>
+
+                      </div>
+
+                        
+                      <% } else{ %>
+                      
+                        <div class="tuition-info-title">
+                          <h2>Profile</h2>
+                      </div>
+                      <div class="tuition-info-content">
+                          <p>You are not logged in. Please log in to view your profile.</p>
+                          <a class="btn btn-primary" href="/login">login</a>
+                          <a class="btn btn-success" href="/register"> Register</a>
+                      </div>
+                      <% } %>
+                      
+                </section>
+            </div>
+
+            <div id="profile-account" class="profile-tab-content">
+                <div class="account-info-section">
+                    <!-- Membership Details -->
+                    <div class="account-info-box">
+                      <h3 class="account-info-heading">Membership Details</h3>
+                      
+                      <!-- Free Membership Section -->
+                      <div class="account-info-membership free-membership">
+                        <span class="account-info-type-label">Membership Type</span>
+                        <% if(user && user.unlockedContactsRemaining >0 ){ %>
+                          <span class="account-info-type-status">PRIMIUM</span>
+                          <%} else  {%>
+                        <span class="account-info-type-status">FREE</span>
+                        <% }%>
+                      </div>
+                      <button class="account-info-btn">Upgrade to Premium</button>
+                    </div>
+                    
+                    
+                    
+                  <% if(user){ %>
+                    <!-- Contact Credits -->
+                    <div class="account-info-box">
+                      <h3 class="account-info-heading">Contact Credits</h3>
+                      <div class="account-info-credits">
+                        <div class="account-info-credit-item">
+                          <span>currentBalance:</span>
+                          <span><%= user.currentbalance %> </span>
+                        </div>
+                        <div class="account-info-credit-item">
+                          <span>Total:</span>
+                          <span><%= user.unlockedContacts %> </span>
+                        </div>
+                        <div class="account-info-credit-item">
+                          <span>Available:</span>
+                          <span><%= user.unlockedContactsRemaining %></span>
+                        </div>
+                        <div class="account-info-credit-item">
+                          <span>Used:</span>
+                          <span><%= user.unlockedContacts - user.unlockedContactsRemaining %></span>
+                        </div>                        
+                      </div>
+                    </div>
+                    <% }%>
+                  
+                    <!-- Change Password -->
+                    <div class="account-info-box">
+                      <h3 class="account-info-heading">Account Settings</h3>
+                      <a href="/changepassword" class="account-info-link">Change Password</a>
+                    </div>
+                  </div>
+                  
+            </div>
+        </div>
+</div>
+
+<script>
+function showTab(tabId) {
+    document.querySelectorAll('.profile-tab-content').forEach(tab => tab.classList.remove('active'));
+    document.querySelectorAll('.profile-tab-button').forEach(button => button.classList.remove('active'));
+
+    document.getElementById(tabId).classList.add('active');
+    document.querySelector(`[onclick="showTab('${tabId}')"]`).classList.add('active');
+}
+</script>
+<%- include('layout/footer') %>

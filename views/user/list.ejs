@@ -1,0 +1,578 @@
+<%- include('layout/navbar') %>
+<style>
+
+
+    /* category page css */
+    
+    .category-section {
+      font-family: Arial, sans-serif;
+      background-color: #ffffff;
+      display: flex;
+      /* justify-content: center; */
+      align-items: center;
+      /* height: 100vh; */
+      margin: 0;
+      padding: 50px 0 50px 50px;
+    }
+    
+    .category-container {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+      max-width: 1200px;
+      width: 100%;
+    }
+    
+    /* Filter Section */
+    .category-filter-container {
+      background-color: white;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+      width: 280px;
+    }
+    
+    .category-filter-title {
+     
+      color: white;
+      
+      text-align: center;
+      width: 136px;
+     
+    }
+    .category-filter-search h3 {
+      font-size: large;
+      margin: 3px;
+    }
+    .category-text p {
+      /* all: unset; */
+      color: black;
+      margin: 0;
+      width: 260px;
+      font-size: 15px;
+    }
+    
+    .category-filter-group {
+      margin-bottom: 15px;
+    }
+    
+    .category-filter-group label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 5px;
+      margin-top: 5px;
+    }
+    
+    .category-filter-group input[type="text"] {
+      width: 98%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    
+    .category-filter-options input {
+      margin-right: 5px;
+    }
+    
+    /* Profile Cards Section */
+    .category-card-section {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      /* flex-wrap: wrap; */
+      gap: 20px;
+      max-width: 1000px;
+    }
+    
+    .category-card {
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      width: 367px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    
+    .category-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .category-text {
+      flex: 1;
+    }
+    
+    .category-title {
+      font-size: 14px;
+      color: #888;
+    }
+    
+    .category-name {
+      font-size: 18px;
+      margin: 5px 0;
+    }
+    
+    .category-image img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+    }
+    
+    .category-card-footer {
+      margin-top: 15px;
+      display: flex;
+      /* justify-content: space-between; */
+    }
+    
+    .category-btn {
+      border: none;
+      padding: 8px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    
+    .category-btn.profile {
+      background-color: #007bff;
+      color: white;
+    }
+    .category-filter-group-gender {
+    margin-bottom: 10px;
+    }
+    .category-filter-group-exp {
+    margin-bottom: 10px;
+    }
+    .category-filter-group-exp label{
+    margin-bottom: 5px;
+    }
+    .category-filter-search {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background-color: #2c72a5;
+      color: white;
+      padding: 10px;
+      border: none;
+      width: 100%;
+      cursor: pointer;
+      border-radius: 10px;
+    }
+    .card img {
+      width: 70%;
+      align-self: center;
+    }
+    /* Responsive Design */
+    @media (max-width: 1200px) {
+      .category-container {
+          flex-direction: row;
+          /* align-items: center; */
+      }
+      .category-filter-container {
+          width: 100%;
+          max-width: 500px;
+      }
+      .category-card-section {
+          grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    @media (max-width: 992px) {
+      .category-section {
+          padding: 30px 15px;
+      }
+      .category-card-section {
+          grid-template-columns: repeat(2, 1fr);
+          gap: 15px;
+      }
+      .category-card {
+          width: 100%;
+      }
+      
+    }
+    
+    @media (max-width: 768px) {
+      .category-card-section {
+          grid-template-columns: repeat(2, 1fr);
+      }
+      .category-card {
+          width: 100%;
+      }
+      .category-filter-container {
+          width: 100%;
+          padding: 10px;
+      }
+      .category-filter-group label,
+      .category-filter-group-exp label {
+          font-size: 14px;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .category-filter-container {
+          width: 88%;
+          margin-top: 10px;
+          padding: 10px;
+      }
+      .category-filter-group input[type="text"] {
+          width: 100%;
+      }
+      .category-card-section {
+          grid-template-columns: repeat(1, 1fr);
+          width: 88%;
+          gap: 10px;
+      }
+      .category-card {
+          padding: 15px;
+      }
+      .category-image img {
+          width: 60px;
+          height: 60px;
+      }
+      .category-card-footer {
+          flex-direction: column;
+          align-items: center;
+      }
+      .category-btn {
+          width: 100%;
+          justify-content: center;
+      }
+      .card img {
+        width: 88%;
+       }
+    
+    }
+    @media (max-width: 480px) {
+       .category-text p {
+        width: 200px;
+        font-size: 13px;
+       }
+       .category-card {
+        padding: 12px;
+       }
+       .category-section{
+        padding: 0;
+       }
+       .row{
+        flex-direction: column;
+        gap: 14px;
+       }
+       .card img {
+        width: 100%;
+       }
+      
+    }
+    
+    .search-container-cat{
+        
+        justify-self: center;
+        max-width: 600px;
+        width: 90%;
+        
+    }
+    .pagination {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+    
+    .pagination button {
+        padding: 8px 16px;
+        margin: 5px;
+        border: none;
+        background-color: #007bff;
+        color: white;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+    
+    .pagination button:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+    }
+    
+    .search-bar-cat {
+        position: relative;
+        height: 50px;
+        max-width: 550px;
+        align-items: center;
+        font-size: 20px;
+        margin: auto;
+        box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.25);
+        border-radius: 25px;
+       
+        
+    }
+    .search-bar-cat input {
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        font-size: 18px;
+        padding: 10px 20px;
+        border-radius: 25px;
+        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+        border: none;
+        outline: none;
+    }
+    .search-bar-icon{
+        position: absolute;
+        right: -2px;
+        top: 0;
+        width: 50px;
+        background: #ffc107;
+        height: 100%;
+        text-align: center;
+        line-height: 50px;
+        color: #fff;
+        font-size: 20px;
+        border-radius: 0 25px 25px 0;
+    }
+    
+        
+    
+    
+    
+    @media (min-width: 769px) {
+        .arrow-icon {
+            display: none;
+        }
+    }
+    
+    @media (max-width: 768px) {
+    
+        .category-container {
+          flex-direction: column;
+          align-items: center;
+      }
+        .category-filter-content {
+            display: none;
+        }
+    
+        .category-filter-content.show {
+            display: block;
+        }
+    
+        .category-filter-search {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #2c72a5;
+            color: white;
+            padding: 10px;
+            border: none;
+            width: 100%;
+            cursor: pointer;
+        }
+    
+        .arrow-icon {
+            font-size: 16px;
+            margin-left: 10px;
+        }
+    }
+    
+        </style>
+        
+        <%- include('layout/header') %>
+    
+        <div class="container-fluid d-flex justify-content-center align-items-center flex-column min-vh-100 mt-5">
+            <!-- search bar -->
+                <div class="search-container-cat">
+                    <div class="search-bar-cat">
+                        <input type="search" placeholder="Enter Course or Subject Keywords to Search">
+                        <label for="" class="search-bar-icon">
+                        <i class="fa fa-search"></i>
+                        </label>
+                    </div>
+                   </div>
+            
+                <div class="category-section">
+                <div class="category-container">
+    
+                   <!-- Filter Section -->
+    
+    
+                  
+    <div class="category-filter-container">
+        <button class="category-filter-search" onclick="toggleFilters()">
+            <h3 class="category-filter-title">Refine Search</h3>
+            <span class="arrow-icon">▼</span> <!-- Arrow icon to indicate dropdown -->
+        </button>
+    
+        <div class="category-filter-content">
+            <div class="category-filter-group">
+                <label for="category-filter-locality">Locality / Pincode</label>
+                <input type="text" id="category-filter-locality" placeholder="Locality or Pincode">
+            </div>
+    
+            <div class="category-filter-group">
+                <label for="category-filter-course">Course</label>
+                <input type="text" id="category-filter-course" placeholder="Enter course">
+            </div>
+    
+            <div class="category-filter-group">
+                <label for="category-filter-subject">Subject</label>
+                <input type="text" id="category-filter-subject" placeholder="Enter subject">
+            </div>
+    
+            <div class="category-filter-group-gender">
+                <label>Gender</label>
+                <div class="category-filter-options">
+                    <input type="radio" id="male" name="gender">
+                    <label for="male">Male</label>
+                    <input type="radio" id="female" name="gender">
+                    <label for="female">Female</label>
+                </div>
+            </div>
+    
+            <div class="category-filter-group-exp">
+                <label>Experience</label>
+                <div class="category-filter-options">
+                    <input type="radio" id="exp1" name="experience">
+                    <label for="exp1">0 - 2 years</label><br>
+                    <input type="radio" id="exp2" name="experience">
+                    <label for="exp2">2 - 5 years</label><br>
+                    <input type="radio" id="exp3" name="experience">
+                    <label for="exp3">5 - 10 years</label><br>
+                    <input type="radio" id="exp4" name="experience">
+                    <label for="exp4">Above 10 years</label>
+                </div>
+            </div>
+    
+            <div class="category-filter-group-exp">
+                <label>Hourly Price</label>
+                <div class="category-filter-options">
+                    <input type="radio" id="price1" name="price">
+                    <label for="price1">upto Rs 200</label><br>
+                    <input type="radio" id="price2" name="price">
+                    <label for="price2">Rs 201 - Rs 500</label><br>
+                    <input type="radio" id="price3" name="price">
+                    <label for="price3">Rs 501 - Rs 1000</label><br>
+                    <input type="radio" id="price4" name="price">
+                    <label for="price4">Above 1000</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function toggleFilters() {
+            var filterContent = document.querySelector(".category-filter-content");
+            filterContent.classList.toggle("show");
+        }
+    </script>
+            
+                    <!-- Profile Cards Section -->
+                    <div class="category-card-section">
+                
+                       
+                
+                
+                        <div class="category-card-section">
+                            <% if (users && users.length > 0) { %>
+                                <% users.forEach(userItem => { %>
+                                    <div class="category-card">
+                                        <div class="category-card-header">
+                                            <div class="category-text">
+                                                <h2 class="category-name"><%= userItem.name %></h2>
+                                                <p><strong>About:</strong> <%= userItem.role === "tutor" ? "Tutor" : "Student" %></p>
+                                                <p><i class="fas fa-map-marker-alt"></i> Address: <%= userItem.address || "Not provided" %></p>
+                                                <p><i class="fas fa-phone-alt"></i> Phone #: <%= userItem.phone %></p>
+                                                <p><i class="fas fa-envelope"></i> Email: <%= userItem.email %></p>
+                                                <p><strong>Gender:</strong> <%= userItem.gender %></p>
+                                                <p><strong>Experience:</strong> <%= userItem.experience %></p>
+                                                <p><strong>Hourly Price:</strong> <%= userItem.hourlyPrice %></p>
+                                                <p><strong>Course:</strong> <%= userItem.course %></p>
+                                                <p><strong>Subject:</strong> <%= userItem.subject %></p>
+                                                <p><strong>Preferred Time:</strong> <%= userItem.preferredTime %></p>
+                                                <p><strong>Tuition Location:</strong> <%= userItem.tuitionLocation %></p>
+                                                <p><strong>Availability:</strong> <%= userItem.availability %></p>
+                                                <p><strong>Qualification:</strong> <%= userItem.qualification %></p>
+                                                <p><strong>Experience:</strong> <%= userItem.experience %></p>
+                                                <p><strong>Subjects Taught:</strong> <%= userItem.subjectsTaught %></p>
+                                                <p><strong>Teaching Experience:</strong> <%= userItem.teachingExperience %></p>
+                                            </div>
+                                            <div class="category-image">
+                                                <img src="<%= userItem.profileImg || '/images/profile.png' %>" alt="Profile Picture">
+                                            </div>
+                                        </div>
+                                        <div class="category-card-footer">
+                                            <a href="/profile/<%= userItem._id %>">
+                                                <button class="category-btn profile"><i class="fas fa-user"></i> View Profile</button>
+                                            </a>
+                                        </div>
+                                    </div>
+                                <% }); %>
+                            <% } else { %>
+                                <p>No tutors or students found</p>
+                            <% } %>
+                        </div>
+                        
+                    
+                    
+            
+                </div>
+    
+            </div>
+                
+    
+        </div>
+        
+    <!-- Pagination Section -->
+    <div class="pagination">
+        <% if (currentPage > 1) { %>
+            <a href="?page=<%= currentPage - 1 %>"><button>Previous</button></a>
+        <% } %>
+    
+        <% for (let i = 1; i <= totalPages; i++) { %>
+            <a href="?page=<%= i %>">
+                <button class="<%= currentPage === i ? 'active' : '' %>"><%= i %></button>
+            </a>
+        <% } %>
+    
+        <% if (currentPage < totalPages) { %>
+            <a href="?page=<%= currentPage + 1 %>"><button>Next</button></a>
+        <% } %>
+    </div>
+        
+        
+    
+    
+         <%- include('layout/footer') %>
+
+
+
+         <div class="container-fluid mt-5">
+            <div class="row">
+                <% requirement.forEach(tutor => { %>
+                    <div class="col-5 p-2">
+                        <div style="border: 1px solid #ddd; border-radius: 10px; padding: 15px; background: #fff; box-shadow: 2px 2px 10px rgba(0,0,0,0.1);">
+                            
+                            <p style="font-size: 12px; color: gray; margin-bottom: 5px;">Posted On: <%= tutor.createdAt.toDateString().split(' ').slice(1, 4).join(' ') %></p>
+                            <h5 style="color: #007bff; margin-bottom: 5px;"><a href="#" style="text-decoration: none; color: #007bff;">Home Tutor Wanted For...</a></h5>
+                               <p style="font-size: 18px; font-weight: bold;"><%= tutor.userId.name %></p>
+                            
+                            <p style="color: gray; font-size: 14px;"><i class="fas fa-map-marker-alt"></i> <%= tutor.preferredTime %> | <%= tutor.tuitionLocation %> </p>
+                            <p style="color: red; font-weight: bold; font-size: 14px;">Preferred: <%= tutor.preferredTutor %></p>
+                            
+                            <p style="font-size: 14px;"><i class="fas fa-book"></i> <%= tutor.class %> | <%= tutor.subject %>|<%= tutor.board %></p><p style="font-size: 14px;"><i class="fas fa-graduation-cap"></i> TuitionId: <b><%= tutor.userId.randomId %></b></p>
+                            
+                            
+                            
+                            <p style="font-size: 14px;"><i class="fas fa-graduation-cap"></i>Address:<%= tutor.pincode%> | <%= tutor.state%> | <%= tutor.city%></p>
+                            
+                            <div style="background: #eaf4ff; padding: 10px; border-radius: 5px; font-size: 14px;">
+                                <%= tutor.sorted== 'Yes' ? 'Tutor Accepted' : 'Tutor Not Found' %>
+                            </div>
+                            
+                            <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+                                <button style="width: 48%; background: #007bff; color: #fff; padding: 8px; border: none; border-radius: 5px; cursor: pointer;">VIEW DETAILS</button>
+                                <button style="width: 48%; background: #28a745; color: #fff; padding: 8px; border: none; border-radius: 5px; cursor: pointer;">APPLY</button>
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+        </div>

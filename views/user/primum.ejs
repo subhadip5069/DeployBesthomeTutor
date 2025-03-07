@@ -1,0 +1,435 @@
+
+<%- include('layout/navbar') %>
+<%- include('layout/header') %>
+
+        
+         
+
+            
+
+<!-- main section -->
+<style>
+    .premium-money-section {
+  padding: 28px;
+  background-color: #f8f8f8;
+}
+
+.premium-money-heading {
+  text-align: center;
+  color: green;
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+
+.premium-money-points {
+  padding-left: 20px;
+  margin-bottom: 30px;
+}
+
+.premium-money-points li {
+  margin-bottom: 10px;
+}
+
+.premium-money-guarantee {
+  display: flex;
+  gap: 20px;
+  background-color: #f8f8f8;
+  /* padding: 20px; */
+  border-radius: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.premium-money-text {
+  flex: 1;
+}
+
+.premium-money-text h3 {
+  color: #7b4a0b;
+  margin-bottom: 15px;
+}
+
+.premium-money-text ul {
+  padding-left: 20px;
+}
+
+.premium-money-text li {
+  margin-bottom: 10px;
+}
+
+.highlight-green {
+  color: green;
+  font-weight: bold;
+}
+
+.highlight-blue {
+  color: #007bff;
+}
+
+.premium-money-image {
+  flex: 0 0 150px;
+  text-align: center;
+}
+
+.premium-money-image img {
+  max-width: 170px;
+  height: auto;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .premium-money-guarantee {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .premium-money-image {
+    margin-top: 20px;
+  }
+}
+
+
+  /* CSS */
+.premium-money-comparison {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  /* padding: 20px; */
+  flex-wrap: wrap;
+}
+
+.premium-money-box {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  overflow: hidden;
+  width: 320px;
+  background: #fff;
+}
+
+.premium-money-header {
+  text-align: center;
+  padding: 15px 0;
+  position: relative;
+}
+
+.premium-money-header h3 {
+  margin: 0;
+  font-size: 24px;
+  color: #fff;
+}
+
+.premium-money-free {
+  background: #ccc;
+}
+
+.premium-money-premium {
+  background: #ff6600;
+}
+
+.premium-money-list {
+  list-style: none;
+  padding: 20px;
+  margin: 0;
+}
+
+.premium-money-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.premium-money-list li:last-child {
+  border-bottom: none;
+}
+
+.premium-money-list img {
+  width: 20px;
+  height: 20px;
+}
+.premium-box {
+      max-width: 400px;
+      /* margin: auto; */
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    .premium-box h2 {
+      color: #004aad;
+      margin-bottom: 10px;
+      font-size: 1.8rem;
+    }
+
+    .premium-box .price {
+      font-size: 2rem;
+      color: #ffaa00;
+      margin: 10px 0;
+    }
+
+    .premium-box .validity {
+      color: #008000;
+      font-size: 1rem;
+      margin-bottom: 20px;
+    }
+
+    .premium-box .cta-button {
+      display: inline-block;
+      margin: 20px 0;
+      padding: 12px 25px;
+      background-color: #ffaa00;
+      color: #fff;
+      font-weight: bold;
+      text-decoration: none;
+      border-radius: 8px;
+      transition: background-color 0.3s ease;
+    }
+
+    .premium-box .cta-button:hover {
+      background-color: #ff8800;
+    }
+
+    .features-hero {
+      margin-top: 20px;
+      text-align: left;
+      list-style-type: none;
+    }
+
+    .features-hero li {
+      margin: 10px 0;
+      padding-left: 20px;
+      position: relative;
+      font-size: 1.2rem;
+    }
+
+    .features-hero li::before {
+      content: "✔";
+      color: #008000;
+      position: absolute;
+      left: 0;
+    }
+
+    .guarantee {
+      margin-top: 20px;
+      font-weight: bold;
+      color: #004aad;
+    }
+.premium-membership-section {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 106px;
+    flex-wrap: wrap;
+    padding: 125px 0 50px 0;
+}
+
+</style>
+
+
+    
+    <div class="premium-page" style="background-color: #f8f8f8;">
+
+        <!-- cards -->
+        <!-- <div class="premium-membership-section">
+            <div class="premium-container">
+                
+                <% plans.forEach(plan => { %>
+                  <div class="premium-box">
+                    <h3><%= plan.planName %></h3>
+                    <div class="price">Only ₹<%= plan.price %></div>
+                    <div class="validity">Valid for <%= plan.validity %> Months</div>
+                    <a href="/payment/payment/<%= plan._id %>" class="cta-button">Get Free Demo Class</a>
+                    <% if (plan.features && plan.features.length > 0) { %>
+                    <ul class="features-hero">
+                        <% plan.features.forEach((feature, fIndex) => { %>
+                        <li> <%= feature.name %> <%= feature.isEnabled ? '✔️' : '❌' %></li>
+                        <% }); %>
+                    </ul>
+                    <% } else { %>
+                    <div class="guarantee">
+                      Best value with complete satisfaction!
+                    </div>
+                    <% } %>
+                  </div>
+                <% }) %>
+              </div>
+              
+          
+
+          <div class="premium-money-comparison">
+            <div class="premium-money-box">
+              <div class="premium-money-header premium-money-free">
+                <h3>FREE</h3>
+              </div>
+              <ul class="premium-money-list">
+                <li><img src="/user/images/check.png" alt="Check"> Search Tutors/Tuitions</li>
+                <li><img src="/user/images/check.png" alt="Check"> Apply Tutors/Tuitions</li>
+                <li><img src="/user/images/check.png" alt="Check"> Send messages</li>
+                <li><img src="/user/images/cross.png" alt="Cross"> View Email</li>
+                <li><img src="/user/images/cross.png" alt="Cross"> View Phone No</li>
+                <li><img src="/user/images/cross.png" alt="Cross"> View Address</li>
+                <li><img src="/user/images/cross.png" alt="Cross"> Alerts on Messages</li>
+                <li><img src="/user/images/cross.png" alt="Cross"> Professional Guidance</li>
+                <li><img src="/user/images/check.png" alt="Check"> Regular Support</li>
+              </ul>
+            </div>
+          
+            <div class="premium-money-box">
+              <div class="premium-money-header premium-money-premium">
+                <h3>PREMIUM</h3>
+              </div>
+              <ul class="premium-money-list">
+                <li><img src="/user/images/check.png" alt="Check"> Search Tutors/Tuitions</li>
+                <li><img src="/user/images/check.png" alt="Check"> Apply Tutors/Tuitions</li>
+                <li><img src="/user/images/check.png" alt="Check"> Send messages</li>
+                <li><img src="/user/images/check.png" alt="Check"> View Email</li>
+                <li><img src="/user/images/check.png" alt="Check"> View Phone No</li>
+                <li><img src="/user/images/check.png" alt="Check"> View Address</li>
+                <li><img src="/user/images/check.png" alt="Check"> Alerts on Messages</li>
+                <li><img src="/user/images/check.png" alt="Check"> Professional Guidance</li>
+                <li><img src="/user/images/check.png" alt="Check"> Premium Support</li>
+              </ul>
+            </div>
+          </div>
+
+        </div> -->
+        <div class="membership-section " style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; padding: 20px; align-items: stretch;">
+    
+          <% plans.forEach(plan => { %>
+              <% if (userId.role == "student" && plan.role == "student") { %>
+              <!-- Student Membership Card -->
+              <div class="membership-card" style="border: 1px solid #ddd; border-radius: 10px; overflow: hidden; width: 400px; text-align: center; box-shadow: 0px 4px 6px rgba(0,0,0,0.1); background: white;">
+                  <div class="membership-banner" style="background-color: #e36817; color: white; padding: 10px; font-size: 18px; font-weight: bold;">
+                    GET PRIMIUM FOR <%= plan.role.toUpperCase() %>
+                  </div>
+                  <div class="membership-content" style="padding: 20px;">
+                      <h2 style="margin: 0; font-size: 22px;"><%= plan.planName.toUpperCase() %></h2>
+                      <div class="price" style="font-size: 24px; font-weight: bold; margin: 10px 0;">Only ₹<%= plan.finalPrice %></div>
+                      <div class="validity" style="font-size: 14px; color: #555;">Valid for <%= plan.validity %> Months</div>
+      
+                      <ul style="list-style: none; padding: 0; margin: 15px 0; text-align: left;">
+                          <% plan.features.forEach((feature) => { %>
+                              <li><%= feature.isEnabled ? '✅ ' : '❌' %> <%= feature.name %></li>
+                          <% }); %>
+                      </ul>
+      
+                      <a href="/payment/payment/<%= plan._id %>" class="cta-button" 
+                         style="display: inline-block; padding: 10px 15px; background-color: #e36817; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">
+                         Join Now
+                      </a>
+                  </div>
+              </div>
+              <% } else if (userId.role == "tutor" && plan.role == "tutor") { %>
+              <!-- Teacher Membership Card -->
+              <div class="membership-card" style="border: 1px solid #ddd; border-radius: 10px; overflow: hidden; width: 400px; text-align: center; box-shadow: 0px 4px 6px rgba(0,0,0,0.1); background: white;">
+                  <div class="membership-banner" style="background-color: #4a90e2; color: white; padding: 10px; font-size: 18px; font-weight: bold;">
+                    GET PRIMIUM FOR <%= plan.role.toUpperCase() %>
+                  </div>
+                  <div class="membership-content" style="padding: 20px;">
+                      <h2 style="margin: 0; font-size: 22px;"><%= plan.planName.toUpperCase() %></h2>
+                      <div class="price" style="font-size: 24px; font-weight: bold; margin: 10px 0;">Only ₹<%= plan.finalPrice %></div>
+                      <div class="validity" style="font-size: 14px; color: #555;">Valid for <%= plan.validity %> Months</div>
+      
+                      <ul style="list-style: none; padding: 0; margin: 15px 0; text-align: left;">
+                          <% plan.features.forEach((feature) => { %>
+                              <li><%= feature.isEnabled ? '✅ ' : '❌' %> <%= feature.name %></li>
+                          <% }); %>
+                      </ul>
+      
+                      <a href="/payment/payment/<%= plan._id %>" class="cta-button" 
+                         style="display: inline-block; padding: 10px 15px; background-color: #4a90e2; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">
+                         Join Now
+                      </a>
+                  </div>
+              </div>
+              <% } %>
+          <% }) %>
+      
+          <!-- Comparison Section -->
+          <div class="premium-money-comparison" style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 40px;">
+              
+              <!-- Free Plan -->
+              <div class="premium-money-box" style="border: 1px solid #ddd; border-radius: 10px; overflow: hidden; width: 430px; text-align: center; box-shadow: 0px 4px 6px rgba(0,0,0,0.1); background: white;">
+                  <div class="premium-money-header premium-money-free" style="background-color: #aaa; color: white; padding: 10px;">
+                      <h3>FREE</h3>
+                  </div>
+                  <ul class="premium-money-list" style="list-style: none; padding: 20px; margin: 0; text-align: left;">
+                      <li>✅ Search Tutors/Tuitions</li>
+                      <li>✅ Apply Tutors/Tuitions</li>
+                      <li>✅ Send Messages</li>
+                      <li>❌ View Email</li>
+                      <li>❌ View Phone No</li>
+                      <li>❌ View Address</li>
+                      <li>❌ Alerts on Messages</li>
+                      <li>❌ Professional Guidance</li>
+                      <li>✅ Regular Support</li>
+                  </ul>
+              </div>
+      
+              <!-- Premium Plan -->
+              <div class="premium-money-box" style="border: 1px solid #ddd; border-radius: 10px; overflow: hidden; width: 430px; text-align: center; box-shadow: 0px 4px 6px rgba(0,0,0,0.1); background: white;">
+                  <div class="premium-money-header premium-money-premium" style="background-color: #ff9800; color: white; padding: 10px;">
+                      <h3>PREMIUM</h3>
+                  </div>
+                  <ul class="premium-money-list" style="list-style: none; padding: 20px; margin: 0; text-align: left;">
+                      <li>✅ Search Tutors/Tuitions</li>
+                      <li>✅ Apply Tutors/Tuitions</li>
+                      <li>✅ Send Messages</li>
+                      <li>✅ View Email</li>
+                      <li>✅ View Phone No</li>
+                      <li>✅ View Address</li>
+                      <li>✅ Alerts on Messages</li>
+                      <li>✅ Professional Guidance</li>
+                      <li>✅ Premium Support</li>
+                  </ul>
+              </div>
+              
+          </div>
+      
+      </div>
+      
+      
+
+        <!-- money back -->
+        <section class="premium-money-section">
+            <h2 class="premium-money-heading">
+              "Find the perfect tutor for your learning needs – anytime, anywhere!"
+            </h2>
+          
+            <ul class="premium-money-points">
+              <li>Traditional tuition services often charge heavy commissions from your first month’s fee.</li>
+              <li>For example, if you're paying Rs 5,000/- for home tuition, local agencies might take up to Rs 2,500/- as their cut!</li>
+              <li>At Tutor, we keep things simple – our pricing is lower than any typical agency.</li>
+              <li>We make sure you get top value for every rupee spent on finding your ideal tutor.</li>
+            </ul>
+          
+            <div class="premium-money-guarantee">
+              <div class="premium-money-text">
+                <h3>100% Risk-Free Money Back Promise</h3>
+                <ul>
+                  <li>Tutor offers a <span class="highlight-green">worry-free money back guarantee</span> on all premium services.</li>
+                  <li>If you’re unable to find the right tutor for your needs – no problem, you’ll get a full refund.</li>
+                  <li>If you’ve connected with some tutors but didn’t find the right fit, we refund you based on what you used.</li>
+                  <li>Our <span class="highlight-blue">refund policy</span> is designed to be <strong>clear, fair, and hassle-free.</strong></li>
+                  <li>We’re confident you'll love our service – that’s why we back it with this risk-free guarantee!</li>
+                </ul>
+              </div>
+              <div class="premium-money-image">
+                <img src="/user/images/money-back.png" alt="Risk-Free Guarantee">
+              </div>
+            </div>
+          </section>
+          
+
+        <!-- HTML -->
+
+  
+    </div>
+
+
+
+
+<%- include('layout/footer') %>

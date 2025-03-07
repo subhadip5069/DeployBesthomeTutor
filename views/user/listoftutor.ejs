@@ -1,0 +1,163 @@
+<%- include('layout/navbar') %>
+<%- include('layout/header') %>
+
+<div class="container-fluid d-flex flex-column align-items-center min-vh-100 mt-5">
+    
+    <!-- Search Bar -->
+    <form action="/listingoftutor?" method="GET" class="mb-4 w-100 d-flex justify-content-center py-5"  >
+        
+            <input type="search" 
+                   name="searchQuery" 
+                   placeholder="Enter Course, Subject, or Keywords to Search"
+                   class="form-control rounded-pill px-4 py-2 shadow-sm"
+                   style="font-size: 18px; ;width:50%;"
+                   value="<%= filters.searchQuery %>">
+            <button type="submit" class="btn bg-light">
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 50 50"><g fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke="#344054" d="m43.75 43.75l-9.042-9.042"/><path stroke="#306cfe" d="M22.917 39.583c9.204 0 16.666-7.462 16.666-16.666S32.121 6.25 22.917 6.25S6.25 13.712 6.25 22.917c0 9.204 7.462 16.666 16.667 16.666"/></g></svg>
+            </button>
+       
+    </form>
+    
+    
+
+    <div class="container">
+        <div class="row justify-content-center">
+            
+            <!-- Filter Section -->
+            <form action="/listingoftutor?" method="GET" class="col-md-3">
+                <div class="category-filter-container">
+                    <button type="button" class="category-filter-search" onclick="toggleFilters()">
+                        <h3 class="category-filter-title">Refine Search</h3>
+                        <span id="arrow-icon">▼</span>
+                    </button>
+            
+                    <div id="category-filter-content" class="category-filter-content" style="display: none;">
+                        <!-- Course -->
+                        <div class="category-filter-group">
+                            <label for="course">Course</label>
+                            <input type="text" id="course" name="classFilter" placeholder="Enter course">
+                        </div>
+            
+                        <!-- Subject -->
+                        <div class="category-filter-group">
+                            <label for="subject">Subject</label>
+                            <input type="text" id="subject" name="subjectFilter" placeholder="Enter subject">
+                        </div>
+            
+                        <!-- Gender Filter -->
+                        <div class="category-filter-group-gender">
+                            <label>Gender</label>
+                            <div class="category-filter-options">
+                                <input type="radio" id="male" name="preferredTutor" value="Male">
+                                <label for="male">Male</label>
+                                <input type="radio" id="female" name="preferredTutor" value="Female">
+                                <label for="female">Female</label>
+                            </div>
+                        </div>
+            
+                        <!-- Hourly Price Filter -->
+                        <div class="category-filter-group-exp">
+                          <label>Hourly Price</label>
+                          <div class="category-filter-options">
+                              <input type="radio" id="price1" name="priceRange" value="0-200">
+                              <label for="price1">Up to Rs 200</label><br>
+                      
+                              <input type="radio" id="price2" name="priceRange" value="201-500">
+                              <label for="price2">Rs 201 - Rs 500</label><br>
+                      
+                              <input type="radio" id="price3" name="priceRange" value="501-1000">
+                              <label for="price3">Rs 501 - Rs 1000</label><br>
+                      
+                              <input type="radio" id="price4" name="priceRange" value="1001-999999">
+                              <label for="price4">Above Rs 1000</label>
+                          </div>
+                      </div>
+                      
+            
+                        <!-- Submit Button -->
+                        <div style="text-align: center; margin-top: 10px;">
+                            <button type="submit" class="btn btn-primary">Search</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Profile Cards Section -->
+            <div class="col-md-9">
+                <div class="row">
+                    <% if (requirement.length > 0) { %>
+                        <% requirement.forEach(tutor => { %>
+                            <div class="col-lg-4 col-md-6 mb-4">
+                                <div class="card border-0 shadow-sm p-3">
+                                    <div class="position-absolute top-0 start-0 bg-warning text-dark  rounded fw-bold">
+                                        ★ Featured
+                                    </div>
+            
+                                    <div class="d-flex align-items-center mb-3">
+                                        <img src="<%= tutor.userId && tutor.userId.profileImg ? tutor.userId.profileImg : '/user/images/profile.png' %>" 
+                                             class="rounded-circle me-3" 
+                                             style="width: 50px; height: 50px;">
+                                        <div>
+                                            <h5 class="text-primary m-0"><%= tutor.userId ? tutor.userId.name : "Unknown" %> </h5> 
+                                            <small>
+                                                <p style="font-size: 15px;"><span><%= tutor.userId ? tutor.userId.randomId : "Unknown" %></span></p>
+                                                Exp: <%= tutor.experience || "N/A" %> Y | 
+                                                <%= tutor.preferredTutor || "Any" %> | 
+                                                Age: <%= tutor.age || "N/A" %>
+                                            </small>
+
+                                        </div>
+                                    </div>
+            
+                                    <p class="mb-1" style="font-size: 15px;"><i class="fas fa-map-marker-alt"></i> <strong>Location:</strong> <%= tutor.pincode || "Not specified" %> | <%= tutor.city || "Not specified" %> | <%= tutor.state || "Not specified" %> </p>
+                                    <p class="mb-1"style="font-size: 15px;"><i class="fas fa-graduation-cap"></i> <strong>Last Qualification:</strong> <%= tutor.qualification || "N/A" %></p>
+                                    <p class="mb-1"style="font-size: 15px;"><i class="fas fa-book"></i> <strong>Class:</strong> <%= tutor.class || "All" %> | <%= tutor.board || "All" %> | <%= tutor.subject || "Various" %></p>
+            
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="text-danger fw-bold">₹<%= tutor.feeAmount || "Negotiable" %> / H</span>
+                                    </div>
+            
+                                    <a href="/userDetails/<%= tutor._id %>" class="btn btn-primary w-100 mt-2">VIEW PROFILE</a>
+                                    <a href="/primum" class="btn btn-success w-100 mt-2">GET FREE DEMO</a>
+                                </div>
+                            </div>
+                        <% }); %>
+                    <% } else { %>
+                        <div class="col-12 text-center">
+                            <p class="text-muted">No tutors found matching your criteria.</p>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="d-flex justify-content-center mt-4">
+        <% if (currentPage > 1) { %>
+            <a href="?page=<%= currentPage - 1 %>" class="btn btn-primary mx-1">Previous</a>
+        <% } %>
+        <% for (let i = 1; i <= totalPages; i++) { %>
+            <a href="?page=<%= i %>" class="btn btn-primary mx-1"><%= i %></a>
+        <% } %>
+    </div>
+
+
+</div>
+<script>
+    function toggleFilters() {
+        const filterContent = document.getElementById("category-filter-content");
+        const arrowIcon = document.getElementById("arrow-icon");
+  
+        if (filterContent.style.display === "none" || filterContent.style.display === "") {
+            filterContent.style.display = "block";
+            arrowIcon.innerHTML = "▲"; // Change arrow direction
+        } else {
+            filterContent.style.display = "none";
+            arrowIcon.innerHTML = "▼"; // Reset arrow direction
+        }
+    }
+  </script>
+
+<%- include('layout/footer') %>

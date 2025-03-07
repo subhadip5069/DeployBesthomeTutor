@@ -1,0 +1,56 @@
+<%- include('partial/header') %>
+<section class="container d-flex justify-content-center align-items-center flex-column min-vh-100">
+    <div class="container mt-4">
+        <h2 class="text-center mb-4">Student Registrations Without Documents</h2>
+
+        <!-- Search Form -->
+        <form id="searchForm" action="/admin/allstudentrequirment?query" method="GET" class="text-center mb-4">
+            <input type="text" name="query" id="searchQuery" placeholder="Search..." style="padding: 8px; width: 50%; border: 1px solid #ccc; border-radius: 5px;">
+            <button type="submit" style="padding: 8px 15px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">Search</button>
+        </form>
+        
+        <!-- Search Results -->
+        <div id="searchResults" class="mt-4"></div>
+
+        <!-- Student List -->
+        <div class="row">
+            <% if (registrations.length > 0) { %>
+                <% registrations.forEach(reg => { %>
+                    <div class="col-md-4 mb-4">
+                        <div class="card shadow-sm" style="border-radius: 10px;">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <%= reg.userId.name || "N/A" %> 
+                                    <span class="badge bg-success">Active</span>
+                                </h5>
+                                <p class="card-text" style="font-size: 14px;">
+                                    <strong>Email:</strong> <%= reg.userId.email || "N/A" %> <br>
+                                    <strong>Phone:</strong> <%= reg.userId.phone || "N/A" %> <br>
+                                    <strong>Location:</strong> <%= reg.tuitionLocation.join(", ") || "N/A" %> <br>
+                                    <strong>Subject:</strong> <%= reg.subject || "N/A" %> <br>
+                                    <strong>Class:</strong> <%= reg.class || "N/A" %> <br>
+                                    <strong>Board:</strong> <%= reg.board || "N/A" %> <br>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                <% }) %>
+            <% } else { %>
+                <div class="col-12 text-center">
+                    <p class="alert alert-warning">No student registrations found.</p>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<div class="py-6 px-6 text-center" style="background-color: rgba(0, 0, 0, 0.884); backdrop-filter: blur(15px); color: white;">
+    <p class="mb-0 fs-4">Design and Developed by 
+        <a href="https://adminmart.com/" target="_blank" class="pe-1 text-primary text-decoration-underline">AdminMart.com</a>
+        Distributed by 
+        <a href="https://themewagon.com/" target="_blank" class="pe-1 text-primary text-decoration-underline">ThemeWagon</a>
+    </p>
+</div>
+
+<%- include('partial/footer') %>

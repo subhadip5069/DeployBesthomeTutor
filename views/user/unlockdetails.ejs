@@ -1,0 +1,280 @@
+<%-  include('layout/navbar') %>
+<%-  include('layout/header') %>
+
+            
+
+<!-- main section -->
+<style>
+     .tutor-container {
+    max-width: 1250px;
+    background: white;
+    margin: 20px auto;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.tutor-header-profile {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: stretch;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    align-items: center;
+    
+}
+
+.profilepicture img {
+    max-width: 100px;
+    margin-left: 74%;
+}
+.tutor-header img {
+    max-width: 100px;
+   
+}
+
+.tutor-header {
+    text-align: left;
+}
+
+.tutor-info {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    /* margin-top: 20px; */
+}
+
+.tutor-details, .contact-info {
+    width: 47%;
+}
+
+.contact-info {
+    text-align: center;
+    background: #f1f1f1;
+    padding: 15px;
+    border-radius: 10px;
+    height: 100%;
+    margin-top: 2%;
+}
+
+.contact-info-btn {
+    background-color: #ffc107;
+    color: white;
+    padding: 10px;
+    border: none;
+    margin: 5px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.tabs {
+    margin-top: 20px;
+    display: flex;
+    border-bottom: 2px solid #ddd;
+}
+
+.tab-button {
+    padding: 10px 20px;
+    border: none;
+    background: #f5f5f5;
+    cursor: pointer;
+    font-weight: bold;
+    flex: 1;
+}
+
+.tab-button.active {
+    background: #007bff;
+    color: white;
+}
+
+.tab-content {
+    display: none;
+    padding: 15px;
+}
+
+.tab-content.active {
+    display: block;
+}
+.registration-form-heading h2 {
+    font-size: 25px;
+    color: black;
+}
+.tutor-container h1 {
+    font-size: 3vh;
+    color: black;
+}
+.tutor-container p {
+    color: black;
+    font-size: 17px;
+    
+}
+.tutor-container h2 {
+    font-size: 25px;
+    color: black;
+}
+.tutor-container h3 {
+    font-size: 25px;
+    color: black;
+}
+.status-indicator {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: inline-block; /* Keeps it inline with the text */
+    background-color: grey; /* Default inactive color */
+    margin-left: 5px; /* Adds spacing between text and indicator */
+    vertical-align: middle; /* Aligns it properly with the text */
+}
+
+/* Active Status */
+.status-indicator.active {
+    background-color: green;
+}
+
+/* Inactive Status */
+.status-indicator.inactive {
+    background-color: grey;
+}
+
+
+
+
+/* Responsive */
+@media (max-width: 600px) {
+    .tutor-info {
+        flex-direction: column;
+        align-items: center;
+    }
+    .tutor-details, .contact-info {
+        width: 100%;
+    }
+}
+      
+        
+</style>
+    <!-- <div class="registration-form-heading">
+        <h2>Connecting Students with the Best Tutors – Learn & Grow Together!</h2>
+    </div> -->
+
+    <% if (requirement && requirement.userId && requirement.userId.role == 'student' ) { %>
+        <div class="tutor-container">
+            <div class="tutor-header-profile">
+                <div class="tutor-header">
+                    <h1><%= requirement.userId.name %><br>
+                        <span>(TutorId: <b><%= requirement.userId.randomId %></b>)</span>
+                        <img src="/user/verified.png" alt="verified">
+                    </h1>
+                    <p>Location: <%= requirement.city || 'Online' %>,| <%= requirement.state || 'Online' %></p>
+                </div>
+                <div class="profilepicture">
+                    <img src="<%= requirement.userId.profilePicture || '/user/profile.png' %>" alt="profile">
+                </div>
+            </div>
+    
+            <div class="tutor-info">
+                <div class="tutor-details">
+                    <p><strong> Gender:</strong>  <%= requirement.preferredTutor || 'Not Specified' %></p>
+                    <p><strong>Qualification:</strong> <%= requirement.qualification || 'Not Specified' %></p>
+                    <p><strong>Preferred Time:</strong> <%= requirement.preferredTime || 'Anytime' %></p>
+                    <p><strong>City:</strong> <%= requirement.city || 'Online' %></p>
+                    <p><strong>Active:</strong> <span class="status-indicator <%= requirement.active ? 'active' : 'inactive' %>"></span></p>
+                </div>
+    
+                
+                    <div class="contact-info">
+                        <h2>Contact Info</h2>
+                        <p> Name :<%= requirement.userId.name %> / <%= requirement.userId.randomId %> </p>
+                        <p> Phone :<%= requirement.userId.phone %> </p>
+                        <p> Email :<%= requirement.userId.email %> </p>
+                        <p>Location : <%= requirement.city || 'Online' %>,| <%= requirement.state || 'Online' %> | <%= requirement.locality || 'Online' %>,| <%= requirement.pincode || 'Online' %> </p>
+                
+                        <p><small>Viewing reduces your contact credits by 1.</small></p>
+                    </div>
+               
+                
+                
+            </div>
+    
+           
+    
+            <div id="about" class="tab-content active">
+                <h3>About Me</h3>
+                <p>I am a student looking for a home tutor in <%= requirement.city || 'Online' %>. 
+                    I need help with <%= requirement.subject || 'Multiple Subjects' %> for Class <%= requirement.class || 'N/A' %>. 
+                    I prefer <%= requirement.preferredTime || 'Anytime' %> for tuition sessions.</p></p>
+    
+                <h3>Courses</h3>
+                <p><b>Class <%= requirement.class || 'N/A' %></b></p>
+    
+                <h3>Subjects</h3>
+                <p><%= requirement.subject || 'Not Specified' %></p>
+            </div>
+    
+            <div id="reviews" class="tab-content">
+                <h3>No reviews yet.</h3>
+            </div>
+        </div>
+    <% } else if(requirement && requirement.userId && requirement.userId.role == 'tutor') { %>
+        <div class="tutor-container">
+            <div class="tutor-header-profile">
+                <div class="tutor-header">
+                    <h1><%= requirement.userId.name %><br>
+                        <span>(TutorId: <b><%= requirement.userId.randomId %></b>)</span>
+                        <img src="/user/verified.png" alt="verified">
+                    </h1>
+                    <p>Location: <%= requirement.city || 'Online' %>,| <%= requirement.state || 'Online' %></p>
+                </div>
+                <div class="profilepicture">
+                    <img src="<%= requirement.userId.profilePicture || '/user/profile.png' %>" alt="profile">
+                </div>
+            </div>
+    
+            <div class="tutor-info">
+                <div class="tutor-details">
+                    <p><strong> Gender:</strong>  <%= requirement.preferredTutor || 'Not Specified' %></p>
+                    <p><strong>Experience:</strong> <%= requirement.experience || 0 %> year(s)</p>
+                    <p><strong>Qualification:</strong> <%= requirement.qualification || 'Not Specified' %></p>
+                    <p><strong>Preferred Time:</strong> <%= requirement.preferredTime || 'Anytime' %></p>
+                    <p><strong>City:</strong> <%= requirement.city || 'Online' %></p>
+                    <p><strong>Active:</strong> <span class="status-indicator <%= requirement.active ? 'active' : 'inactive' %>"></span></p>
+                </div>
+    
+                <div class="contact-info">
+                    <h2>Contact Info</h2>
+                    <p> Name :<%= requirement.userId.name %> / <%= requirement.userId.randomId %> </p>
+                    <p> Phone :<%= requirement.userId.phone %> </p>
+                    <p> Email :<%= requirement.userId.email %> </p>
+                    <p>Location : <%= requirement.city || 'Online' %>,| <%= requirement.state || 'Online' %> | <%= requirement.locality || 'Online' %>,| <%= requirement.pincode || 'Online' %> </p>
+            
+                    <p><small>Viewing reduces your contact credits by 1.</small></p>
+                </div>
+               
+                
+            </div>
+    
+           
+    
+            <div id="about" class="tab-content active">
+                <h3>About Me</h3>
+                <p>I am a student looking for a home tutor in <%= requirement.city || 'Online' %>. 
+                    I need help with <%= requirement.subject || 'Multiple Subjects' %> for Class <%= requirement.class || 'N/A' %>. 
+                    I prefer <%= requirement.preferredTime || 'Anytime' %> for tuition sessions.</p></p>
+    
+                <h3>Courses</h3>
+                <p><b>Class <%= requirement.class || 'N/A' %></b></p>
+    
+                <h3>Subjects</h3>
+                <p><%= requirement.subject || 'Not Specified' %></p>
+            </div>
+    
+            <div id="reviews" class="tab-content">
+                <h3>No reviews yet.</h3>
+            </div>
+        </div>
+    <% } %>
+    
+    
+   
+        
+
+<%-  include('layout/footer') %>

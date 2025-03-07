@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <title><%= title %></title>
+
+        <!-- CSS FILES -->        
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Open+Sans&display=swap" rel="stylesheet">
+                        
+        <link href="/user/css/bootstrap.min.css" rel="stylesheet">
+
+        <link href="/user/css/bootstrap-icons.css" rel="stylesheet">
+
+        <link href="/user/css/templatemo-topic-listing.css" rel="stylesheet">
+<!--
+
+TemplateMo 590 topic listing
+
+
+
+-->
+    </head>
+    
+    <body class="topics-listing-page" id="top">
+
+        <main>
+
+           
+            <nav class="navbar navbar-expand-lg">
+                <div class="container">
+                    <a class="navbar-brand" href="/">
+                        <i class="bi-back"></i>
+                        <span>Tutor</span>
+                    </a>
+    
+                    <div class="d-lg-none ms-auto me-4">
+                        <a href="/myprofile" class="navbar-icon bi-person smoothscroll"></a>
+                    </div>
+    
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+    
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav ms-lg-5 me-lg-auto">
+                            <li class="nav-item">
+                                <a class="nav-link click-scroll" href="/#section_1">Home</a>
+                            </li>
+    
+                            <li class="nav-item">
+                                <a class="nav-link click-scroll" href="/#section_2">How it works</a>
+                            </li>
+    
+                            <li class="nav-item">
+                                <a class="nav-link click-scroll" href="/#section_3">Review</a>
+                            </li>
+    
+                            <li class="nav-item">
+                                <a class="nav-link click-scroll" href="/#section_4">FAQs</a>
+                            </li>
+    
+                            <li class="nav-item">
+                                <a class="nav-link" href="/listingoftutor">I NEED A TUTOR</a>
+                            </li>
+    
+                            <li class="nav-item">
+                                <a class="nav-link" href="/listingofstudent">ONLINE TUTION</a>
+                            </li>
+    
+    
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle"  id="navbarLightDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">More</a>
+    
+                                <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="navbarLightDropdownMenuLink">
+                                    
+                                    <li><a class="dropdown-item " href="/register">Signup</a></li>
+                                 
+                                    <li><a class="dropdown-item" href="/terms&condition">Terms & <br>
+                                        conditions</a></li>
+                                <li><a class="dropdown-item " href="/privacypolicy">Privacy Policy</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <% if(userId && userId !== "null" && userId !== "undifine") {%>
+                        <div class="d-none d-lg-block">
+                            <a href="/myprofile" class="navbar-icon bi-person smoothscroll"></a>
+                        </div>
+                        <% } else { %>
+                            <div class="d-none d-lg-block">
+                                <a href="/login" class="navbar-icon bi-person smoothscroll"></a>
+                                <a class="btn  " style="color: rgb(0, 0, 0); background-color: #ffc107;"   href="/login"> Login</a>
+                                <a class="btn  " style="color: rgb(0, 0, 0); background-color: #55ff07;"  href="/register">Register</a>
+                            </div>
+                               
+                            <% } %>
+                    </div>
+                </div>
+            </nav>
+
+    
+   
+     <header class="site-header d-flex flex-column justify-content-center align-items-center">
+        <div class="container">
+            <div class="row align-items-center">
+
+                <div class="col-lg-5 col-12">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="/">Homepage</a></li>
+
+                            <li class="breadcrumb-item active" aria-current="page">Topics Listing</li>
+                        </ol>
+                    </nav>
+
+                    <h2 class="text-white"><%= title %>  </h2>
+                </div>
+
+            </div>
+        </div>
+    </header>
+  
+
+        
+
+<!-- main section -->
+<style>
+     /* body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        } */
+        .registration-form-content-sec {
+            font-family: Arial, sans-serif;
+            /* background-color: aliceblue; */
+            /* background-image: url('./images/regformbg3.jpg'); */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+        }
+        .tuition-reg-container {
+            width: 400px;
+           
+            background: white;
+            /* backdrop-filter: blur(20px); */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .tuition-reg-toggle {
+            display: flex;
+            justify-content: center;
+            /* gap: 10px; */
+            margin-bottom: 20px;
+        }
+        .tuition-reg-container p{
+            margin: 5px 0px 5px 0px;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+        .tuition-reg-toggle label {
+            cursor: pointer;
+            font-weight: bold;
+            align-self: center;
+        }
+        .tuition-reg-form-section {
+            display: none;
+        }
+        .tuition-reg-form-section.tuition-reg-active {
+            display: block;
+        }
+        .tuition-reg-form-section h1 {
+            font-size: 2.2vh;
+            color: orange;
+            text-align: center;
+            margin: 13px 0;
+        }
+        .tuition-reg-container input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .tuition-reg-container button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .tuition-reg-container button {
+            background: orange;
+            color: white;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+        }
+        .registration-form-heading {
+            all: unset;
+            
+        }
+        .registration-form-heading h2 {
+            all: unset;
+            font-size: 25px;
+            font-weight: 800;
+            margin: 43px 0px 15px 0px;
+            display: block;
+            text-align: center;
+        }
+        .tuition-reg-toggle input{
+            width: auto;
+            margin: 0 20px;
+        }
+        .tuition-reg-toggle h2 {
+            all: unset;
+            font-size: 21px;
+        }
+        .reg-form-images {
+            width: 50%;
+        }
+        .reg-form-images img {
+            width: 87%;
+        }
+        .checkbox-container {
+    display: flex;
+    align-items: center; /* Aligns checkbox and text vertically */
+    gap: 8px; /* Adds space between checkbox and text */
+    font-size: 1.85vh;
+    margin: 12px 0;
+}
+
+.checkbox-container input[type="checkbox"] {
+    width: 15px;
+    height: 15px;
+    cursor: pointer;
+    margin: 0;
+}
+
+       /* Tablet Devices (Max Width: 768px) */
+@media (max-width: 768px) {
+    .registration-form-content-sec {
+       
+        /* text-align: center; */
+        gap: 5px;
+    }
+    .registration-form-heading h2 {
+        margin: 35px 0px;
+    }
+    
+    .reg-form-images {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+    
+    .reg-form-images img {
+        width: 99%;
+        /* max-width: 350px; */
+    }
+    
+    .tuition-reg-container {
+        width: 90%;
+        padding: 15px;
+    }
+    
+    .tuition-reg-toggle {
+        
+        align-items: center;
+       
+    }
+}
+
+/* Mobile Devices (Max Width: 480px) */
+@media (max-width: 480px) {
+    .registration-form-heading h2 {
+        font-size: 18px;
+        padding: 10px;
+        margin: 5px;
+    }
+    
+    .tuition-reg-toggle h2 {
+        font-size: 18px;
+    }
+    
+    .tuition-reg-container input,
+    .tuition-reg-container button {
+        font-size: 14px;
+        padding: 8px;
+    }
+    
+    .reg-form-images img {
+        width: 100%;
+        max-width: 300px;
+    }
+    .tuition-reg-toggle input {
+        margin: 0 8px;
+    }
+    .tuition-reg-toggle {
+        flex-direction: row;
+        margin-bottom: 15px;
+    }
+    .registration-form-content-sec {
+        flex-direction: column;
+    }
+}
+
+        
+</style>
+
+<div class="registration-form-heading">
+    <h2>Connecting Students with the Best Tutors – Learn & Grow Together!</h2>
+</div>
+<div class="registration-form-content-sec">
+    <div class="reg-form-images">
+        <img src="/user/images/teacher[1].jpg" alt="picture">
+    </div>
+    <div class="tuition-reg-container">
+        <div class="tuition-reg-toggle">
+            <h2>I am</h2>
+            <input type="radio" id="tuition-reg-student" name="userType" value="student" checked>
+            <label for="tuition-reg-student">Student/Parent</label>
+
+            <input type="radio" id="tuition-reg-tutor" name="userType" value="tutor">
+            <label for="tuition-reg-tutor">Tutor</label>
+        </div>
+
+        <!-- Student/Parent Form -->
+        <form action="/auth/signup" method="post" enctype="multipart/form-data">
+            <div id="tuition-reg-studentForm" class="tuition-reg-form-section tuition-reg-active">
+                <h1>Find the perfect tutor for your child!</h1>
+                <input type="text" placeholder="Name" name="name" required>
+                <input type="number" placeholder="Mobile Number" name="phone" required>
+                <input type="email" placeholder="Enter Email" name="email" required>
+                <input type="password" placeholder="Enter Password" name="password" required>
+                <input type="password" placeholder="Confirm Password" name="password2" required>
+                <input type="hidden" name="role" value="student">
+                
+
+                <div class="checkbox-container">
+                    <input type="checkbox" id="terms-student" required>
+                    <label for="terms-student">By Signing up you agree to our <a href="/terms&condition">Terms & conditions</a></label>
+                </div>
+
+                <button type="submit">Get Free Demo Class</button>
+
+                <p>Already a member? <a href="">Login</a></p>
+            </div>
+        </form>
+
+        <!-- Tutor Form -->
+        <form action="/auth/signup" method="post" enctype="multipart/form-data">
+            <div id="tuition-reg-tutorForm" class="tuition-reg-form-section">
+                <h1>Connect with students & start teaching!</h1>
+                <input type="text" placeholder="Name" name="name" required>
+                <input type="number" placeholder="Mobile Number" name="phone" required>
+                <input type="email" placeholder="Enter Email" name="email" required>
+                <input type="password" placeholder="Enter Password" name="password" required>
+                <input type="password" placeholder="Confirm Password" name="password2" required>
+                <input type="hidden" name="role" value="tutor">
+                <input type="file" name="profileImage" >
+                <div class="checkbox-container">
+                    <input type="checkbox" id="terms-tutor" required>
+                    <label for="terms-tutor">By Signing up you agree to our <a href="/terms&condition">Terms & conditions</a></label>
+                </div>
+
+                <button type="submit">Find Students Now!</button>
+
+                <p>Already a member? <a href="">Login</a></p>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const studentRadio = document.getElementById("tuition-reg-student");
+        const tutorRadio = document.getElementById("tuition-reg-tutor");
+        const studentForm = document.getElementById("tuition-reg-studentForm");
+        const tutorForm = document.getElementById("tuition-reg-tutorForm");
+
+        function toggleForm() {
+            if (studentRadio.checked) {
+                studentForm.classList.add("tuition-reg-active");
+                tutorForm.classList.remove("tuition-reg-active");
+            } else {
+                tutorForm.classList.add("tuition-reg-active");
+                studentForm.classList.remove("tuition-reg-active");
+            }
+        }
+
+        studentRadio.addEventListener("change", toggleForm);
+        tutorRadio.addEventListener("change", toggleForm);
+
+        // Ensure the correct form is shown on page load
+        toggleForm();
+    });
+</script>
+
+<!-- Footer -->
+<%- include('layout/footer') %>

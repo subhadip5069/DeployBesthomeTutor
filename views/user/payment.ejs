@@ -1,0 +1,207 @@
+<%- include('layout/navbar') %>
+<%- include('layout/header') %>
+
+<style>
+  .payment-order-container {
+    max-width: 1100px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    height: 50vh;
+  }
+
+  .payment-order-title {
+    font-size: 22px;
+    margin-bottom: 20px;
+  }
+
+  .payment-order-table {
+    width: 100%;
+    border: 1px solid #ddd;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+
+  .payment-order-row {
+    display: flex;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .payment-order-header {
+    background-color: #f1f1f1;
+    font-weight: bold;
+  }
+
+  .payment-order-cell {
+    flex: 1;
+    padding: 12px;
+    text-align: center;
+    border-right: 1px solid #ddd;
+  }
+
+  .payment-order-cell:last-child {
+    border-right: none;
+  }
+
+  .payment-order-total {
+    text-align: right;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+
+  .payment-order-button {
+    display: block;
+    margin: 0 auto 20px auto;
+    padding: 10px 30px;
+    background-color: #ff7a00;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  .payment-order-button:hover {
+    background-color: #e66a00;
+  }
+
+  .payment-order-note {
+    text-align: center;
+    font-size: 14px;
+    color: #666;
+  }
+
+  .payment-order-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  .payment-order-table {
+    min-width: 600px;
+  }
+</style>
+
+<div class="payment-order-container">
+  <h2 class="payment-order-title">Order Details</h2>
+
+  <div class="payment-order-table-wrapper">
+    <div class="payment-order-table">
+      <div class="payment-order-row payment-order-header">
+        <div class="payment-order-cell">Plan Name</div>
+        <div class="payment-order-cell">Price</div>
+        <div class="payment-order-cell">IGST</div>
+        <div class="payment-order-cell">CGST</div>
+        <div class="payment-order-cell">SGST</div>
+        <div class="payment-order-cell">Amount</div>
+      </div>
+      <div class="payment-order-row">
+        <div class="payment-order-cell"><%= plan.planName %></div>
+        <div class="payment-order-cell">Rs <%= plan.price %></div>
+        <div class="payment-order-cell">Rs <%= plan.igst %></div>
+        <div class="payment-order-cell">Rs <%= plan.cgst %></div>
+        <div class="payment-order-cell">Rs <%= plan.sgst %></div>
+        <div class="payment-order-cell">Rs <%= plan.finalPrice %></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="payment-order-total">
+    Total: Rs <%= plan.finalPrice %>
+  </div>
+
+  <!-- Payment form with hidden inputs -->
+  <form id="paymentForm">
+    <input type="hidden" name="planId" id="planId" value="<%= plan._id %>">
+    <!-- Amount in rupees; backend can convert to paise if needed -->
+    <input type="hidden" name="amount" id="amount" value="<%= plan.finalPrice %>">
+    <!-- Use user's ID instead of the entire user object -->
+    <input type="hidden" name="userId" id="userId" value="<%= user %>">
+    
+    <button type="button" id="payButton" class="payment-order-button">Pay Now</button>
+  </form>
+  
+
+  <div class="payment-order-note">
+    ( All Credit/Debit Cards, Net Banking, UPI, PayTM, Google Pay, PhonePe and more payment options available. )
+  </div>
+</div>
+
+<!-- Include Razorpay Checkout Script -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+ document.getElementById("payButton").addEventListener("click", async function () {
+  const planId = document.getElementById("planId").value;
+  const amount = document.getElementById("amount").value;
+  // Retrieve the userId from the hidden input
+  const userId = document.getElementById("userId").value;
+
+  try {
+    // Create a Razorpay order on your backend
+    const response = await fetch("/payment/process-payment", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      // Include userId in the request body along with planId and amount
+      body: JSON.stringify({ userId, planId, amount }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+    
+    // Parse the JSON response once
+    const data = await response.json();
+    console.log("Response data:", data);
+    
+    const { orderId, key } = data;
+    if (!orderId || !key) {
+      throw new Error("Order creation failed");
+    }
+    
+    // Setup Razorpay options
+    const options = {
+      key: key, // Your Razorpay key ID
+      amount: amount * 100, // Ensure the amount is in paise if necessary
+      currency: "INR",
+      name: "Your Company",
+      description: "Purchase Plan",
+      order_id: orderId,
+      handler: async function (response) {
+        // Payment successful; verify payment on backend
+        const verifyResponse = await fetch("/payment/verify-payment", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            razorpay_order_id: response.razorpay_order_id,
+            razorpay_payment_id: response.razorpay_payment_id,
+            razorpay_signature: response.razorpay_signature,
+          }),
+        });
+        
+        const result = await verifyResponse.json();
+        if (result.success) {
+          alert("Payment successful!");
+          window.location.href = "/payment-success";
+        } else {
+          alert("Payment verification failed. Please try again.");
+        }
+      },
+      theme: { color: "#ff7a00" },
+    };
+    
+    // Open Razorpay Checkout
+    const razorpay = new Razorpay(options);
+    razorpay.open();
+  } catch (error) {
+    console.error("Payment Error:", error);
+    alert("Something went wrong. Please try again.");
+  }
+});
+</script>
+
+<%- include('layout/footer') %>

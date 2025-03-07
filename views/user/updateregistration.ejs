@@ -1,0 +1,435 @@
+
+<%- include('layout/navbar') %>
+<%- include('layout/header') %>
+<style>
+    .reg-instruction {
+    background-color: #f9fafe;
+    border: 1px solid #dbe5ff;
+    padding: 20px 30px;
+    border-radius: 12px;
+    font-family: 'Poppins', sans-serif;
+    color: #333;
+    line-height: 1.8;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    max-width: 100%;
+    margin: 30px auto;
+}
+
+.reg-instruction ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+}
+
+.reg-instruction > ul > li {
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    position: relative;
+    padding-left: 30px;
+}
+
+.reg-instruction > ul > li::before {
+    content: "✔";
+    color: #437eff;
+    font-weight: bold;
+    position: absolute;
+    left: 0;
+    top: 2px;
+}
+
+.reg-instruction ul ul {
+    margin-top: 10px;
+    padding-left: 20px;
+}
+
+.reg-instruction ul ul li {
+    margin-bottom: 10px;
+    font-size: 1rem;
+    font-weight: 400;
+    position: relative;
+    padding-left: 25px;
+}
+
+.reg-instruction ul ul li::before {
+    content: "➤";
+    color: #437eff;
+    font-size: 0.9rem;
+    position: absolute;
+    left: 0;
+    top: 2px;
+}
+
+.method-title {
+    color: #437eff;
+    font-weight: 600;
+}
+</style>
+        
+
+<!-- Main Section -->
+<!-- Main Section -->
+<div class="container py-5">
+    <div class="text-center mb-4">
+        <h2 style="font-weight: 800; color: #0d436c;">Connecting Students with the Best Tutors – Learn & Grow Together! <hr></h2>
+    </div>
+    
+    <div class="row justify-content-center align-items-center g-4">
+        <!-- Image Section -->
+        <% if(user.role == "student"){ %>
+        <div class="col text-center ">
+           
+                    
+                <div class="reg-instruction">
+                    <ul  style="display: flex; justify-content: center; align-items: start; text-align: left; flex-direction: column; gap: 15px;">
+                        <li style="font-size: 25px;">Best Home Tutor offers risk-free guarantee on our services.</li>
+                        <li style="font-size: 25px;">Students can connect with tutors in two ways:
+                            <ul style="font-size: 23px;">
+                                <li style="font-size: 25px;"><span class="method-title">With Payment -</span> Students can choose teachers according to their experience and nature.
+                                    <ul style="font-size: 25px;">
+                                        <li style="font-size: 23px;">Students can see their profile with contact number after payment of ₹500/-.</li>
+                                        <li style="font-size: 23px;">If the selected teacher is not suitable for your needs, contact us on WhatsApp. We will provide another tutor without extra charge for that particular subject.</li>
+                                    </ul>
+                                </li>
+                                <li style="font-size: 23px;"><span class="method-title">Without Payment -</span> You can see tutor profiles without contact numbers. Tutors will see your profile and contact you directly.</li>
+                            </ul>
+                        </li>
+                        <li style="font-size: 25px;">Dear Parents/Students, please clarify all details regarding teaching, fees, and holidays on the first day.</li>
+                    </ul>
+                </div>            
+                                
+                                
+          
+        </div>
+        <!-- Form Section -->
+        <div class="col-md-5">
+            <div class="p-4 shadow-sm border rounded" style="background-color: white; border-color: #0d436c;">
+                <h4 class="text-center text-warning mb-3">Please Enter Tutor Requirements</h4>
+                <!--  -->
+                <!-- for tution -->
+                <% if (registration) { %>
+                    <form action="/requirment/updaterequirment/<%= registration._id %>" method="post">
+                        <input type="hidden" name="userId" value="<%= userId?.id || '' %>">
+                
+                        <!-- Tuition Location -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Tuition Location <span class="text-warning">*</span></label>
+                            <div class="d-flex flex-wrap gap-3">
+                                <% const locations = Array.isArray(registration?.tuitionLocation) ? registration.tuitionLocation : []; %>
+                                <div class="form-check">
+                                    <input class="form-check-input" name="tuitionLocation[]" type="checkbox" id="home" value="Your Home" <%= locations.includes('Your Home') ? 'checked' : '' %>>
+                                    <label class="form-check-label" for="home">Your Home</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" name="tuitionLocation[]" type="checkbox" id="tutorHome" value="Tutor's Home" <%= locations.includes("Tutor's Home") ? 'checked' : '' %>>
+                                    <label class="form-check-label" for="tutorHome">Tutor's Home</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" name="tuitionLocation[]" type="checkbox" id="institute" value="Institute" <%= locations.includes('Institute') ? 'checked' : '' %>>
+                                    <label class="form-check-label" for="institute">Institute</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" name="tuitionLocation[]" type="checkbox" id="online" value="Online" <%= locations.includes('Online') ? 'checked' : '' %>>
+                                    <label class="form-check-label" for="online">Online</label>
+                                </div>
+                            </div>
+                        </div>
+                
+                        <!-- Preferred Time -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Preferred Time <span class="text-warning">*</span></label>
+                            <div class="d-flex flex-wrap gap-3">
+                                <% const preferredTimes = Array.isArray(registration?.preferredTime) ? registration.preferredTime : []; %>
+                                <div class="form-check">
+                                    <input class="form-check-input" name="preferredTime[]" type="checkbox" id="morning" value="Morning" <%= preferredTimes.includes('Morning') ? 'checked' : '' %>>
+                                    <label class="form-check-label" for="morning">Morning</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" name="preferredTime[]" type="checkbox" id="afternoon" value="Afternoon" <%= preferredTimes.includes('Afternoon') ? 'checked' : '' %>>
+                                    <label class="form-check-label" for="afternoon">Afternoon</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" name="preferredTime[]" type="checkbox" id="evening" value="Evening" <%= preferredTimes.includes('Evening') ? 'checked' : '' %>>
+                                    <label class="form-check-label" for="evening">Evening</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" name="preferredTime[]" type="checkbox" id="anytime" value="Anytime" <%= preferredTimes.includes('Anytime') ? 'checked' : '' %>>
+                                    <label class="form-check-label" for="anytime">Anytime</label>
+                                </div>
+                            </div>
+                        </div>
+                
+                        <!-- Preferred Tutor -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Preferred Tutor <span class="text-warning">*</span></label>
+                            <div class="d-flex flex-wrap gap-3">
+                                <% const preferredTutor = registration?.preferredTutor || ""; %>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="preferredTutor" id="male" value="Male" <%= preferredTutor === 'Male' ? 'checked' : '' %>>
+                                    <label class="form-check-label" for="male">Male</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="preferredTutor" id="female" value="Female" <%= preferredTutor === 'Female' ? 'checked' : '' %>>
+                                    <label class="form-check-label" for="female">Female</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="preferredTutor" id="any" value="Any" <%= preferredTutor === 'Any' ? 'checked' : '' %>>
+                                    <label class="form-check-label" for="any">Any</label>
+                                </div>
+                            </div>
+                        </div>
+                
+                        <!-- Subject & Class -->
+                        <div class="row mb-3">
+                            <div class="mb-3 col-md-6">
+                                <label class="form-label fw-bold">Subject <span class="text-warning">*</span></label>
+                                <input type="text" class="form-control" name="subject" placeholder="Enter Subject" value="<%= registration?.subject || '' %>" required>
+                            </div>
+                            <div class="mb-3 col-md-6">
+                                <label class="form-label fw-bold">Class <span class="text-warning">*</span></label>
+                                <input type="text" class="form-control" name="class" placeholder="Enter Class/Grade" value="<%= registration?.class || '' %>" required>
+                            </div>
+                        </div>
+                
+                        <!-- Fee Offered -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Fee Offered <span class="text-warning">*</span></label>
+                            <div class="d-flex flex-wrap align-items-center gap-3">
+                                <% const feeType = registration?.feeType || ""; %>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="feeType" id="hourly" value="Hourly" <%= feeType === 'Hourly' ? 'checked' : '' %>>
+                                    <label class="form-check-label" for="hourly">Hourly</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="feeType" id="monthly" value="Monthly" <%= feeType === 'Monthly' ? 'checked' : '' %>>
+                                    <label class="form-check-label" for="monthly">Monthly</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="feeType" id="onetime" value="OneTime" <%= feeType === 'OneTime' ? 'checked' : '' %>>
+                                    <label class="form-check-label" for="onetime">OneTime</label>
+                                </div>
+                                <input type="number" class="form-control" name="feeAmount" placeholder="Amount" value="<%= registration?.feeAmount || '' %>" required>
+                            </div>
+                        </div>
+                
+                        <!-- Submit Button -->
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-warning fw-bold px-4 py-2">SUBMIT</button>
+                        </div>
+                    </form>
+                <% } %>
+                
+                <!-- for tutor -->
+              
+                
+                
+            </div>
+        </div>
+        <% }else{ %>
+            <div class="col text-center ">
+                <div class="reg-instruction" >
+                <ul style="display: flex; justify-content: center; align-items: start; text-align: left; flex-direction: column; gap: 15px;">
+                <li style="font-size: 25px;">Best Home Tutor offers risk-free guarantee on our services.</li>
+                <li style="font-size: 25px;">Tutor will get 10 leads after payment of Rs 800/-</li>
+                <li style="font-size: 25px;">View one contact number will reduce your lead by one</li>
+                <li style="font-size: 25px;">It will be valid for 6 months</li>
+                <li style="font-size: 25px;">You should regularly check our Website/SMS/Gmail and get tution that fullfil your profile</li>
+                <li style="font-size: 25px;">You can collect the fees directly from parents as you discussed</li>
+                <li style="font-size: 25px;">We don't take any commission from tutors fees</li>
+                <li style="font-size: 25px;">Clear all things related to tutions fees and terms & conditions on first day</li>
+            
+                </ul>
+             </div>
+            </div>
+        <div class="col-md-6">
+            <div class="p-4 shadow-sm border rounded" style="background-color: white; border-color: #0d436c;">
+                <h4 class="text-center text-warning mb-3">Please Enter Students Requirements</h4>
+                
+                <!-- for tution -->
+                <% if (registration) { %>
+                    <form action="/requirment/updatereg/<%= registration._id %>" method="post"  enctype="multipart/form-data">
+                        <input type="hidden" name="userId" value="<%=registration.userId._id %>"> 
+                
+                        <!-- Tuition Location -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Tuition Location <span class="text-warning">*</span></label>
+                            <div class="d-flex flex-wrap gap-3">
+                                <% const locations = Array.isArray(registration.tuitionLocation) ? registration.tuitionLocation : []; %>
+                                <div class="form-check">
+                                    <input class="form-check-input" name="tuitionLocation[]" type="checkbox" id="home" value="Your Home" <%= locations.includes('Your Home') ? 'checked' : '' %>>
+                                    <label class="form-check-label" for="home">Your Home</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" name="tuitionLocation[]" type="checkbox" id="tutorHome" value="Tutor's Home" <%= locations.includes("Tutor's Home") ? 'checked' : '' %>>
+                                    <label class="form-check-label" for="tutorHome">Tutor's Home</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" name="tuitionLocation[]" type="checkbox" id="institute" value="Institute" <%= locations.includes('Institute') ? 'checked' : '' %>>
+                                    <label class="form-check-label" for="institute">Institute</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" name="tuitionLocation[]" type="checkbox" id="online" value="Online" <%= locations.includes('Online') ? 'checked' : '' %>>
+                                    <label class="form-check-label" for="online">Online</label>
+                                </div>
+                            </div>
+                        </div>
+                
+                        <!-- About -->
+                        <div class="mb-3">
+                            <input type="text" class="form-control" name="about" placeholder="About myself" value="<%= registration.about || '' %>">
+                        </div>
+                
+                        <!-- Preferred Tutor -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Preferred Tutor <span class="text-warning">*</span></label>
+                            <div class="d-flex flex-wrap gap-3">
+                                <% const preferredTutor = registration.preferredTutor || ""; %>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="preferredTutor" id="male" value="Male" <%= preferredTutor === 'Male' ? 'checked' : '' %>>
+                                    <label class="form-check-label" for="male">Male</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="preferredTutor" id="female" value="Female" <%= preferredTutor === 'Female' ? 'checked' : '' %>>
+                                    <label class="form-check-label" for="female">Female</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="preferredTutor" id="any" value="Any" <%= preferredTutor === 'Any' ? 'checked' : '' %>>
+                                    <label class="form-check-label" for="any">Any</label>
+                                </div>
+                            </div>
+                        </div>
+                
+                        <!-- Board -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Board <span class="text-warning">*</span></label>
+                            <input type="text" class="form-control" name="board" placeholder="Enter Board" value="<%= registration.board || '' %>" required>
+                        </div>
+                
+                        <!-- Experience, Qualification, Age -->
+                        <div class="mb-3 row">
+                            <div class="col-md-5">
+                                <label class="form-label fw-bold">Experience (Years) <span class="text-warning">*</span></label>
+                                <input type="number" class="form-control" name="experience" placeholder="Enter Experience" value="<%= registration.experience || '' %>" required>
+                            </div>
+                            <div class="col-md-5">
+                                <label class="form-label fw-bold">Qualification <span class="text-warning">*</span></label>
+                                <input type="text" class="form-control" name="qualification" placeholder="Enter Qualification" value="<%= registration.qualification || '' %>" required>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="form-label fw-bold">Age <span class="text-warning">*</span></label>
+                                <input type="number" class="form-control" name="age" placeholder="Enter Age" value="<%= registration.age || '' %>" required>
+                            </div>
+                        </div>
+                
+                        <!-- Subject & Class -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Subject <span class="text-warning">*</span></label>
+                                <input type="text" class="form-control" name="subject" placeholder="Enter Subject" value="<%= registration.subject || '' %>" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Class <span class="text-warning">*</span></label>
+                                <input type="text" class="form-control" name="class" placeholder="Enter Class/Grade" value="<%= registration.class || '' %>" required>
+                            </div>
+                        </div>
+                
+                        <!-- Fee Offered -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Fee Offered <span class="text-warning">*</span></label>
+                            <div class="d-flex flex-wrap align-items-center gap-3">
+                                <% const feeType = registration.feeType || ""; %>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="feeType" id="hourly" value="Hourly" <%= feeType === 'Hourly' ? 'checked' : '' %>>
+                                    <label class="form-check-label" for="hourly">Hourly</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="feeType" id="monthly" value="Monthly" <%= feeType === 'Monthly' ? 'checked' : '' %>>
+                                    <label class="form-check-label" for="monthly">Monthly</label>
+                                </div>
+                                <input type="number" class="form-control" name="feeAmount" placeholder="Amount" style="width: 120px;" value="<%= registration.feeAmount || '' %>" required>
+                            </div>
+                        </div>
+                
+                        <!-- Upload Documents -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Upload Profile Image</label>
+                            <input type="file" class="form-control" name="profileImage" accept="image/*">
+                        </div>
+                        <img src="/uploads/profile_images/<%= registration.userId.profileimage || '/user/profile.png' %>" alt="">
+                
+                        <!-- Submit Button -->
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-warning fw-bold px-4 py-2">SUBMIT</button>
+                        </div>
+                    </form>
+                <% } %>
+                
+                <div class="toast-container position-fixed bottom-0 end-0 p-3">
+                    <div id="uploadToast" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                        <div class="d-flex">
+                            <div class="toast-body" id="toastMessage">
+                                Multer error message here!
+                            </div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                    </div>
+                </div>
+                
+                <script>
+                    document.getElementById("imageUpload").addEventListener("change", function(event) {
+                        const file = event.target.files[0];
+                        if (file) {
+                            const reader = new FileReader();
+                            reader.onload = function(e) {
+                                const preview = document.getElementById("imagePreview");
+                                preview.src = e.target.result;
+                                preview.classList.remove("d-none");
+                            };
+                            reader.readAsDataURL(file);
+                        }
+                    });
+                
+                    // Function to show toast (Call this function when an error occurs)
+                    function showToast(message) {
+                        document.getElementById("toastMessage").textContent = message;
+                        var toast = new bootstrap.Toast(document.getElementById("uploadToast"));
+                        toast.show();
+                    }
+                </script>
+               
+                <!-- for tutor -->
+                
+                
+            </div>
+        </div>
+        <% } %>
+    </div>
+</div>
+
+</div>
+<script>
+   document.addEventListener("DOMContentLoaded", function () {
+        const studentRadio = document.getElementById("tuition-reg-student");
+        const tutorRadio = document.getElementById("tuition-reg-tutor");
+        const studentForm = document.getElementById("tuition-reg-studentForm");
+        const tutorForm = document.getElementById("tuition-reg-tutorForm");
+
+        function toggleForm() {
+            if (studentRadio.checked) {
+                studentForm.classList.add("tuition-reg-active");
+                tutorForm.classList.remove("tuition-reg-active");
+            } else {
+                tutorForm.classList.add("tuition-reg-active");
+                studentForm.classList.remove("tuition-reg-active");
+            }
+        }
+
+        studentRadio.addEventListener("change", toggleForm);
+        tutorRadio.addEventListener("change", toggleForm);
+    });
+</script>
+
+
+<!-- end main -->
+<!-- Footer -->
+<%- include('layout/footer') %>

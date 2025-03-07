@@ -1,0 +1,150 @@
+<%- include('partial/header') %>
+
+<div class="container d-flex justify-content-center align-items-center flex-column min-vh-100 py-4" style="padding-top: 100px;">
+    <div class="card p-4 shadow-lg" style="max-width: 600px; width: 100%; margin-top: 100px;">
+        <h2 class="text-center mb-4">Create New Purchase Plan</h2>
+        
+        <form action="/admin/payment/createplan" method="POST" id="createPlanForm">
+            <div class="mb-3">
+                <label class="form-label">Plan Name:</label>
+                <input type="text" name="planName" class="form-control" required>
+            </div>
+        
+            <div class="mb-3">
+                <label class="form-label">Price (₹):</label>
+                <input type="number" name="price" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">SGST (%):</label>
+                <input type="number" name="sgst" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">CGST (%):</label>
+                <input type="number" name="cgst" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">IGST (%):</label>
+                <input type="number" name="igst" class="form-control" required>
+            </div>
+           <div class="mb-3">
+                <label class="form-label">Validity (Days):</label>
+                <input type="number" name="validity" class="form-control" required>
+            </div>
+        
+            <div class="mb-3">
+                <label class="form-label">Unlock User Count:</label>
+                <input type="number" name="unlockUserCount" class="form-control" required>
+            </div>
+        
+            <div class="mb-3">
+                <label class="form-label">Description:</label>
+                <textarea name="description" rows="3" class="form-control"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">For Role:</label>
+                <select name="role" class="form-select">
+                    <option value="student">student</option>
+                    <option value="tutor">teacher</option>
+                </select>
+            </div>
+        
+            <div class="mb-3">
+                <label class="form-label">Features:</label>
+                <div id="featuresList">
+                    <div class="d-flex align-items-center mb-2 feature-item">
+                        <input type="text" name="features[0][name]" class="form-control me-2" placeholder="Feature Name" required>
+                        <label class="form-check-label me-2">Enabled:</label>
+                        <input type="checkbox" name="features[0][isEnabled]" value="true" class="form-check-input">
+                    </div>
+                </div>
+                <button type="button" class="btn btn-sm btn-secondary mt-2" onclick="addFeature()">➕ Add Feature</button>
+            </div>
+        
+            <div class="mb-3">
+                <label class="form-label">Status:</label>
+                <select name="status" class="form-select">
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                </select>
+            </div>
+        
+            <button type="submit" class="btn btn-primary w-100">Create Plan</button>
+        </form>
+        
+    </div>
+</div>
+</div>
+<script>
+    function addFeature() {
+        let index = document.querySelectorAll("#featuresList .feature-item").length;
+        let featureHTML = `
+            <div class="d-flex align-items-center mb-2 feature-item">
+                <input type="text" name="features[${index}][name]" class="form-control me-2" placeholder="Feature Name" required>
+                <label class="form-check-label me-2">Enabled:</label>
+                <input type="checkbox" name="features[${index}][isEnabled]" value="true" class="form-check-input">
+                <button type="button" class="btn btn-danger btn-sm ms-2" onclick="removeFeature(this)">❌</button>
+            </div>`;
+        document.getElementById("featuresList").insertAdjacentHTML("beforeend", featureHTML);
+    }
+
+    function removeFeature(button) {
+        button.parentElement.remove();
+    }
+
+    function prepareForm(event) {
+        event.preventDefault(); // Prevent default submission
+
+        let form = event.target;
+        let formData = new FormData(form);
+
+        // Convert FormData to an object
+        let json = Object.fromEntries(formData.entries());
+
+        // Handle features manually
+        let features = [];
+        document.querySelectorAll("#featuresList .feature-item").forEach((item, index) => {
+            let name = item.querySelector("input[type='text']").value;
+            let isEnabled = item.querySelector("input[type='checkbox']").checked; // Directly use boolean
+            features.push({ name, isEnabled });
+        });
+
+        json.features = features;
+
+        // Send via Fetch API (AJAX)
+        fetch(form.action, {
+            method: form.method,
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(json),
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                window.location.href = "/admin/getprimium"; // Redirect after success
+            } else {
+                alert("Error: " + (data.message || "Something went wrong"));
+            }
+        })
+        .catch(error => {
+            console.error("Submission Error:", error);
+            alert("Failed to submit the form. Please try again.");
+        });
+    }
+</script>
+
+
+
+
+
+
+<div class="py-3 text-center bg-dark text-white">
+    <p class="mb-0 fs-6">Design and Developed by <a href="https://adminmart.com/" target="_blank" class="text-primary text-decoration-underline">AdminMart.com</a>. Distributed by <a href="https://themewagon.com/" target="_blank" class="text-primary text-decoration-underline">ThemeWagon</a></p>
+</div>
+
+<%- include('partial/footer') %>
