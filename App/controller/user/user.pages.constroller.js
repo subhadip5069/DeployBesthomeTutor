@@ -580,7 +580,7 @@ class userPagesController {
             
             const user = await User.findOne({ _id: userId.id }).lean();
             if (!user || !user._id) {
-                return res.status(404).json({ message: "User not found!" });
+                res.redirect("/login");
             }
     
             const requirement = await Registration.findOne({ userId: new mongoose.Types.ObjectId(userId) })

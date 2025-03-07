@@ -7,28 +7,35 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const flash = require("connect-flash");
 const connectDB = require("./App/config/db");
+const MongoStore = require("connect-mongo");
  // ✅ Import database connections
 
 require("dotenv").config();
 
 const app = express();
+
+app.use(cookieParser());
+app.use(session({
+  secret: process.env.SESSION_SECRET || "your_secret_key",
+  resave: false,
+  saveUninitialized: false,
+  store: MongoStore.create({ mongoUrl: process.env.MONGO_URI }),
+  cookie: { secure: false, maxAge: 1000 * 60 * 60 * 24 } // 1 day
+}));
+app.use((req, res, next) => {
+  res.locals.session = req.session;
+  next();
+});; // Place before flash
 app.use(flash());
+
 
 
  // Store instance in app for reuse
  connectDB();
 
- app.use(session({
-  secret: process.env.SESSION_SECRET || "your_secret_key",
-  resave: false,
-  saveUninitialized: true,
-  cookie: { secure: false }  // Set to `true` in production with HTTPS
-}));
 
-app.use((req, res, next) => {
-  res.locals.session = req.session;
-  next();
-});
+
+
 // Middleware to make flash messages available in templates
 app.use((req, res, next) => {
   res.locals.success = req.flash("success");
