@@ -585,7 +585,7 @@ class userPagesController {
     
             const requirement = await Registration.findOne({ userId: new mongoose.Types.ObjectId(userId) })
                 .populate("userId", "name email randomId")
-                .select("userId tuitionLocation preferredTime preferredTutor feeType feeAmount state city pincode locality subject class sorted attachedFiles board qualification experience age")
+                .select("userId tuitionLocation preferredTime preferredTutor feeType feeAmount state city pincode locality subject class sorted attachedFiles board qualification experience age about")
                 .lean();
     
             const page = parseInt(req.query.page) || 1;
