@@ -18,6 +18,7 @@ const transporter = nodemailer.createTransport({
 class Documentverificationcontroller{
     updateDocumentVerification = async (req, res) => {
         try {
+            const userId = req.user;
             const registrationId = req.params.id;
     
             console.log("Received registrationId:", registrationId);

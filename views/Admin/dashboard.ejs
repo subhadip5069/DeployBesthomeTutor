@@ -1,19 +1,144 @@
 <%- include('partial/header') %>
+
+<div style="height: 10vh;"></div>
+
 <div class="container d-flex justify-content-center align-items-center flex-column min-vh-100">
+    <h2 class="text-center my-4">Admin Dashboard</h2>
 
+    <!-- Dashboard Stats Cards -->
+    <div class="row w-100">
+        <div class="col-md-3">
+            <div class="card text-white mb-3" style="background-color: rgba(88, 255, 205, 0.342); backdrop-filter: blur(15px);">
+                <div class="card-body">
+                    <h5 class="card-title">Total Users</h5>
+                    <h3><%= totalUsers %></h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white mb-3" style="background-color: rgba(52, 158, 250, 0.342); backdrop-filter: blur(15px);">
+                <div class="card-body">
+                    <h5 class="card-title">Total Students</h5>
+                    <h3><%= totalStudents %></h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white mb-3" style="background-color: rgba(39, 154, 255, 0.342); backdrop-filter: blur(15px);">
+                <div class="card-body">
+                    <h5 class="card-title">Total Teachers</h5>
+                    <h3><%= totalTeachers %></h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white mb-3" style="background-color: rgba(0, 136, 255, 0.342); backdrop-filter: blur(15px);">
+                <div class="card-body">
+                    <h5 class="card-title">Total Requirements</h5>
+                    <h3><%= totalRequirements %></h3>
+                </div>
+            </div>
+        </div>
 
-
-    <h2>main</h2>
-   
-</div>
-</div>
-    <div class="py-6 px-6 text-center " style="background-color: rgba(0, 0, 0, 0.884); backdrop-filter: blur(15px); color: white;">
-        <p class="mb-0 fs-4">Design and Developed by <a href="https://adminmart.com/" target="_blank"
-            class="pe-1 text-primary text-decoration-underline">AdminMart.com</a>Distributed by <a href="https://themewagon.com/" target="_blank"
-            class="pe-1 text-primary text-decoration-underline">ThemeWagon</a></p>
+        <!-- Total Payment Amount Card -->
+        <div class="col-md-3">
+            <div class="card text-white mb-3" style="background-color: rgba(255, 193, 7, 0.342); backdrop-filter: blur(15px);">
+                <div class="card-body">
+                    <h5 class="card-title">Total Payments</h5>
+                    <h3>₹ <%= totalPayments %></h3>
+                </div>
+            </div>
+        </div>
     </div>
 
-<%- include('partial/footer') %>
-     
+    <div class="row w-100 mt-4 bg-white p-4 rounded shadow" >
+        <div class="col-md-6">
+            <h4 class="text-center">Hourly Payment Tracking</h4>
+            <canvas id="hourlyPaymentChart"></canvas>
+        </div>
+        <div class="col-md-6">
+            <h4 class="text-center">Daily Payment Tracking</h4>
+            <canvas id="dailyPaymentChart"></canvas>
+        </div>
+    </div>
+    
+</div>
 
-   
+<!-- Footer -->
+<div class="py-3 text-center text-white" style="background-color: rgba(0, 0, 0, 0.884); backdrop-filter: blur(15px);">
+    <p class="mb-0 fs-5">
+        Design & Developed by 
+        <a href="https://adminmart.com/" target="_blank" class="text-primary text-decoration-underline">AdminMart.com</a>
+        Distributed by 
+        <a href="https://themewagon.com/" target="_blank" class="text-primary text-decoration-underline">ThemeWagon</a>
+    </p>
+</div>
+
+<%- include('partial/footer') %>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    
+    function fetchAndRenderChart(url, chartId, chartType, label, bgColor, borderColor) {
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                if (!data.success) {
+                    console.error("Failed to load data from " + url);
+                    return;
+                }
+
+                const labels = data.data.map(d => d.time || d.date);
+                const amounts = data.data.map(d => d.totalAmount / 100); // Divide by 100 to get actual amount
+
+                const ctx = document.getElementById(chartId).getContext("2d");
+                new Chart(ctx, {
+                    type: chartType,
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: label,
+                            data: amounts,
+                            backgroundColor: bgColor,
+                            borderColor: borderColor,
+                            borderWidth: 2,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: { beginAtZero: true }
+                        }
+                    }
+                });
+            })
+            .catch(error => console.error("Error loading chart data from " + url, error));
+    }
+
+    // Load Hourly Payment Chart (Bar Chart)
+    fetchAndRenderChart(
+        "/admin/hourlyPaymentStats",
+        "hourlyPaymentChart",
+        "bar",
+        "Hourly Payments (INR)",
+        "rgba(54, 162, 235, 0.5)",
+        "blue"
+    );
+
+    // Load Daily Payment Chart (Line Chart)
+    fetchAndRenderChart(
+        "/admin/dailyPaymentStats",
+        "dailyPaymentChart",
+        "line",
+        "Daily Payments (INR)",
+        "rgba(255, 99, 132, 0.5)",
+        "red"
+    );
+
+});
+</script>
+
+

@@ -1,5 +1,7 @@
+const RazorpayPayment = require('../../model/payment.model');
 const PurchasePlan = require('../../model/purchaceplane');
 const Registration = require('../../model/registration');
+const User = require('../../model/user.model');
 const userModel = require('../../model/user.model');
 
 class AdminPagesController {
@@ -10,27 +12,119 @@ class AdminPagesController {
        
     }
 
-    Dashboard=async(req,res)=>{
-        const users = await userModel.find();
-       
-        res.render('Admin/dashboard' ,{users})
-       
-    }
+
+  
+
+    
+
+    Dashboard = async (req, res) => {
+        try {
+            const userId = req.user;
+    
+            // Fetch total counts
+            const [totalUsers, totalStudents, totalTeachers, totalRequirements] = await Promise.all([
+                User.countDocuments(),
+                User.countDocuments({ role: "student" }),
+                User.countDocuments({ role: "tutor" }),
+                Registration.countDocuments(), // Assuming "Registration" stores some requirement data
+            ]);
+    
+            // Fetch total payments correctly
+            const totalPayments = await RazorpayPayment.aggregate([
+                { $match: { paymentStatus: "successful" } }, // Only count successful payments
+                { $group: { _id: null, totalAmount: { $sum: "$amount" } } }
+            ]);
+    
+            // Ensure totalAmount is a number
+            const totalAmount = totalPayments.length > 0 ? totalPayments[0].totalAmount : 0;
+    
+            res.render('Admin/dashboard', {
+                userId,
+                totalUsers,
+                totalStudents,
+                totalTeachers,
+                totalRequirements,
+                totalPayments: totalAmount/100,
+            });
+        } catch (error) {
+            console.error("Error loading dashboard:", error);
+            res.status(500).send("Internal Server Error");
+        }
+    };
+    
+    
+    // API Route for Payment Data (to be called via AJAX)
+ getPaymentStats = async (req, res) => {
+        try {
+            const payments = await RazorpayPayment.aggregate([
+                { $match: { paymentStatus: "successful" } }, // Only successful payments
+                {
+                    $lookup: {
+                        from: "users",
+                        localField: "userId",
+                        foreignField: "_id",
+                        as: "user",
+                    },
+                },
+                {
+                    $lookup: {
+                        from: "purchaseplans",
+                        localField: "planId",
+                        foreignField: "_id",
+                        as: "plan",
+                    },
+                },
+                { $unwind: "$user" },
+                { $unwind: "$plan" },
+                {
+                    $group: {
+                        _id: { year: { $year: "$createdAt" }, month: { $month: "$createdAt" } },
+                        totalAmount: { $sum: "$amount" },
+                        count: { $sum: 1 },
+                        users: { $push: "$user.name" }, // List of users
+                        plans: { $push: "$plan.name" }, // List of plans
+                    },
+                },
+                { $sort: { "_id.year": 1, "_id.month": 1 } },
+            ]);
+    
+            const formattedData = payments.map((p) => ({
+                year: p._id.year,
+                month: p._id.month,
+                totalAmount: p.totalAmount / 100, // Convert paise to INR
+                count: p.count,
+                users: p.users,
+                plans: p.plans,
+            }));
+    
+            res.json({ success: true, data: formattedData });
+        } catch (error) {
+            console.error("Error fetching payment stats:", error);
+            res.status(500).json({ success: false, message: "Internal Server Error" });
+        }
+    };
+    
+    // Export Routes
+
+    
     listofStudents=async(req,res)=>{
+            const userId = req.user;
         const users = await userModel.find({role:'student'});
        
-        res.render('Admin/listOfStudents' ,{users})
+        res.render('Admin/listOfStudents' ,{users,userId})
        
     }
     listOfTutor=async(req,res)=>{
+            const userId = req.user;
         const users = await userModel.find({role:'tutor'});
        
-        res.render('Admin/listOfTutor' ,{users})
+        res.render('Admin/listOfTutor' ,{users,userId})
        
     }
 
     document = async (req, res) => {
         try {
+            const userId = req.user;
             let page = parseInt(req.query.page) || 1;
             let limit = 10;
             if (page < 1) page = 1; // Ensures page number is valid
@@ -64,18 +158,20 @@ class AdminPagesController {
                 title: "Inactive Registrations with Documents",
                 registrations,
                 currentPage: page,
-                totalPages
+                totalPages,
+                userId
             });
     
         } catch (err) {
             console.error("Error fetching registrations:", err);
-            res.status(500).send("Internal Server Error");
+           res.redirect("/admin/documentverification");
         }
     };
 
     
     allstudentsrequirment = async (req, res) => {
         try {
+            const userId = req.user;
             let page = parseInt(req.query.page) || 1;
             let limit = 6;
             if (page < 1) page = 1;
@@ -136,12 +232,13 @@ class AdminPagesController {
                 registrations: filteredRegistrations,
                 students: students,
                 currentPage: page,
-                totalPages
+                totalPages,
+                userId
             });
     
         } catch (err) {
             console.error("Error fetching student registrations:", err);
-            res.status(500).send("Internal Server Error");
+            res.redirect("/admin/allstudentrequirment");
         }
     };
     
@@ -152,6 +249,7 @@ class AdminPagesController {
             
     alltutorrequirment = async (req, res) => {
         try {
+            const userId = req.user;
             let page = parseInt(req.query.page) || 1;
             let limit = 10;
             if (page < 1) page = 1; // Ensures valid page number
@@ -211,33 +309,42 @@ class AdminPagesController {
                 title: "Tutor Registrations with Documents",
                 registrations: filteredRegistrations,
                 currentPage: page,
-                totalPages
+                totalPages,
+                userId
             });
     
         } catch (err) {
             console.error("Error fetching tutor registrations:", err);
-            res.status(500).send("Internal Server Error");
+            res.redirect("/admin/alltutorrequirment");
         }
     };
     
-  
-    
-    
-
-    
-    
+   
 
     payments=async(req,res)=>{
-        res.render('Admin/payments')
+        const userId = req.user;
+        const payments = await RazorpayPayment.find()
+        .populate("userId", "name email")
+        .populate("planId", "planName")
+        .sort({ createdAt: -1 })  // Ensure planId is populated
+        .lean();
+        res.render('Admin/payments',{
+            title:'Payments',
+            userId,
+            payments
+        })
     }
 
     createPrimium=async(req,res)=>{
+        const userId = req.user;
         res.render('Admin/createpurchaseplane',{
-            title:'Create Purchase Plan'
+            title:'Create Purchase Plan',
+            userId
         })
     }
     getpurchaseplan = async (req, res) => {
         try {
+            const userId = req.user;
             const plans = await PurchasePlan.find().lean();
 
           
@@ -245,6 +352,7 @@ class AdminPagesController {
                 title: "Purchase Plan",
                 plans,
                // Ensure CSRF middleware is enabled
+                userId
             });
         } catch (error) {
             console.error("Error fetching purchase plans:", error);
@@ -252,9 +360,7 @@ class AdminPagesController {
         }
     };
     
-    taxchat=async(req,res)=>{
-        res.render('Admin/taxchat')
-    }
+   
 }
 
 module.exports = new AdminPagesController();

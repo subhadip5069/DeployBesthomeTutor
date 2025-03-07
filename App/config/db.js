@@ -12,7 +12,7 @@ const connectDB = async () => {
   try {
     console.log("⏳ Waiting 5 seconds before attempting MongoDB connection...");
     
-    await new Promise(resolve => setTimeout(resolve, 15000)); // 5s buffer time
+    await new Promise(resolve => setTimeout(resolve, 5000)); // 15s buffer time
     
     await mongoose.connect(dbURI, {
       bufferCommands: false, // Prevent queries before connection

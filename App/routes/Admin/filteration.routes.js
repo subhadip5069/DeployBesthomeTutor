@@ -2,8 +2,9 @@ const express = require("express");
 const router = express.Router();
 
 const Registration = require("../../model/registration");
+const { AdminauthMiddleware } = require("../../utils/auth.middleware");
 
-router.get("/search", async (req, res) => {
+router.get("/search",AdminauthMiddleware ,  async (req, res) => {
     try {
         const query = req.query.query;
         if (!query) return res.json([]);
@@ -37,7 +38,7 @@ router.get("/search", async (req, res) => {
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
-router.get("/filteration/search", async (req, res) => {
+router.get("/filteration/search",AdminauthMiddleware, async (req, res) => {
     try {
         const query = req.query.query.trim().toLowerCase();
 
@@ -67,7 +68,7 @@ router.get("/filteration/search", async (req, res) => {
 });
 
 
-router.get("/filteration/search", async (req, res) => {
+router.get("/filteration/search",AdminauthMiddleware, async (req, res) => {
     try {
         const query = req.query.query.trim().toLowerCase();
 
@@ -111,7 +112,7 @@ router.get("/filteration/search", async (req, res) => {
         res.json(filteredStudents);
     } catch (error) {
         console.error("Error searching students:", error);
-        res.status(500).json({ error: "Internal Server Error" });
+        res.redirect('/admin/dashboard');
     }
 });
 

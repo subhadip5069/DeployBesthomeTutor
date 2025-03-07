@@ -1,76 +1,56 @@
 <%- include('partial/header') %>
+</div>
+<div style="height: 10vh;">
 
-<section class="container d-flex justify-content-center align-items-center flex-column min-vh-100">
-    <h2 class="mb-4">Payment Records</h2>
-
-    <!-- Search Input -->
-    <div class="mb-3 w-50">
-        <input type="text" id="searchInput" class="form-control" placeholder="Search payments...">
-    </div>
-
-    <!-- Payment Cards -->
-    <div id="paymentCards" class="w-100 row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-        <!-- Cards will be inserted here -->
-    </div>
-
-    <!-- Pagination -->
-    <nav class="mt-4">
-        <ul class="pagination">
-            <li class="page-item"><a class="page-link" href="#" id="prevPage">Previous</a></li>
-            <li class="page-item"><a class="page-link" href="#" id="nextPage">Next</a></li>
-        </ul>
-    </nav>
-</section>
-
-<script>
-    const payments = [
-        { id: "P1001", user: "John Doe", amount: "$200", status: "Paid", date: "2024-03-01", email: "john@example.com", phone: "123-456-7890" },
-        { id: "P1002", user: "Alice Smith", amount: "$150", status: "Pending", date: "2024-03-02", email: "alice@example.com", phone: "987-654-3210" },
-        { id: "P1003", user: "Bob Johnson", amount: "$300", status: "Failed", date: "2024-03-03", email: "bob@example.com", phone: "555-666-7777" },
-        { id: "P1004", user: "Emma Davis", amount: "$100", status: "Paid", date: "2024-03-04", email: "emma@example.com", phone: "444-555-6666" },
-        { id: "P1005", user: "Michael Brown", amount: "$250", status: "Pending", date: "2024-03-05", email: "michael@example.com", phone: "222-333-4444" },
-        { id: "P1006", user: "Sophia Wilson", amount: "$400", status: "Paid", date: "2024-03-06", email: "sophia@example.com", phone: "777-888-9999" },
-        { id: "P1007", user: "Daniel Martinez", amount: "$180", status: "Failed", date: "2024-03-07", email: "daniel@example.com", phone: "111-222-3333" },
-        { id: "P1008", user: "Olivia Anderson", amount: "$220", status: "Paid", date: "2024-03-08", email: "olivia@example.com", phone: "666-777-8888" },
-        { id: "P1009", user: "Liam Taylor", amount: "$500", status: "Pending", date: "2024-03-09", email: "liam@example.com", phone: "999-000-1111" }
-    ];
-
-    let currentPage = 1;
-    const rowsPerPage = 6;
-
-    function getStatusBadge(status) {
-        if (status === "Paid") return `<span class="badge bg-success">${status}</span>`;
-        if (status === "Pending") return `<span class="badge bg-warning">${status}</span>`;
-        return `<span class="badge bg-danger">${status}</span>`;
-    }
-
-    function loadCards() {
-        const cardsContainer = document.getElementById("paymentCards");
-        cardsContainer.innerHTML = "";
-
-        payments.forEach((payment, index) => {
-            const card = `
+</div>
+<div class="py-6 px-6 text-center " style="background-color: rgba(0, 0, 0, 0); backdrop-filter: blur(15px); color: white; height: 130vh; padding-top: 450px;">
+    <section class="container d-flex justify-content-center align-items-center flex-column py-1 min-vh-100">
+        <h2 class="mb-4">Payment Records</h2>
+    
+        <!-- Search Input -->
+        <div class="mb-3 w-50">
+            <input type="text" id="searchInput" class="form-control" placeholder="Search payments...">
+        </div>
+    
+        <!-- Payment Cards -->
+        <div id="paymentCards" class="w-100 row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            <% payments.forEach(payment => { %>
                 <div class="col payment-card">
                     <div class="card h-100 shadow-sm">
                         <div class="card-body">
-                            <h5 class="card-title">${payment.user} ${getStatusBadge(payment.status)}</h5>
-                            <p class="card-text"><strong>Amount:</strong> ${payment.amount}</p>
-                            <p class="card-text"><strong>Date:</strong> ${payment.date}</p>
-                            <button class="btn btn-primary btn-sm" data-bs-toggle="collapse" data-bs-target="#details-${payment.id}">
+                            <h5 class="card-title"><%= payment.userId.name %> <span class="badge <%= payment.paymentStatus === 'successful' ? 'bg-success' : payment.paymentStatus === 'pending' ? 'bg-warning' : 'bg-danger' %>"><%= payment.paymentStatus %></span></h5>
+                            <p class="card-text"><strong>Amount:</strong> ₹<%= (payment.amount / 100).toFixed(2) %></p>
+                            <p class="card-text"><strong>Plan:</strong> 
+                                <%= payment.planId ? payment.planId.planName : "N/A" %>
+                            </p>
+                            
+                            <p class="card-text"><strong>Date:</strong> <%= payment.createdAt.toDateString() %></p>
+                            <button class="btn btn-primary btn-sm" data-bs-toggle="collapse" data-bs-target="#details-<%= payment._id %>">
                                 View Details
                             </button>
                         </div>
-                        <div id="details-${payment.id}" class="collapse card-footer">
-                            <p><strong>Email:</strong> ${payment.email}</p>
-                            <p><strong>Phone:</strong> ${payment.phone}</p>
+                        <div id="details-<%= payment._id %>" class="collapse card-footer">
+                            <p><strong>Email:</strong> <%= payment.userId.email %></p>
+                            <p><strong>Payment ID:</strong> <%= payment.razorpayPaymentId || "N/A" %></p>
                         </div>
                     </div>
-                </div>`;
-            cardsContainer.innerHTML += card;
-        });
+                </div>
+            <% }) %>
+        </div>
+    
+        <!-- Pagination -->
+        <nav class="mt-4">
+            <ul class="pagination">
+                <li class="page-item"><a class="page-link" href="#" id="prevPage">Previous</a></li>
+                <li class="page-item"><a class="page-link" href="#" id="nextPage">Next</a></li>
+            </ul>
+        </nav>
+    </section>
+</div>
 
-        showPage(currentPage);
-    }
+<script>
+    let currentPage = 1;
+    const rowsPerPage = 9; // Show 9 cards per page
 
     function showPage(page) {
         const cards = document.querySelectorAll(".payment-card");
@@ -111,7 +91,8 @@
         });
     });
 
-    document.addEventListener("DOMContentLoaded", loadCards);
+    document.addEventListener("DOMContentLoaded", () => showPage(currentPage));
 </script>
+</div>
 
 <%- include('partial/footer') %>

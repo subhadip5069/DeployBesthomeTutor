@@ -6,10 +6,11 @@ const jwt = require("jsonwebtoken");
 class AdminAuthController {
     login = async (req, res) => {
         try {
+          const userId = req.user;
         const { email, password } = req.body;
       
         if (!email || !password) {
-          return res.render('Admin/index', { error: 'Please enter both email and password' });
+          res.redirect('/admin/');
         }
       
         
@@ -17,14 +18,14 @@ class AdminAuthController {
           const user = await User.findOne({ email });
           console.log(user);
           if (!user || user.role !== 'admin') {
-            return res.status(401).json({ message: 'Invalid email or password' });
+            res.redirect('/admin/');
           }
       
         //    if password not match
           const isPasswordValid = await bcrypt.compare(password, user.password);
           console.log(isPasswordValid);
           if (!isPasswordValid) {
-            return res.status(401).json({ message: 'Invalid email or password' });
+            res.redirect('/admin/');
             
     
           }
@@ -39,16 +40,16 @@ class AdminAuthController {
     
           console.log(token);
       
-          return res.status(200).json({ message: 'Login successful' }); // Redirect to the dashboard or any protected page
+          res.redirect('/admin/dashboard'); // Redirect to the dashboard or any protected page
         } catch (error) {
           console.error('Login error:', error);
-            return res.status(500).json({ message: 'Internal server error' });
+          res.redirect('/admin/');
         }
       };
     
       logout= async (req, res) => {
         res.clearCookie('token');
-        return res.status(200).json({ message: 'Logged out' });
+        res.redirect('/admin/');
       };
     }    
 

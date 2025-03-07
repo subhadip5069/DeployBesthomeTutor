@@ -58,9 +58,11 @@ createOrder = async (req, res) => {
       amount: amount * 100,
       currency: "INR",
       razorpayOrderId: order.id,
+      razorpayPaymentId: `pending_${Date.now()}`, // ✅ Temporary unique ID
       paymentStatus: "pending",
     });
-
+    
+    
     await payment.save();
 
     // 🔹 Update User's Balance and Unlocks  
