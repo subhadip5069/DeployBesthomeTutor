@@ -1,5 +1,5 @@
 const { db1 } = require("../../config/db"); // ✅ Get db1
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
