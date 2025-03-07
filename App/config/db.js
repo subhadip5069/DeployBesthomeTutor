@@ -12,9 +12,7 @@ if (!db1URI || !db2URI) {
 
 // MongoDB connection options
 const connectionOptions = {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  serverSelectionTimeoutMS: 30000, // Increase timeout to 30s
+  serverSelectionTimeoutMS: 60000, // Increase timeout to 60s
   bufferCommands: false, // Prevent Mongoose from buffering commands
 };
 
