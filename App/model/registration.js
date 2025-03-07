@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { db1 } = require("../config/db"); // Import db2 connection
+ // Import db2 connection
 
 const registrationSchema = new mongoose.Schema(
   {
@@ -33,5 +33,5 @@ const registrationSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Registration = db1.model("Registration", registrationSchema);
+const Registration = mongoose.model("Registration", registrationSchema);
 module.exports = Registration;

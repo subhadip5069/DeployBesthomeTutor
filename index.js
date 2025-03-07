@@ -6,7 +6,8 @@ const session = require("express-session");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const flash = require("connect-flash");
-const { db1, db2 } = require("./App/config/db"); // ✅ Import database connections
+const connectDB = require("./App/config/db");
+ // ✅ Import database connections
 
 require("dotenv").config();
 
@@ -15,6 +16,7 @@ app.use(flash());
 
 
  // Store instance in app for reuse
+ connectDB();
 
  app.use(session({
   secret: process.env.SESSION_SECRET || "your_secret_key",
@@ -57,6 +59,5 @@ app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
   console.log(`http://localhost:${PORT} `);
   console.log(`Database Connections:`);
-  console.log(`db-1: ${db1} (Connected ✅)`); // Print database name
-  console.log(`db-2: ${db2} (Connected ✅)`);
+ console.log(`MongoDB: ${process.env.MONGO_URI}`);
 });

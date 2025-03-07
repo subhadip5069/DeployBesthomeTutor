@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { db1 } = require("../config/db");
+
 
 const purchasePlanSchema = new mongoose.Schema(
   {
@@ -24,5 +24,5 @@ const purchasePlanSchema = new mongoose.Schema(
   { timestamps: true } // Automatically adds createdAt & updatedAt fields
 );
 
-const PurchasePlan = db1.model("PurchasePlan", purchasePlanSchema);
+const PurchasePlan = mongoose.model("PurchasePlan", purchasePlanSchema);
 module.exports = PurchasePlan;

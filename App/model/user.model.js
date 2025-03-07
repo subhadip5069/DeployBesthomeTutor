@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { db1 } = require("../config/db"); // Import db1 connection
+ // Import db1 connection
 
 const userSchema = new mongoose.Schema(
   {
@@ -38,5 +38,5 @@ userSchema.pre("save", function (next) {
 });
 
 
-const User = db1.model("User", userSchema);
+const User = mongoose.model("User", userSchema);
 module.exports = User;

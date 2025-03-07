@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { db1 } = require("../config/db");
+
 
 const razorpayPaymentSchema = new mongoose.Schema(
   {
@@ -20,5 +20,5 @@ const razorpayPaymentSchema = new mongoose.Schema(
   { timestamps: true } // Automatically adds createdAt & updatedAt fields
 );
 
-const RazorpayPayment = db1.model("RazorpayPayment", razorpayPaymentSchema);
+const RazorpayPayment = mongoose.model("RazorpayPayment", razorpayPaymentSchema);
 module.exports = RazorpayPayment;
