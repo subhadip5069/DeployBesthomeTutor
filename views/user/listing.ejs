@@ -6,7 +6,7 @@
             style="backdrop-filter: blur(10px); background-size: cover; background-position: center; background-attachment: fixed; background-repeat: no-repeat;">
         
             <!-- Filter Form -->
-            <form action="/listingof<%= roleToFetch %>?" method="GET" class="col-md-3  p-4 rounded shadow-sm">
+            <form action="/listingof<%= roleToFetch || 'tutor' %>?" method="GET" class="col-md-3  p-4 rounded shadow-sm">
                 <h5 class="text-center text-primary mb-3">Filter Tutors</h5>
         
                 <!-- Course -->

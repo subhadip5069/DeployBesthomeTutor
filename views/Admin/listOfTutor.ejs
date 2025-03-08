@@ -1,90 +1,98 @@
 <%- include('partial/header') %>
-<div style="height: 10vh;">
 
-</div>
-<div class="container d-flex justify-content-center align-items-center flex-column min-vh-100 ">
-    <div class="container p-4 rounded" style="background-color: rgba(0, 0, 0, 0.63); backdrop-filter: blur(15px);">
-        <h2 class="text-center mb-4 text-white">Tutor List</h2>
+<div style="height: 10vh; background-color: transparent;"></div>
 
-        <!-- Search Bar -->
-        <div class="mb-3 d-flex">
-            <input type="text" id="searchInput" class="form-control text-success" placeholder="Search by Name or Email...">
-            <button type="submit" id="searchButton" class="btn btn-primary ms-2">Search</button>
+<div class="container-fluid px-6 text-center" style="background-position: center; background-size: cover; background-color: rgba(0, 0, 0, 0); backdrop-filter: blur(15px); color: white; height: 100%;">
+    <section class="container row d-flex justify-content-center align-items-center flex-column py-1 min-vh-100">
+        <h2 class="mb-4">Tutor List</h2>
+
+        <!-- Search Input -->
+        <div class="mb-3 w-50">
+            <input type="text" id="searchInput" class="form-control" placeholder="Search by Name or Email...">
         </div>
 
-        <!-- Scrollable Table -->
-        <div style="max-height: 400px; overflow-y: auto; background-color: rgba(255, 255, 255, 0.1); border-radius: 10px;">
-            <table class="table table-bordered table-hover text-center">
-                <thead class="table-dark" style="position: sticky; top: 0; background-color: rgba(0, 0, 0, 0.8); color: white;">
-                    <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Role</th>
-                        <th>Phone</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody id="userTableBody">
-                    <% users.forEach(user => { %>
-                        <% if (user.role === 'tutor'){ %>
-                        <tr>
-                            <td><%= user.randomId %></td>
-                            <td class="user-name"><%= user.name %></td>
-                            <td class="user-email"><%= user.email %></td>
-                            <td><%= user.role %></td>
-                            <td><%= user.phone %></td>
-                            <td><%= user.status %></td>
-                        </tr>
-                        <% } %>
-                    <% }) %>
-                </tbody>
-            </table>
+        <!-- Tutor Cards -->
+        <div id="tutorCards" class="container row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            <% users.forEach(user => { %>
+                <div class="col tutor-card">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title"><%= user.name %> 
+                                <span class="badge <%= user.status === 'active' ? 'bg-success' : 'bg-danger' %>"><%= user.status %></span>
+                            </h5>
+                            <p class="card-text"><strong>ID:</strong> <%= user.randomId %></p>
+                            <p class="card-text"><strong>Role:</strong> <%= user.role %></p>
+                            <button class="btn btn-primary btn-sm" data-bs-toggle="collapse" data-bs-target="#details-<%= user._id %>">
+                                View Details
+                            </button>
+                        </div>
+                        <div id="details-<%= user._id %>" class="collapse card-footer">
+                            <p><strong>User ID:</strong> <%= user.randomId %></p>
+                            <p><strong>Email:</strong> <%= user.email %></p>
+                            <p><strong>Phone:</strong> <%= user.phone %></p>
+                           
+                        </div>
+                    </div>
+                </div>
+            <% }) %>
         </div>
-    </div>
-    <div style="height: 50px; background-color: transparent;">
 
-    </div>
-</div>
+        <!-- Pagination -->
+        <nav class="mt-4">
+            <ul class="pagination">
+                <li class="page-item"><a class="page-link" href="#" id="prevPage">Previous</a></li>
+                <li class="page-item"><a class="page-link" href="#" id="nextPage">Next</a></li>
+            </ul>
+        </nav>
+
+        <div style="height: 50px; background-color: transparent;"></div>
+    </section>
 </div>
 
 <script>
-    $(document).ready(function() {
-        // Status Toggle Switch
-        $(".status-switch").on("change", function() {
-            let userId = $(this).data("userid");
-            let newStatus = $(this).prop("checked") ? "active" : "inactive";
+    let currentPage = 1;
+    const rowsPerPage = 9; // Show 9 tutors per page
 
-            $.ajax({
-                url: "/update-status",
-                method: "POST",
-                contentType: "application/json",
-                data: JSON.stringify({ userId, newStatus }),
-                success: function(response) {
-                    alert("User status updated successfully!");
-                },
-                error: function(err) {
-                    alert("Error updating status");
-                    console.log(err);
-                }
-            });
+    function showPage(page) {
+        const cards = document.querySelectorAll(".tutor-card");
+        const totalPages = Math.ceil(cards.length / rowsPerPage);
+
+        if (page < 1) page = 1;
+        if (page > totalPages) page = totalPages;
+
+        cards.forEach((card, index) => {
+            card.style.display = (index >= (page - 1) * rowsPerPage && index < page * rowsPerPage) ? "block" : "none";
         });
 
-        // Search Filter
-        $("#searchInput").on("keyup", function() {
-            let value = $(this).val().toLowerCase();
-            $("#userTableBody tr").filter(function() {
-                $(this).toggle(
-                    $(this).find(".user-name").text().toLowerCase().includes(value) ||
-                    $(this).find(".user-email").text().toLowerCase().includes(value)
-                );
-            });
+        document.getElementById("prevPage").parentElement.classList.toggle("disabled", page === 1);
+        document.getElementById("nextPage").parentElement.classList.toggle("disabled", page === totalPages);
+    }
+
+    document.getElementById("prevPage").addEventListener("click", (e) => {
+        e.preventDefault();
+        if (currentPage > 1) {
+            currentPage--;
+            showPage(currentPage);
+        }
+    });
+
+    document.getElementById("nextPage").addEventListener("click", (e) => {
+        e.preventDefault();
+        if (currentPage * rowsPerPage < document.querySelectorAll(".tutor-card").length) {
+            currentPage++;
+            showPage(currentPage);
+        }
+    });
+
+    document.getElementById("searchInput").addEventListener("keyup", function () {
+        const searchTerm = this.value.toLowerCase();
+        document.querySelectorAll(".tutor-card").forEach(card => {
+            const text = card.textContent.toLowerCase();
+            card.style.display = text.includes(searchTerm) ? "block" : "none";
         });
     });
-</script>
-</div>
-   
-<%- include('partial/footer') %>
-     
 
-   
+    document.addEventListener("DOMContentLoaded", () => showPage(currentPage));
+</script>
+
+<%- include('partial/footer') %>

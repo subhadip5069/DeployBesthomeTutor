@@ -109,16 +109,16 @@ class AdminPagesController {
     
     listofStudents=async(req,res)=>{
             const userId = req.user;
-        const users = await userModel.find({role:'student'});
+        const users = await userModel.find({role:'student'}).lean();
        
         res.render('Admin/listOfStudents' ,{users,userId})
        
     }
     listOfTutor=async(req,res)=>{
             const userId = req.user;
-        const users = await userModel.find({role:'tutor'});
+        const users = await userModel.find({role:'tutor'}).lean();
        
-        res.render('Admin/listOfTutor' ,{users,userId})
+        res.render('Admin/listOfTutor' ,{users ,userId})
        
     }
 
