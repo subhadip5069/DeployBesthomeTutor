@@ -1,5 +1,8 @@
 <%- include('layout/navbar') %>
 <%- include('layout/header') %>
+<div style="height: 20vh;">
+
+</div>
 
 <style>
   .payment-order-container {
@@ -129,6 +132,9 @@
     ( All Credit/Debit Cards, Net Banking, UPI, PayTM, Google Pay, PhonePe and more payment options available. )
   </div>
 </div>
+<div style="height: 20vh;">
+
+</div>
 
 <!-- Include Razorpay Checkout Script -->
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
@@ -168,7 +174,7 @@
       key: key, // Your Razorpay key ID
       amount: amount * 100, // Ensure the amount is in paise if necessary
       currency: "INR",
-      name: "Your Company",
+      name: "BEST HOME Tutors",
       description: "Purchase Plan",
       order_id: orderId,
       handler: async function (response) {

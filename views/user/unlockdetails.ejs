@@ -1,7 +1,9 @@
 <%-  include('layout/navbar') %>
 <%-  include('layout/header') %>
 
-            
+<div style="height: 20vh;">
+
+</div>
 
 <!-- main section -->
 <style>
@@ -167,7 +169,7 @@
                     <p>Location: <%= requirement.city || 'Online' %>,| <%= requirement.state || 'Online' %></p>
                 </div>
                 <div class="profilepicture">
-                    <img src="<%= requirement.userId.profilePicture || '/user/profile.png' %>" alt="profile">
+                    <img src="<%= requirement.userId.profilePicture || '/user/images/profile.png' %>" alt="profile">
                 </div>
             </div>
     
@@ -225,7 +227,7 @@
                     <p>Location: <%= requirement.city || 'Online' %>,| <%= requirement.state || 'Online' %></p>
                 </div>
                 <div class="profilepicture">
-                    <img src="<%= requirement.userId.profilePicture || '/user/profile.png' %>" alt="profile">
+                    <img src="<%= requirement.userId.profilePicture || '/user/images/profile.png' %>" alt="profile">
                 </div>
             </div>
     
@@ -273,7 +275,9 @@
         </div>
     <% } %>
     
-    
+    <div style="height: 20vh;">
+
+    </div>
    
         
 

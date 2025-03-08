@@ -259,7 +259,7 @@ strong {
 .breadcrumb-item+.breadcrumb-item::before,
 .breadcrumb-item a:hover,
 .breadcrumb-item.active {
-  color: var(--white-color);
+  color: rgb(255, 238, 140);
 }
 
 .site-header .custom-icon {

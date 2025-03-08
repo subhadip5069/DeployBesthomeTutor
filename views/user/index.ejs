@@ -127,8 +127,10 @@ https://templatemo.com/tm-590-topic-listing
         <nav class="navbar navbar-expand-lg">
             <div class="container">
                 <a class="navbar-brand" href="/">
-                    <i class="bi-back"></i>
-                    <span>Tutor</span>
+                    
+                        <img src="/user/images/logo.jpg" style="height:40px; border-radius:20px" alt="logo">
+                   
+
                 </a>
         
                 <!-- Mobile Profile Icon -->
@@ -182,7 +184,8 @@ https://templatemo.com/tm-590-topic-listing
                                 <% } else { %>
                                     <li class="dropdown-item d-lg-none">
                                         <a class="btn" style="color: rgb(0, 0, 0); background-color: #ffc107;" href="/login">Login</a>
-                                        <br>
+                                    </li>
+                                    <li class="dropdown-item d-lg-none">
                                         <a class="btn" style="color: rgb(0, 0, 0); background-color: #55ff07;" href="/register">Register</a>
                                     </li>
                                 <% } %>
@@ -195,12 +198,18 @@ https://templatemo.com/tm-590-topic-listing
                         <% if (userId && userId !== "null" && userId !== "undefined") { %>
                             <li class="nav-item d-none d-lg-block">
                                 <a href="/myprofile" class="navbar-icon bi-person smoothscroll"></a>
+                            </li>
+                            <li class="nav-item d-none d-lg-block">
                                 <a class="btn btn-danger ms-2" href="/auth/logout">Logout</a>
                             </li>
                         <% } else { %>
                             <li class="nav-item d-none d-lg-block">
                                 <a href="/login" class="navbar-icon bi-person smoothscroll"></a>
+                            </li>
+                            <li class="nav-item d-none d-lg-block">
                                 <a class="btn ms-2" style="color: rgb(0, 0, 0); background-color: #ffc107;" href="/login">Login</a>
+                            </li>
+                            <li class="nav-item d-none d-lg-block">
                                 <a class="btn ms-2" style="color: rgb(0, 0, 0); background-color: #55ff07;" href="/register">Register</a>
                             </li>
                         <% } %>
@@ -208,7 +217,6 @@ https://templatemo.com/tm-590-topic-listing
                 </div>
             </div>
         </nav>
-       
             
 
         <section class="hero-section d-flex justify-content-center align-items-center text-center" id="section_1">
@@ -366,7 +374,7 @@ https://templatemo.com/tm-590-topic-listing
                                 <div class="card-body text-center">
                                     <h3 class="card-title mb-4">Students Looking for Tutors</h3>
                                     <p class="card-text"style="font-size:14px">Are you a student in need of a tutor? Find the best tutors to guide you through your learning journey.</p>
-                                    <a href=".//listing" class="btn btn-primary mt-3">Find a Tutor</a>
+                                    <a href="/listingoftutor" class="btn btn-primary mt-3">Find a Tutor</a>
                                 </div>
                             </div>
                         </div>
@@ -378,7 +386,7 @@ https://templatemo.com/tm-590-topic-listing
                                 <div class="card-body text-center">
                                     <h3 class="card-title mb-4">Tutors Looking for Students</h3>
                                     <p class="card-text"style="font-size:14px">Are you a tutor looking for students to teach? Join our platform and start helping students today.</p>
-                                    <a href=".//listing" class="btn btn-primary mt-3">Find Students</a>
+                                    <a href="/listingofstudent" class="btn btn-primary mt-3">Find Students</a>
                                 </div>
                             </div>
                         </div>
@@ -1028,7 +1036,11 @@ https://templatemo.com/tm-590-topic-listing
                                 <p style="color: white;">
                                     Please click the button below to post your requirements and get a free demo class from the best home tutors near you.
                                 </p>
-                                <a href=".//listing" class="btn btn-primary">Post Your Requirements</a>
+                                <% if (userId && userId !== "null" && userId !== "undefined") { %>
+                                <a href="/myprofile" class="btn btn-primary">Post Your Requirements</a>
+                                <% } else { %>
+                                <a href="/register" class="btn btn-primary">Post Your Requirements</a>
+                                <% } %>
                             </div>
                         
                             <!-- Section for Tutors/Teachers -->
@@ -1037,7 +1049,11 @@ https://templatemo.com/tm-590-topic-listing
                                 <p style="color: white;">
                                     Looking for students who need home tuition? Click the button below to register as a home tutor for free.
                                 </p>
-                                <a href=".//listing" class="btn btn-success">Register as a Home Tutor</a>
+                                <% if (userId && userId !== "null" && userId !== "undefined") { %>
+                                <a href="/myprofile" class="btn btn-success">Register as a Home Tutor</a>
+                                <% } else { %>
+                                <a href="/register" class="btn btn-success">Register as a Home Tutor</a>
+                                <% } %>
                             </div>
                         </div>
                         

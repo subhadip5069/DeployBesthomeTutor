@@ -8,7 +8,7 @@
         <meta name="author" content="">
 
         <title><%= title %></title>
-
+        <link rel="icon" type="images/x-icon" href="/user/images/favicon.ico">
         <!-- CSS FILES -->        
         <link rel="preconnect" href="https://fonts.googleapis.com">
         
@@ -32,96 +32,139 @@ TemplateMo 590 topic listing
     
     <body class="topics-listing-page" id="top">
 
-        <main>
+       
 
            
-            <nav class="navbar navbar-expand-lg">
-                <div class="container">
-                    <a class="navbar-brand" href="/">
-                        <i class="bi-back"></i>
-                        <span>Tutor</span>
-                    </a>
-            
-                    <!-- Mobile Profile Icon -->
-                    <div class="d-lg-none ms-auto me-4">
-                        <% if (userId && userId !== "null" && userId !== "undefined") { %>
-                            <a href="/myprofile" class="navbar-icon bi-person smoothscroll"></a>
-                        <% } else { %>
-                            <a href="/login" class="navbar-icon bi-person smoothscroll"></a>
-                        <% } %>
-                    </div>
-            
-                    <!-- Navbar Toggler -->
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-            
-                    <!-- Navbar Links -->
-                    <div class="collapse navbar-collapse" id="navbarNav">
-                        <ul class="navbar-nav ms-lg-5 me-lg-auto">
-                            <li class="nav-item">
-                                <a class="nav-link click-scroll" href="/#section_1">Home</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link click-scroll" href="/#section_2">How it works</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link click-scroll" href="/#section_3">Review</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link click-scroll" href="/#section_4">FAQs</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="/listingoftutor">I NEED A TUTOR</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="/listingofstudent">ONLINE TUITION</a>
-                            </li>
-            
-                            <!-- Dropdown Menu -->
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" id="navbarLightDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">More</a>
-                                <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="navbarLightDropdownMenuLink">
-                                    <li><a class="dropdown-item" href="/register">Signup</a></li>
-                                    <li><a class="dropdown-item" href="/terms&condition">Terms & <br> Conditions</a></li>
-                                    <li><a class="dropdown-item" href="/privacypolicy">Privacy Policy</a></li>
-            
-                                    <% if (userId && userId !== "null" && userId !== "undefined") { %>
-                                        <li class="dropdown-item d-lg-none">
-                                            <a class="btn btn-danger" href="/auth/logout">Logout</a>
-                                        </li>
-                                    <% } else { %>
-                                        <li class="dropdown-item d-lg-none">
-                                            <a class="btn" style="color: rgb(0, 0, 0); background-color: #ffc107;" href="/login">Login</a>
-                                            <br>
-                                            <a class="btn" style="color: rgb(0, 0, 0); background-color: #55ff07;" href="/register">Register</a>
-                                        </li>
-                                    <% } %>
-                                </ul>
-                            </li>
-                        </ul>
-            
-                        <!-- Desktop View: Profile and Auth Buttons -->
-                        <ul class="navbar-nav">
-                            <% if (userId && userId !== "null" && userId !== "undefined") { %>
-                                <li class="nav-item d-none d-lg-block">
-                                    <a href="/myprofile" class="navbar-icon bi-person smoothscroll"></a>
-                                    <a class="btn btn-danger ms-2" href="/auth/logout">Logout</a>
-                                </li>
-                            <% } else { %>
-                                <li class="nav-item d-none d-lg-block">
-                                    <a href="/login" class="navbar-icon bi-person smoothscroll"></a>
-                                    <a class="btn ms-2" style="color: rgb(0, 0, 0); background-color: #ffc107;" href="/login">Login</a>
-                                    <a class="btn ms-2" style="color: rgb(0, 0, 0); background-color: #55ff07;" href="/register">Register</a>
-                                </li>
-                            <% } %>
-                        </ul>
-                    </div>
-                </div>
-            </nav>
+        <nav class="navbar navbar-expand-lg">
+            <div class="container">
+                <a class="navbar-brand" href="/">
+                    
+                        <img src="/user/images/logo.jpg" style="height:40px; border-radius:20px" alt="logo">
+                   
 
-            <section class="container-fluid d-flex align-items-center justify-content-center " style="height: 115vh;backdrop-filter: blur(10px); background-image: url('/user/loginbackgorunds.jpg'); background-size: cover; background-position: center; background-attachment: fixed; background-repeat: no-repeat;">
-                <div class="row d-flex align-items-center justify-content-center" style="height: 100vh;background-color: rgba(0, 0, 0, 0); padding-top:-100px;">
+                </a>
+        
+                <!-- Mobile Profile Icon -->
+                <div class="d-lg-none ms-auto me-4">
+                    <% if (userId && userId !== "null" && userId !== "undefined") { %>
+                        <a href="/myprofile" class="navbar-icon bi-person smoothscroll"></a>
+                    <% } else { %>
+                        <a href="/login" class="navbar-icon bi-person smoothscroll"></a>
+                    <% } %>
+                </div>
+        
+                <!-- Navbar Toggler -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+        
+                <!-- Navbar Links -->
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-lg-5 me-lg-auto">
+                        <li class="nav-item">
+                            <a class="nav-link click-scroll" href="/#section_1">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link click-scroll" href="/#section_2">How it works</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link click-scroll" href="/#section_3">Review</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link click-scroll" href="/#section_4">FAQs</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/listingoftutor">I NEED A TUTOR</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/listingofstudent">ONLINE TUITION</a>
+                        </li>
+        
+                        <!-- Dropdown Menu -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" id="navbarLightDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">More</a>
+                            <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="navbarLightDropdownMenuLink">
+                                <li><a class="dropdown-item" href="/register">Signup</a></li>
+                                <li><a class="dropdown-item" href="/terms&condition">Terms & <br> Conditions</a></li>
+                                <li><a class="dropdown-item" href="/privacypolicy">Privacy Policy</a></li>
+        
+                                <% if (userId && userId !== "null" && userId !== "undefined") { %>
+                                    <li class="dropdown-item d-lg-none">
+                                        <a class="btn btn-danger" href="/auth/logout">Logout</a>
+                                    </li>
+                                <% } else { %>
+                                    <li class="dropdown-item d-lg-none">
+                                        <a class="btn" style="color: rgb(0, 0, 0); background-color: #ffc107;" href="/login">Login</a>
+                                    </li>
+                                    <li class="dropdown-item d-lg-none">
+                                        <a class="btn" style="color: rgb(0, 0, 0); background-color: #55ff07;" href="/register">Register</a>
+                                    </li>
+                                <% } %>
+                            </ul>
+                        </li>
+                    </ul>
+        
+                    <!-- Desktop View: Profile and Auth Buttons -->
+                    <ul class="navbar-nav">
+                        <% if (userId && userId !== "null" && userId !== "undefined") { %>
+                            <li class="nav-item d-none d-lg-block">
+                                <a href="/myprofile" class="navbar-icon bi-person smoothscroll"></a>
+                            </li>
+                            <li class="nav-item d-none d-lg-block">
+                                <a class="btn btn-danger ms-2" href="/auth/logout">Logout</a>
+                            </li>
+                        <% } else { %>
+                            <li class="nav-item d-none d-lg-block">
+                                <a href="/login" class="navbar-icon bi-person smoothscroll"></a>
+                            </li>
+                            <li class="nav-item d-none d-lg-block">
+                                <a class="btn ms-2" style="color: rgb(0, 0, 0); background-color: #ffc107;" href="/login">Login</a>
+                            </li>
+                            <li class="nav-item d-none d-lg-block">
+                                <a class="btn ms-2" style="color: rgb(0, 0, 0); background-color: #55ff07;" href="/register">Register</a>
+                            </li>
+                        <% } %>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+            <% if (messages.error) { %>
+                <div class="alert alert-danger">
+                  <% messages.error.forEach(function(msg) { %>
+                    <p><%= msg %></p>
+                  <% }) %>
+                </div>
+              <% } %>
+              
+              <% if (messages.success) { %>
+                <div class="alert alert-success">
+                  <% messages.success.forEach(function(msg) { %>
+                    <p><%= msg %></p>
+                  <% }) %>
+                </div>
+              <% } %>
+              
+              <% if (messages.info) { %>
+                <div class="alert alert-info">
+                  <% messages.info.forEach(function(msg) { %>
+                    <p><%= msg %></p>
+                  <% }) %>
+                </div>
+              <% } %>
+              
+              <% if (messages.warning) { %>
+                <div class="alert alert-warning">
+                  <% messages.warning.forEach(function(msg) { %>
+                    <p><%= msg %></p>
+                  <% }) %>
+                </div>
+              <% } %>
+         <main class="container-fluid" style="height: 100%;backdrop-filter: blur(10px); background-image: url('/user/loginbackgorunds.jpg'); background-size: cover; background-position: center; background-attachment: fixed; background-repeat: no-repeat;">
+            <div style="height: 20vh;">
+
+            </div>
+            <section class="container-fluid d-flex align-items-center justify-content-center " >
+                <div class="row container d-flex align-items-center justify-content-center" style="height: 100%;background-color: rgba(0, 0, 0, 0); padding-top:-100px;">
                     <!-- Registration Form -->
                     <div class="card p-0 w-100 mt-4 shadow-lg" style="max-width: 600px; border-radius: 10px;">
                         <!-- Full-Width Image -->
@@ -135,7 +178,7 @@ TemplateMo 590 topic listing
                             <!-- Flash Messages -->
                             
                         
-                            <form action="/auth/login" method="POST" class="mt-4">
+                            <form action="/auth/login" method="POST" class="mt-4 container">
                                 <div class="form-group mb-3">
                                     <label for="email">Email</label>
                                     <input type="email" class="form-control" name="email" id="email" placeholder="Enter your email" required>
@@ -157,15 +200,110 @@ TemplateMo 590 topic listing
                     
                 </div>
             </section>
+<div style="height: 20vh;">
+
+</div>
 
 
-
-            </main>
-        </div>
+        </main>
+        
             
             
             
 
-
-
-<%- include('layout/footer') %>
+        <footer class="site-footer section-padding">
+            <div class="container">
+                <div class="row">
+        
+                    <div class="col-lg-3 col-12 mb-4 pb-2">
+                        <a class="navbar-brand mb-2" href="/">
+                            <img src="/user/images/logo.jpg" style="height:40px; border-radius:20px" alt="logo">
+                        </a>
+                    </div>
+        
+                    <div class="col-lg-3 col-md-4 col-6">
+                        <h6 class="site-footer-title mb-3">Resources</h6>
+        
+                        <ul class="site-footer-links">
+                            <li class="site-footer-link-item">
+                                <a href="/" class="site-footer-link">Home</a>
+                            </li>
+        
+                            <li class="site-footer-link-item"><a  href="/terms&condition" class="site-footer-link">Terms and conditions</a></li>
+                            <li class="site-footer-link-item"><a  href="/privacypolicy" class="site-footer-link">Privacy Policy</a></li>
+                            <li class="site-footer-link-item"><a  href="/listingoftutor" class="site-footer-link">I Need A Tutor</a></li>
+                            <li class="site-footer-link-item"><a  href="/listingofstudent" class="site-footer-link">I Need A Tution</a></li>
+        
+        
+                            
+                        </ul>
+                    </div>
+        
+                    <div class="col-lg-3 col-md-4 col-6 mb-4 mb-lg-0">
+                        <h6 class="site-footer-title mb-3">Tutors of city</h6>
+        
+                        <p class="text-white d-flex mb-1">
+                            <a href="#" class="site-footer-link">
+                                Delhi
+                            </a>
+                        </p>
+        
+                        <p class="text-white d-flex mb-1">
+                            <a href="#" class="site-footer-link">
+                                Noida
+                            </a>
+                        </p>
+                        <p class="text-white d-flex mb-1">
+                            <a href="#" class="site-footer-link">
+                                Gurugram
+                            </a>
+                        </p>
+                        <p class="text-white d-flex mb-1">
+                            <a href="#" class="site-footer-link">
+                                Faridabad
+                            </a>
+                        </p>
+                    </div>
+        
+        
+                    <div class="col-lg-3 col-md-4 col-6 mb-4 mb-lg-0">
+                        <h6 class="site-footer-title mb-3">Information</h6>
+        
+                        <p class="text-white d-flex mb-1">
+                            <a href="tel: 305-240-9671" class="site-footer-link">
+                                305-240-9671
+                            </a>
+                        </p>
+        
+                        <p class="text-white d-flex">
+                            <a href="mailto:info@company.com" class="site-footer-link">
+                                info@company.com
+                            </a>
+                        </p>
+                    </div>
+        
+                    
+        
+                </div>
+            </div>
+            
+        </footer>
+        <div class="text-center p-3" style="background-color: #437eff">
+            © 2025 Copyright:
+            <a class="text-white" href="https://mdbootstrap.com/"
+              >DigitalStart</a
+            >
+          </div>
+            
+          <!-- End of .container -->
+        
+        
+          <!-- JAVASCRIPT FILES -->
+          <script src="/user/js/jquery.min.js"></script>
+          <script src="/user/js/bootstrap.bundle.min.js"></script>
+          <script src="/user/js/jquery.sticky.js"></script>
+          <script src="/user/js/click-scroll.js"></script>
+          <script src="/user/js/custom.js"></script>
+        
+         </body>
+        </html>

@@ -88,7 +88,7 @@ createOrder = async (req, res) => {
 
   } catch (error) {
     console.error("Error in createOrder:", error);
-    res.status(500).json({ error: "Payment order creation failed" });
+    res.redirect('/myprofile');
   }
 };
 

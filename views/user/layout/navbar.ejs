@@ -8,7 +8,7 @@
         <meta name="author" content="">
 
         <title><%= title %></title>
-
+        <link rel="icon" type="images/x-icon" href="/user/images/favicon.ico">
         <!-- CSS FILES -->        
         <link rel="preconnect" href="https://fonts.googleapis.com">
         
@@ -37,9 +37,8 @@ TemplateMo 590 topic listing
            
             <nav class="navbar navbar-expand-lg">
                 <div class="container">
-                    <a class="navbar-brand" href="/">
-                        <i class="bi-back"></i>
-                        <span>Tutor</span>
+                    <a class="navbar-brand" style="boder:none" href="/">
+                        <img src="/user/images/logo.jpg" style="height:40px; border-radius:20px" alt="logo">
                     </a>
             
                     <!-- Mobile Profile Icon -->
@@ -93,6 +92,8 @@ TemplateMo 590 topic listing
                                     <% } else { %>
                                         <li class="dropdown-item d-lg-none">
                                             <a class="btn" style="color: rgb(0, 0, 0); background-color: #ffc107;" href="/login">Login</a>
+                                        </li>
+                                        <li class="dropdown-item d-lg-none">
                                             <a class="btn" style="color: rgb(0, 0, 0); background-color: #55ff07;" href="/register">Register</a>
                                         </li>
                                     <% } %>
@@ -105,13 +106,18 @@ TemplateMo 590 topic listing
                             <% if (userId && userId !== "null" && userId !== "undefined") { %>
                                 <li class="nav-item d-none d-lg-block">
                                     <a href="/myprofile" class="navbar-icon bi-person smoothscroll"></a>
+                                </li>
+                                <li class="nav-item d-none d-lg-block">
                                     <a class="btn btn-danger ms-2" href="/auth/logout">Logout</a>
                                 </li>
                             <% } else { %>
                                 <li class="nav-item d-none d-lg-block">
                                     <a href="/login" class="navbar-icon bi-person smoothscroll"></a>
+                                </li>
+                                <li class="nav-item d-none d-lg-block">
                                     <a class="btn ms-2" style="color: rgb(0, 0, 0); background-color: #ffc107;" href="/login">Login</a>
-                                    <br>
+                                </li>
+                                <li class="nav-item d-none d-lg-block">
                                     <a class="btn ms-2" style="color: rgb(0, 0, 0); background-color: #55ff07;" href="/register">Register</a>
                                 </li>
                             <% } %>

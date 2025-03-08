@@ -2,7 +2,9 @@
 <%-  include('layout/header') %>
 
             
+<div style="height: 20vh;">
 
+</div>
 <!-- main section -->
 <style>
      .tutor-container {
@@ -167,7 +169,7 @@
                     <p>Location: <%= requirement.city || 'Online' %>,| <%= requirement.state || 'Online' %></p>
                 </div>
                 <div class="profilepicture">
-                    <img src="<%= requirement.userId.profilePicture || '/user/profile.png' %>" alt="profile">
+                    <img src="<%= requirement.userId.profilePicture || '/user/images/profile.png' %>" alt="profile">
                 </div>
             </div>
     
@@ -177,7 +179,16 @@
                     <p><strong>Qualification:</strong> <%= requirement.qualification || 'Not Specified' %></p>
                     <p><strong>Preferred Time:</strong> <%= requirement.preferredTime || 'Anytime' %></p>
                     <p><strong>City:</strong> <%= requirement.city || 'Online' %></p>
-                    <p><strong>Active:</strong> <span class="status-indicator <%= requirement.active ? 'active' : 'inactive' %>"></span></p>
+                    <p>
+                        <strong>Active:</strong>
+                        <% if (requirement.status) { %>
+                          <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-left: 5px; background-color: green;"></span>
+                        <% } else { %>
+                          <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-left: 5px; background-color: red;"></span>
+                        <% } %>
+                      </p>
+                      
+                      
                 </div>
     
                 <form id="unlockContactForm" action="/unlockuser" method="POST">
@@ -227,7 +238,7 @@
                     <p>Location: <%= requirement.city || 'Online' %>,| <%= requirement.state || 'Online' %></p>
                 </div>
                 <div class="profilepicture">
-                    <img src="<%= requirement.userId.profilePicture || '/user/profile.png' %>" alt="profile">
+                    <img src="<%= requirement.userId.profilePicture || '/user/images/profile.png' %>" alt="profile">
                 </div>
             </div>
     
@@ -238,7 +249,15 @@
                     <p><strong>Qualification:</strong> <%= requirement.qualification || 'Not Specified' %></p>
                     <p><strong>Preferred Time:</strong> <%= requirement.preferredTime || 'Anytime' %></p>
                     <p><strong>City:</strong> <%= requirement.city || 'Online' %></p>
-                    <p><strong>Active:</strong> <span class="status-indicator <%= requirement.active ? 'active' : 'inactive' %>"></span></p>
+                    <p>
+                        <strong>Active:</strong>
+                        <% if (requirement.status === 'active') { %>
+                          <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-left: 5px; background-color: green;"></span>
+                        <% } else { %>
+                          <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-left: 5px; background-color: red;"></span>
+                        <% } %>
+                      </p>
+                      
                 </div>
     
                 <form id="unlockContactForm" action="/unlockuser" method="POST">
@@ -281,6 +300,8 @@
     
     
    
-        
+    <div style="height: 20vh;">
+
+    </div>
 
 <%-  include('layout/footer') %>

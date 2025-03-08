@@ -64,7 +64,7 @@ const unlockRequirement = async (req, res) => {
 
     // Render the unlock details page
     res.render("user/unlockdetails", {
-      title: "Unlock Details",
+      title: "/ Unlock Details",
       requirement,
       userId: req.user,
     });

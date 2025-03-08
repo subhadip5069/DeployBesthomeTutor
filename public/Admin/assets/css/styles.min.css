@@ -16530,7 +16530,7 @@ textarea.form-control-lg {
 .left-sidebar .scroll-sidebar {
   overflow-y: auto;
   padding: 0 16px;
-  height: calc(100vh - 70px);
+  height: 100%;
   border-radius: 0.25rem;
 }
 .left-sidebar .scroll-sidebar .simplebar-track.simplebar-horizontal {

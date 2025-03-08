@@ -74,7 +74,7 @@ class TuitionController {
             // Find user email based on userId
             const user = await User.findById(userId);
             if (!user) {
-                return res.status(404).json({ message: "User not found!" });
+                res.redirect('/login');
             }
     
             const newRequirement = new Registration({
@@ -139,7 +139,7 @@ class TuitionController {
           
           const user = await User.findById(userId);
           if (!user) {
-              return res.status(404).json({ message: "User not found!" });
+            return res.redirect("/login");
           }
           const attachedFiles = req.files.map((file) => ({
             fileType: req.body.fileType || "Other",
@@ -174,7 +174,7 @@ class TuitionController {
           res.redirect("/listingofstudent"); // Redirect after success
         } catch (error) {
           console.error(error);
-          res.status(500).send("Server Error");
+          res.redirect("/login");
         }
       };
     
@@ -222,7 +222,7 @@ async updateTuitionRequirement(req, res) {
         );
         console.log(updatedRequirement);
         if (!updatedRequirement) {
-            return res.status(404).json({ message: "Requirement not found!" });
+            res.redirect("/myprofile");
         }
 
         res.redirect("/listingoftutor"); // Redirect after success
@@ -261,13 +261,13 @@ updateRegistration=async(req, res)=> {
         // Find the existing registration
         const existingRegistration = await Registration.findById(req.params.id);
         if (!existingRegistration) {
-            return res.status(404).json({ message: "Registration not found!" });
+            res.redirect("/myprofile");
         }
 
         // Find the user associated with the registration
         const user = await User.findById(existingRegistration.userId);
         if (!user) {
-            return res.status(404).json({ message: "User not found!" });
+           res.redirect("/login");
         }
 
         // Check if a new profile image is uploaded
@@ -308,7 +308,7 @@ updateRegistration=async(req, res)=> {
         );
 
         if (!updatedRegistration) {
-            return res.status(404).json({ message: "Registration update failed!" });
+            res.redirect("/myprofile");
         }
 
         res.redirect("/listingofstudent"); // Redirect after success
@@ -325,7 +325,7 @@ updateRegistration=async(req, res)=> {
     async getAllTuitionRequirements(req, res) {
         try {
             const requirements = await Registration.find({ sorted: "No" }).populate("userId", "name email");
-            return res.status(200).json(requirements);
+                
         } catch (error) {
             return res.status(500).json({ message: "Error fetching tuition requirements", error });
         }

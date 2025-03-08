@@ -2,7 +2,7 @@
 <div style="height: 10vh;">
 
 </div>
-<section class="container d-flex justify-content-center align-items-center flex-column min-vh-100">
+<section class="container d-flex justify-content-center align-items-center flex-column min-vh-100" style=" background-image: url('/Admin/background1.jpg'); background-position: center; background-size: cover;">
     <div class="row justify-content-center w-100">
         <form id="searchForm" action="/admin/alltutorrequirment?query" method="GET" class="text-center mb-4">
             <input type="text" name="query" id="searchQuery" placeholder="Search..." style="padding: 8px; width: 50%; border: 1px solid #ccc; border-radius: 5px;">
@@ -135,16 +135,12 @@
             </ul>
         </nav>
     <% } %>
+
+    <div style="height: 50px; background-color: transparent;">
+
+    </div>
 </section>
 
-<!-- Footer -->
-<div class="py-6 px-6 text-center" style="background-color: rgba(0, 0, 0, 0.884); backdrop-filter: blur(15px); color: white;">
-    <p class="mb-0 fs-4">
-        Design and Developed by 
-        <a href="https://adminmart.com/" target="_blank" class="pe-1 text-primary text-decoration-underline">AdminMart.com</a> 
-        Distributed by 
-        <a href="https://themewagon.com/" target="_blank" class="pe-1 text-primary text-decoration-underline">ThemeWagon</a>
-    </p>
-</div>
+
 
 <%- include('partial/footer') %>

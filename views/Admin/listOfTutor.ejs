@@ -2,7 +2,7 @@
 <div style="height: 10vh;">
 
 </div>
-<div class="container d-flex justify-content-center align-items-center flex-column min-vh-100">
+<div class="container d-flex justify-content-center align-items-center flex-column min-vh-100 " style=" background-image: url('/Admin/background1.jpg'); background-position: center; background-size: cover;">
     <div class="container p-4 rounded" style="background-color: rgba(0, 0, 0, 0.63); backdrop-filter: blur(15px);">
         <h2 class="text-center mb-4 text-white">Tutor List</h2>
 
@@ -21,6 +21,7 @@
                         <th>Name</th>
                         <th>Email</th>
                         <th>Role</th>
+                        <th>Phone</th>
                         <th>Status</th>
                     </tr>
                 </thead>
@@ -28,29 +29,21 @@
                     <% users.forEach(user => { %>
                         <% if (user.role === 'tutor'){ %>
                         <tr>
-                            <td><%= user._id %></td>
+                            <td><%= user.randomId %></td>
                             <td class="user-name"><%= user.name %></td>
                             <td class="user-email"><%= user.email %></td>
                             <td><%= user.role %></td>
-                            <td>
-                                <div class="form-check form-switch">
-                                    <input 
-                                        class="form-check-input status-switch" 
-                                        type="checkbox" 
-                                        data-userid="<%= user._id %>" 
-                                        <%= user.status === 'active' ? 'checked' : '' %>
-                                    >
-                                    <label class="form-check-label">
-                                        <%= user.status.charAt(0).toUpperCase() + user.status.slice(1) %>
-                                    </label>
-                                </div>
-                            </td>
+                            <td><%= user.phone %></td>
+                            <td><%= user.status %></td>
                         </tr>
                         <% } %>
                     <% }) %>
                 </tbody>
             </table>
         </div>
+    </div>
+    <div style="height: 50px; background-color: transparent;">
+
     </div>
 </div>
 </div>
@@ -90,12 +83,7 @@
     });
 </script>
 </div>
-    <div class="py-6 px-6 text-center " style="background-color: rgba(0, 0, 0, 0.884); backdrop-filter: blur(15px); color: white;">
-        <p class="mb-0 fs-4">Design and Developed by <a href="https://adminmart.com/" target="_blank"
-            class="pe-1 text-primary text-decoration-underline">AdminMart.com</a>Distributed by <a href="https://themewagon.com/" target="_blank"
-            class="pe-1 text-primary text-decoration-underline">ThemeWagon</a></p>
-    </div>
-
+   
 <%- include('partial/footer') %>
      
 

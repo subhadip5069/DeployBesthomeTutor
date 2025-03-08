@@ -137,7 +137,7 @@ class FilterationController {
 
         } catch (error) {
             console.error("Error fetching registrations:", error);
-            res.status(500).send("Server Error");
+            res.status(500).render("user/error", { title: "Error", message: "Internal Server Error" });
         }
     };
 }

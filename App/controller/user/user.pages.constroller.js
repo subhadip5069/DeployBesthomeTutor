@@ -10,7 +10,7 @@ class userPagesController {
         try {
             const userId = req.user;
         res.render("user/index",{
-            title:"Home",
+            title:"/ Home",
             user: userId,
             userId,
             success_msg: req.flash("success_msg"),
@@ -26,7 +26,7 @@ class userPagesController {
     register(req, res) {
         const userId = null;
         res.render("user/register",{
-            title:"Register",
+            title:"/ Register",
             success_msg: req.flash("success_msg"),
             error_msg: req.flash("error_msg"),
             userId
@@ -34,7 +34,7 @@ class userPagesController {
     }
     login(req, res) {
         res.render("user/login", {
-            title: "Login",
+            title: "/ Login",
             success_msg: req.flash("success_msg"),
             error_msg: req.flash("error_msg"),
             messages :"hello",
@@ -52,7 +52,7 @@ class userPagesController {
 
        
         res.render("user/registration",{
-            title:"Registration",
+            title:"/ Registration",
             userId,
             user,
             success_msg: req.flash("success_msg"),
@@ -76,7 +76,7 @@ class userPagesController {
             console.log("registration:",registrationId, registration);
 
           res.render("user/updateregistration", {
-            title: "Edit Registration",
+            title: "/ Update Registration",
             userId,
             user,
             registration,
@@ -201,7 +201,7 @@ class userPagesController {
             }
     
             res.render("user/listingofstudent", {
-                title: "Listing Of Students",
+                title: "/ Students",
                 userId,
                 requirements,
                 requirement: requirements,
@@ -334,7 +334,7 @@ class userPagesController {
             }
     
             res.render("user/listoftutor", {
-                title: "Listing Of Tutors",
+                title: "/ Tutors",
                 userId,
                 requirement: registrations,
                 currentPage: page,
@@ -417,7 +417,7 @@ class userPagesController {
             console.log("Requirement Data:", requirement);
 
             res.render("user/listing", {
-                title: "Listing",
+                title: "/ Listing",
                 userId,
                 requirement,
                 users,
@@ -527,7 +527,7 @@ class userPagesController {
             registrations = registrations.filter(reg => reg.userId);
     
             res.render("user/listing", {
-                title: "Listing",
+                title: "/  Listing",
                 userId,
                 requirement: registrations,
                 role: req.user ? req.user.role : null, // Pass null if no user
@@ -558,7 +558,7 @@ class userPagesController {
             }
             const plans = await PurchasePlan.find().lean();
             res.render("user/primum",{
-                title:"Primum",
+                title:"/ Premium",
                 user:req.user,
                 userId,
                 plans,
@@ -609,7 +609,7 @@ class userPagesController {
             const totalPages = Math.ceil(totalOrders / limit); // Calculate total pages
     
             res.render("user/myprofile", {
-                title: "My Profile",
+                title: "/ My Profile",
                 user,
                 userId,
                 requirement,
@@ -647,7 +647,7 @@ class userPagesController {
 
 
         res.render("user/userdetails",{
-            title:"User Details",
+            title:" / User Details",
             user:req.user || null,
             userId,
             requirement,
@@ -660,7 +660,7 @@ class userPagesController {
     forgetpassword=async(req,res)=>{
         const userId = null
         res.render("user/forgotpassword",{
-            title:"Forget Password",    
+            title:"/ Forget Password",    
             message: null,
             userId ,
             success_msg: req.flash("success_msg"),
@@ -673,7 +673,7 @@ class userPagesController {
          const userId = req.user || null 
 
          res.render("user/termsandcondition",{
-            title:"Terms & Condition",    
+            title:"/ Terms & Condition",    
             message: null,
             userId ,
             success_msg: req.flash("success_msg"),
@@ -687,7 +687,7 @@ class userPagesController {
         const userId =req.user || null  || undefined;
 
         res.render("user/privacyPolicy",{
-            title:"privacypolicy",
+            title:"/ privacypolicy",
             message : null,
             userId,
             success_msg: req.flash("success_msg"),
@@ -700,7 +700,7 @@ class userPagesController {
         const userId =req.user ;
 
         res.render("user/paymentsuccess",{
-            title:"paymet successfully",
+            title:"/ paymet successfully",
             message : null,
             userId,
             success_msg: req.flash("success_msg"),

@@ -48,7 +48,7 @@ class AdminPagesController {
             });
         } catch (error) {
             console.error("Error loading dashboard:", error);
-            res.status(500).send("Internal Server Error");
+            res.redirect('/admin/');
         }
     };
     
@@ -100,7 +100,7 @@ class AdminPagesController {
             res.json({ success: true, data: formattedData });
         } catch (error) {
             console.error("Error fetching payment stats:", error);
-            res.status(500).json({ success: false, message: "Internal Server Error" });
+            res.status(500).json({ success: false, error: "Internal Server Error" });
         }
     };
     
