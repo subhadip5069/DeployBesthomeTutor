@@ -292,6 +292,7 @@ class userPagesController {
                     { state: regex },
                     { city: regex },
                     { locality: regex },
+                    {pincode: regex},
                     { subject: regex },
                     { class: regex },
                     { board: regex },
@@ -552,7 +553,7 @@ class userPagesController {
     // primum
     primum=async(req,res)=>{
         try {
-            const userId = req.user;
+            const userId = req.user || null;
             if(userId == null  || userId == undefined ){
                 res.redirect("/login")
             }

@@ -252,7 +252,7 @@ class AdminPagesController {
             const userId = req.user;
             let page = parseInt(req.query.page) || 1;
             let limit = 10;
-            if (page < 1) page = 1; // Ensures valid page number
+            if (page < 1) page = 1; // Ensure valid page number
             let searchQuery = req.query.query ? req.query.query.trim() : "";
     
             let skip = (page - 1) * limit;
@@ -263,40 +263,26 @@ class AdminPagesController {
                 attachedFiles: { $exists: true, $not: { $size: 0 } }
             };
     
-            // Count total active registrations
-            const totalRegistrations = await Registration.countDocuments(filter);
-            const totalPages = Math.ceil(totalRegistrations / limit);
-    
-            // Redirect to last valid page if page exceeds range
-            if (page > totalPages && totalPages !== 0) {
-                return res.redirect(`?page=${totalPages}`);
-            }
-    
-            console.log("Search Query:", searchQuery);
-    
-            // Fetch registrations with populated user details
+            // Fetch registrations including only tutor users
             let registrations = await Registration.find(filter)
                 .populate({
                     path: "userId",
                     match: { role: "tutor" }, // Ensures only tutors are fetched
                     select: "name email randomId role phone"
                 })
-                .select("userId tuitionLocation preferredTime preferredTutor feeType feeAmount state city pincode locality subject class sorted attachedFiles board qualification experience age createdAt updatedAt")
-                .skip(skip)
-                .limit(limit)
                 .lean(); // Improves performance
     
             // Remove null values (users who are not tutors)
             let filteredRegistrations = registrations.filter(reg => reg.userId);
     
-            // Apply search filtering **after** population
+            // Apply search filtering
             if (searchQuery) {
                 filteredRegistrations = filteredRegistrations.filter(reg =>
                     String(reg.userId?.email || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
                     String(reg.userId?.name || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    String(reg.userId?.phone || "").includes(searchQuery) || // ✅ Fix: Convert phone to string
+                    String(reg.userId?.phone || "").includes(searchQuery) ||
                     String(reg.userId?.randomId || "").includes(searchQuery) ||
-                    String(reg.tuitionLocation || "").toLowerCase().includes(searchQuery.toLowerCase()) || // ✅ Fix
+                    String(reg.tuitionLocation || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
                     String(reg.preferredTime || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
                     String(reg.preferredTutor || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
                     String(reg.subject || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -305,11 +291,23 @@ class AdminPagesController {
                 );
             }
     
+            // Count total filtered registrations for pagination
+            const totalRegistrations = filteredRegistrations.length;
+            const totalPages = Math.ceil(totalRegistrations / limit);
+    
+            // Redirect if page exceeds available pages
+            if (page > totalPages && totalPages > 0) {
+                return res.redirect(`?page=${totalPages}`);
+            }
+    
+            // Apply pagination AFTER filtering
+            const paginatedRegistrations = filteredRegistrations.slice(skip, skip + limit);
+    
             res.render("Admin/alltutorrequirment", {
                 title: "Tutor Registrations with Documents",
-                registrations: filteredRegistrations,
+                registrations: paginatedRegistrations,
                 currentPage: page,
-                totalPages,
+                totalPages: totalPages || 1, // Ensure at least 1 page
                 userId
             });
     
@@ -318,6 +316,7 @@ class AdminPagesController {
             res.redirect("/admin/alltutorrequirment");
         }
     };
+    
     
    
 

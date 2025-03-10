@@ -33,12 +33,14 @@
   </div>
 <section class="container body mt-5">
   <div class="card p-4">
-    <h2 class="text-center">Verify OTP</h2>
+    <h2 class="text-center">Verify Your Email</h2>
     <form action="/auth/verify" method="POST">
       <input type="hidden" name="email" value="<%= email %>">
       <div class="form-group">
         <label for="otp">Enter OTP</label>
         <input type="text" class="form-control" name="otp" id="otp" placeholder="Enter your OTP" required>
+
+        <p>Did not receive the OTP? Resend OTP</a></p>
       </div>
       <% if (typeof message !== 'undefined') { %>
         <div class="alert alert-info">
@@ -47,6 +49,10 @@
       <% } %>
       <button type="submit" class="btn btn-custom btn-block">Verify OTP</button>
     </form>
+    <form action="/auth/send-otp" method="POST" class="text-center mt-3">
+      <input type="hidden" name="email" value="<%= email %>">
+      <button type="submit" class="btn btn-link">Resend OTP</button>
+  </form>
   </div>
 </section>
 <div style="height: 20vh;">

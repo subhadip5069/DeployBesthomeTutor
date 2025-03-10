@@ -131,7 +131,125 @@ class UserAuthController {
       return res.redirect("/register");
     }
   };
+  verifyOtp = async (req, res) => {
+    try {
+      const { email, otp } = req.body;
   
+      // Find OTP in the database
+      const otpEntry = await Otp.findOne({ email });
+      // user
+      const user = await User.findOne({ email });
+  
+      if (!otpEntry) {
+        req.flash("error", "OTP expired or invalid.");
+        return res.render("user/verifyemail", {
+          title: "Verify Email",
+          email,
+          userId: user,
+          error: "No OTP found for this email. Please request a new one.",
+        });
+      }
+  
+      // Check if OTP matches
+      if (otpEntry.otp !== otp) {
+        req.flash("error", "Incorrect OTP. Please try again.");
+        return res.render("user/verifyemail", {
+          title: "Verify Email",
+          email,
+          userId: user,
+          error: "No OTP found for this email. Please request a new one.",
+        });
+      }
+  
+      // Mark user as verified
+      await User.findOneAndUpdate({ email }, { isVerified: true });
+  
+      // Delete OTP after successful verification
+      await Otp.deleteOne({ email });
+  
+      req.flash("success", "Email verified successfully. You can now log in.");
+      return res.redirect("/login");
+  
+    } catch (error) {
+      console.error("OTP Verification Error:", error);
+      req.flash("error", "Something went wrong. Please try again.");
+      return res.render("user/verifyemail", {
+        title: "Verify Email",
+        email,
+        userId: user,
+        error: "No OTP found for this email. Please request a new one.",
+      });
+    }
+  };
+  
+  // RESEND OTP CONTROLLER
+  resendOtp2 = async (req, res) => {
+    try {
+      const { email } = req.body;
+  
+      // Check if user exists
+      const user = await User.findOne({ email });
+      if (!user) {
+        req.flash("error", "User not found.");
+        return res.redirect("/register");
+      }
+  
+      // Generate a new OTP
+      const newOtp = generateOTP();
+  
+      // Update or create a new OTP record
+      await Otp.findOneAndUpdate(
+        { email },
+        { otp: newOtp, createdAt: Date.now() },
+        { upsert: true }
+      );
+  
+      // Send OTP Email
+      const mailOptions = {
+        from: `"A-world" <${process.env.EMAIL_USER}>`,
+        to: email,
+        subject: "Resend OTP - Tutor",
+        html: `
+          <h2>New OTP</h2>
+          <p>Hello,</p>
+          <p>Your new OTP for email verification is:</p>
+          <h3 style="color: red;">${newOtp}</h3>
+          <p>This OTP will expire in 5 minutes.</p>
+        `,
+      };
+  
+      transporter.sendMail(mailOptions, (err, info) => {
+        if (err) {
+          console.error("Error sending email:", err);
+          req.flash("error", "Error sending OTP. Please try again.");
+          return res.render("user/verifyemail", {
+            title: "Verify Email",
+            email,
+            userId: user,
+            error: "No OTP found for this email. Please request a new one.",
+          });
+        }
+        console.log("OTP Resent:", info.response);
+        req.flash("success", "New OTP sent successfully. Please check your email.");
+        return res.render("user/verifyemail", {
+          title: "Verify Email",
+          email,
+          userId: user,
+          error: "No OTP found for this email. Please request a new one.",
+        });
+      });
+  
+    } catch (error) {
+      console.error("Resend OTP Error:", error);
+      req.flash("error", "Something went wrong. Please try again.");
+      return res.render("user/verifyemail", {
+        title: "Verify Email",
+        email,
+        userId: null,
+        error: "No OTP found for this email. Please request a new one.",
+      });
+    }
+  };
   // Verify OTP and Activate Account
  verifyOTP = async (req, res) => {
     try {
@@ -200,7 +318,56 @@ class UserAuthController {
       });
     }
   };
+  // resendOtp2 = async (req, res) => {
+  //   try {
+  //     const { email } = req.body;
   
+  //     // Check if user exists
+  //     const user = await User.findOne({ email });
+  //     if (!user) {
+  //       req.flash("error", "User not found!");
+  //       return res.render("user/verifyemail", {
+  //         title: "Verify Email",
+  //         email,
+  //         error: "Something went wrong! Please try again.",
+  //         message:"verify otp"
+  //       });
+  //     }
+  
+  //     // Generate and store new OTP
+  //     const newOtp = generateOTP();
+  //     await Otp.findOneAndUpdate(
+  //       { email },
+  //       { otp: newOtp, createdAt: Date.now() },
+  //       { upsert: true, new: true }
+  //     );
+  
+  //     // Send OTP via email
+  //     await transporter.sendMail({
+  //       from: process.env.EMAIL_USER,
+  //       to: email,
+  //       subject: "Your New OTP Code",
+  //       text: `Your new OTP is ${newOtp}. It will expire in 10 minutes.`,
+  //     });
+  
+  //     req.flash("success", "New OTP sent! Please check your email.");
+  //     return res.render("user/verifyemail", {
+  //       title: "Verify Email",
+  //       email,
+  //       error: "Something went wrong! Please try again.",
+  //       message:"verify otp"
+  //     });
+  //   } catch (error) {
+  //     console.error("Error resending OTP:", error);
+  //     req.flash("error", "Something went wrong! Please try again.");
+  //     return res.render("user/verifyemail", {
+  //       title: "Verify Email",
+  //       email,
+  //       error: "Something went wrong! Please try again.",
+  //       message:"verify otp"
+  //     });
+  //   }
+  // };
   
  resendOtp = async (req, res) => {
     try {

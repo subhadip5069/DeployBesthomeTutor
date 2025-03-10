@@ -188,10 +188,16 @@
                                 <label class="form-label fw-bold">Subject <span class="text-warning">*</span></label>
                                 <input type="text" class="form-control" name="subject" placeholder="Enter Subject" value="<%= registration?.subject || '' %>" required>
                             </div>
-                            <div class="mb-3 col-md-6">
+                            <div class="col-md-6 mb-3">
                                 <label class="form-label fw-bold">Class <span class="text-warning">*</span></label>
-                                <input type="text" class="form-control" name="class" placeholder="Enter Class/Grade" value="<%= registration?.class || '' %>" required>
-                            </div>
+
+                            <select class="form-control " name="class" value="<%= registration.class || '' %>" required>
+                                <option value="" disabled selected>Select Class/Grade</option>
+                                <% for (let i = 1; i <= 12; i++) { %>
+                                    <option value="<%= i %>">Class <%= i %></option>
+                                <% } %>
+                            </select>
+                        </div>
                         </div>
                 
                         <!-- Fee Offered -->
@@ -330,9 +336,14 @@
                                 <label class="form-label fw-bold">Subject <span class="text-warning">*</span></label>
                                 <input type="text" class="form-control" name="subject" placeholder="Enter Subject" value="<%= registration.subject || '' %>" required>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-6 mb-3">
                                 <label class="form-label fw-bold">Class <span class="text-warning">*</span></label>
-                                <input type="text" class="form-control" name="class" placeholder="Enter Class/Grade" value="<%= registration.class || '' %>" required>
+                                <select class="form-control " name="class" value="<%= registration.class || '' %>" required>
+                                    <option value=" <%= registration.class %>" disabled selected>Select Class/Grade</option>
+                                    <% for (let i = 1; i <= 12; i++) { %>
+                                        <option value="<%= i %>">Class <%= i %></option>
+                                    <% } %>
+                                </select>
                             </div>
                         </div>
                 

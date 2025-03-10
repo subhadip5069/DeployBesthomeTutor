@@ -1,79 +1,90 @@
 <%- include('partial/header') %>
-<div style="height: 10vh;">
+<div style="height: 10vh;"></div>
 
-</div>
-
-<section class="container d-flex justify-content-center align-items-center flex-column min-vh-100">
-    <h2 class="mb-4">Inactive Registrations with Documents</h2>
-
-    <div class="row justify-content-center w-100">
-        <% registrations.forEach(registration => { %>
-            <div class="col-12 col-md-6 col-lg-4 mb-4">
-                <div class="card shadow-sm p-3 custom-card">
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">
-                            Name: <%= registration.userId.name %> 
-                            <span class="badge bg-danger">Inactive</span>
-                        </h5>
-                        <h6>Id: <%= registration.userId.randomId %></h6>
-                        <p class="card-text"><strong>Email:</strong> <%= registration.userId.email %></p>
-                        <p class="card-text"><strong>Class:</strong> <%= registration.class || "N/A" %></p>
-                        <p class="card-text"><strong>Subject:</strong> <%= registration.subject || "N/A" %></p>
-                        <p class="card-text"><strong>Fee Type:</strong> <%= registration.feeType || "N/A" %> (<%= registration.feeAmount || "N/A" %>)</p>
-                        <p class="card-text"><strong>Preferred Tutor:</strong> <%= registration.preferredTutor || "N/A" %></p>
-                        <p class="card-text"><strong>Location:</strong> <%= registration.tuitionLocation?.length ? registration.tuitionLocation.join(", ") : "N/A" %></p>
-
-                        <!-- Toggle Switch for Activation -->
-                        <form action="/admin/documentverification/update/<%= registration._id %>?page=<%= currentPage %>" method="POST">
-                            <div class="form-check form-switch mt-auto">
-                                <input class="form-check-input" type="checkbox" name="status" value="active" <%= registration.documentVerificationStatus === "active" ? "checked" : "" %> onchange="this.form.submit()">
-                                <label class="form-check-label">Inactivate</label>
-                            </div>
-                        </form>
-
-                        <!-- Collapsible Button for Viewing Files -->
-                        <% if (registration.attachedFiles.length > 0) { %>
-                            <button class="btn btn-sm btn-primary mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#files<%= registration._id %>">
-                                View Files
-                            </button>
-
-                            <!-- Collapsible Files Section -->
-                            <div class="collapse mt-2" id="files<%= registration._id %>">
-                                <h6>Attached Files:</h6>
-                                <ul class="list-group">
-                                    <% registration.attachedFiles.forEach(file => { %>
-                                        <li class="list-group-item">
-                                            <strong>File Type:</strong> <%= file.fileType %> <br>
-                                            <img src="/uploads/documents/<%= file.filePath.split('\\').pop() %>" alt="Document" class="img-fluid preview-image">
-                                        </li>
-                                    <% }); %>
-                                </ul>
-                            </div>
-                        <% } else { %>
-                            <p class="text-muted">No attached files</p>
-                        <% } %>
-                    </div>
-                </div>
-            </div>
-        <% }); %>
+<section class="container min-vh-100">
+    <h2 class="text-center mb-4">Inactive Registrations with Documents</h2>
+    
+    <!-- Search Bar -->
+    <div class="mb-3">
+        <input type="text" id="searchInput" class="form-control" placeholder="Search by Name, ID, or Email">
+    </div>
+    
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped text-center">
+            <thead class="table-dark">
+                <tr>
+                    <th>Name</th>
+                    <th>ID</th>
+                    <th>Email</th>
+                    <th>Class</th>
+                    <th>Subject</th>
+                    <th>Fee Type</th>
+                    <th>Preferred Tutor</th>
+                    <th>Location</th>
+                    <th>Document Status</th>
+                    <th>Files</th>
+                </tr>
+            </thead>
+            <tbody id="registrationsTableBody">
+                <% registrations.reverse().forEach(registration => { %>
+                    <tr>
+                        <td><%= registration.userId.name %> <span class="badge bg-danger">Inactive</span></td>
+                        <td><%= registration.userId.randomId %></td>
+                        <td><%= registration.userId.email %></td>
+                        <td><%= registration.class || "N/A" %></td>
+                        <td><%= registration.subject || "N/A" %></td>
+                        <td><%= registration.feeType || "N/A" %> (<%= registration.feeAmount || "N/A" %>)</td>
+                        <td><%= registration.preferredTutor || "N/A" %></td>
+                        <td><%= registration.tuitionLocation?.length ? registration.tuitionLocation.join(", ") : "N/A" %></td>
+                        
+                        <td>
+                            <form action="/admin/documentverification/update/<%= registration._id %>?page=<%= currentPage %>" method="POST">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" name="status" value="active" <%= registration.documentVerificationStatus === "active" ? "checked" : "" %> onchange="this.form.submit()">
+                                    <label class="form-check-label">Inactivate</label>
+                                </div>
+                            </form>
+                        </td>
+                        
+                        <td>
+                            <% if (registration.attachedFiles.length > 0) { %>
+                                <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#files<%= registration._id %>">
+                                    View Files
+                                </button>
+                                <div class="collapse mt-2" id="files<%= registration._id %>">
+                                    <ul class="list-group">
+                                        <% registration.attachedFiles.forEach(file => { %>
+                                            <li class="list-group-item">
+                                                <strong>File Type:</strong> <%= file.fileType %> <br>
+                                                <img src="/uploads/documents/<%= file.filePath.split('\\').pop() %>" alt="Document" class="img-fluid preview-image">
+                                            </li>
+                                        <% }); %>
+                                    </ul>
+                                </div>
+                            <% } else { %>
+                                <p class="text-muted">No attached files</p>
+                            <% } %>
+                        </td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
     </div>
 
     <!-- Pagination -->
     <% if (totalPages > 1) { %>
         <nav aria-label="Page navigation">
-            <ul class="pagination mt-4">
+            <ul class="pagination justify-content-center mt-4">
                 <% if (currentPage > 1) { %>
                     <li class="page-item">
                         <a class="page-link" href="?page=<%= currentPage - 1 %>">Previous</a>
                     </li>
                 <% } %>
-
                 <% for (let i = 1; i <= totalPages; i++) { %>
                     <li class="page-item <%= i === currentPage ? 'active' : '' %>">
                         <a class="page-link" href="?page=<%= i %>"><%= i %></a>
                     </li>
                 <% } %>
-
                 <% if (currentPage < totalPages) { %>
                     <li class="page-item">
                         <a class="page-link" href="?page=<%= currentPage + 1 %>">Next</a>
@@ -82,9 +93,27 @@
             </ul>
         </nav>
     <% } %>
-    <div style="height: 50px; background-color: transparent;">
-
-    </div>
+    
+    <div style="height: 50px; background-color: transparent;"></div>
 </section>
+
+<script>
+    document.getElementById("searchInput").addEventListener("input", function () {
+        let filter = this.value.toLowerCase();
+        let rows = document.querySelectorAll("#registrationsTableBody tr");
+
+        rows.forEach(row => {
+            let name = row.cells[0].innerText.toLowerCase();
+            let id = row.cells[1].innerText.toLowerCase();
+            let email = row.cells[2].innerText.toLowerCase();
+            
+            if (name.includes(filter) || id.includes(filter) || email.includes(filter)) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
+        });
+    });
+</script>
 
 <%- include('partial/footer') %>

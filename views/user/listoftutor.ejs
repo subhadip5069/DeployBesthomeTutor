@@ -35,15 +35,34 @@
             
                     <div id="category-filter-content" class="category-filter-content" style="display: none;">
                         <!-- Course -->
-                        <div class="category-filter-group">
-                            <label for="course">Course</label>
-                            <input type="text" id="course" name="classFilter" placeholder="Enter course">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Class <span class="text-warning"></span></label>
+                            <select class="form-control"  id="course"  name="classFilter" >
+                                <option value="" disabled selected>Select Class/Grade</option>
+                                <% for (let i = 1; i <= 12; i++) { %>
+                                    <option value="<%= i %>">Class <%= i %></option>
+                                <% } %>
+                            </select>
+                            
                         </div>
-            
+                         <!-- city -->
+             
+
                         <!-- Subject -->
                         <div class="category-filter-group">
                             <label for="subject">Subject</label>
                             <input type="text" id="subject" name="subjectFilter" placeholder="Enter subject">
+                        </div>
+                            <!-- city -->
+                        <div class="category-filter-group">
+                            <label for="city" class="fw-bold">City</label>
+                            <input type="text" class="form-control" id="city" name="city" placeholder="Enter city">
+                        </div>
+            
+                        <!-- Pincode -->
+                        <div class="category-filter-group">
+                            <label for="pincode" class="fw-bold"   >Pincode</label>
+                            <input type="number" class="form-control" id="pincode" name="pincode" placeholder="Enter pincode">
                         </div>
             
                         <!-- Gender Filter -->
@@ -164,5 +183,31 @@
         }
     }
   </script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const searchForm = document.getElementById("searchForm"); 
+        const tutorListContainer = document.getElementById("tutorList"); 
+
+        searchForm.addEventListener("submit", function (event) {
+            event.preventDefault(); // Prevent default form submission
+            
+            const formData = new FormData(searchForm);
+            const searchParams = new URLSearchParams(formData).toString();
+
+            fetch(`/listingoftutor?${searchParams}`, {
+                method: "GET",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest"
+                }
+            })
+            .then(response => response.text())
+            .then(data => {
+                tutorListContainer.innerHTML = data; // Replace tutor list with updated data
+            })
+            .catch(error => console.error("Error fetching tutors:", error));
+        });
+    });
+</script>
+
 
 <%- include('layout/footer') %>

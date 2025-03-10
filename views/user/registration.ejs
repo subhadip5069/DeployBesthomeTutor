@@ -190,10 +190,16 @@
                             <label class="form-label fw-bold">Subject <span class="text-warning">*</span></label>
                             <input type="text" class="form-control" name="subject" placeholder="Enter Subject" required>
                         </div>
-                        <div class="mb-3 col-md-6">
+                        <div class="col-md-6">
                             <label class="form-label fw-bold">Class <span class="text-warning">*</span></label>
-                            <input type="text" class="form-control" name="class" placeholder="Enter Class/Grade" required>
+                            <select class="form-control" name="class" required>
+                                <option value="" disabled selected>Select Class/Grade</option>
+                                <% for (let i = 1; i <= 12; i++) { %>
+                                    <option value="<%= i %>">Class <%= i %></option>
+                                <% } %>
+                            </select>
                         </div>
+                        
                     </div>
                     
                 
@@ -408,8 +414,14 @@
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-bold">Class <span class="text-warning">*</span></label>
-                            <input type="text" class="form-control" name="class" placeholder="Enter Class/Grade" required>
+                            <select class="form-control" name="class" required>
+                                <option value="" disabled selected>Select Class/Grade</option>
+                                <% for (let i = 1; i <= 12; i++) { %>
+                                    <option value="<%= i %>">Class <%= i %></option>
+                                <% } %>
+                            </select>
                         </div>
+                        
                     </div>
                 
                     <!-- Fee Offered -->

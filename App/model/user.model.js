@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema(
     unlockedContactsRemaining: { type: Number, default: 0 }, // Remaining unlocks
     unlockedStudents: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     unlockedTutors: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-    profileimage:{
+    profileImage:{
       type: String,
   },
   },
