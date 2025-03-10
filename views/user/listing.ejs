@@ -75,9 +75,9 @@
                 </div>
             </form>
         
-            <!-- Tutor Listings Section -->
+            <!-- Tutor Listings Section --> 
             <div class="col-md-8">
-                <h3 class="text-center text-primary"><%= roleToFetch %> Listings</h3>
+                <h3 class="text-center text-primary"><%= roleToFetch.charAt(0).toUpperCase() + roleToFetch.slice(1) %> Listings <hr></h3>
                 <div class="row g-3">
                     <% if (requirements.length > 0) { %>
                         <% requirements.forEach(tutor => { %>
