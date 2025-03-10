@@ -363,49 +363,88 @@ TemplateMo 590 topic listing
         </div>
 
         <!-- Student/Parent Form -->
-        <form action="/auth/signup" method="post" enctype="multipart/form-data">
-            <div id="tuition-reg-studentForm" class="tuition-reg-form-section tuition-reg-active">
-                <h1>Find the perfect tutor for your child!</h1>
-                <input type="text" placeholder="Name" name="name" required>
-                <input type="number" placeholder="Mobile Number" name="phone" required>
-                <input type="email" placeholder="Enter Email" name="email" required>
-                <input type="password" placeholder="Enter Password" name="password" required>
-                <input type="password" placeholder="Confirm Password" name="password2" required>
-                <input type="hidden" name="role" value="student">
-                
+      <form action="/auth/signup" method="post" enctype="multipart/form-data">
+        <div id="tuition-reg-studentForm" class="tuition-reg-form-section tuition-reg-active">
+            <h1>Find the perfect tutor for your child!</h1>
+            <input type="text" placeholder="Name" name="name" required>
+            <input type="number" placeholder="Mobile Number" name="phone" required>
+            <input type="email" placeholder="Enter Email" name="email" required>
 
-                <div class="checkbox-container">
-                    <input type="checkbox" id="terms-student" required>
-                    <label for="terms-student">By Signing up you agree to our <a href="/terms&condition">Terms & conditions</a></label>
-                </div>
-
-                <button type="submit">Get Free Demo Class</button>
-
-                <p>Already a member? <a href="/login">Login</a></p>
+            <div class="password-container">
+                <input type="password" id="studentPassword" placeholder="Enter Password" name="password" required>
+                <span class="iconify toggle-password" id="toggleStudentPassword" data-icon="mdi:eye"></span>
             </div>
-        </form>
 
-        <!-- Tutor Form -->
-        <form action="/auth/signup" method="post" enctype="multipart/form-data">
-            <div id="tuition-reg-tutorForm" class="tuition-reg-form-section">
-                <h1>Connect with students & start teaching!</h1>
-                <input type="text" placeholder="Name" name="name" required>
-                <input type="number" placeholder="Mobile Number" name="phone" required>
-                <input type="email" placeholder="Enter Email" name="email" required>
-                <input type="password" placeholder="Enter Password" name="password" required>
-                <input type="password" placeholder="Confirm Password" name="password2" required>
-                <input type="hidden" name="role" value="tutor">
-                <input type="file" name="profileImage" >
-                <div class="checkbox-container">
-                    <input type="checkbox" id="terms-tutor" required>
-                    <label for="terms-tutor">By Signing up you agree to our <a href="/terms&condition">Terms & conditions</a></label>
-                </div>
-
-                <button type="submit">Find Students Now!</button>
-
-                <p>Already a member? <a href="/login">Login</a></p>
+            <div class="password-container">
+                <input type="password" id="studentPassword2" placeholder="Confirm Password" name="password2" required>
+                <span class="iconify toggle-password" id="toggleStudentPassword2" data-icon="mdi:eye"></span>
             </div>
-        </form>
+
+            <input type="hidden" name="role" value="student">
+
+            <div class="checkbox-container">
+                <input type="checkbox" id="terms-student" required>
+                <label for="terms-student">By Signing up you agree to our <a href="/terms&condition">Terms & conditions</a></label>
+            </div>
+
+            <button type="submit">Get Free Demo Class</button>
+            <p>Already a member? <a href="/login">Login</a></p>
+        </div>
+    </form>
+
+    <!-- Tutor Form -->
+    <form action="/auth/signup" method="post" enctype="multipart/form-data">
+        <div id="tuition-reg-tutorForm" class="tuition-reg-form-section">
+            <h1>Connect with students & start teaching!</h1>
+            <input type="text" placeholder="Name" name="name" required>
+            <input type="number" placeholder="Mobile Number" name="phone" required>
+            <input type="email" placeholder="Enter Email" name="email" required>
+
+            <div class="password-container">
+                <input type="password" id="tutorPassword" placeholder="Enter Password" name="password" required>
+                <span class="iconify toggle-password" id="toggleTutorPassword" data-icon="mdi:eye"></span>
+            </div>
+
+            <div class="password-container">
+                <input type="password" id="tutorPassword2" placeholder="Confirm Password" name="password2" required>
+                <span class="iconify toggle-password" id="toggleTutorPassword2" data-icon="mdi:eye"></span>
+            </div>
+
+            <input type="hidden" name="role" value="tutor">
+            <input type="file" name="profileImage">
+            
+            <div class="checkbox-container">
+                <input type="checkbox" id="terms-tutor" required>
+                <label for="terms-tutor">By Signing up you agree to our <a href="/terms&condition">Terms & conditions</a></label>
+            </div>
+
+            <button type="submit">Find Students Now!</button>
+            <p>Already a member? <a href="/login">Login</a></p>
+        </div>
+    </form>
+
+    <script>
+        function setupPasswordToggle(toggleId, passwordId) {
+            document.getElementById(toggleId).addEventListener("click", function () {
+                const passwordField = document.getElementById(passwordId);
+                const icon = this;
+
+                if (passwordField.type === "password") {
+                    passwordField.type = "text";
+                    icon.setAttribute("data-icon", "mdi:eye-off");
+                } else {
+                    passwordField.type = "password";
+                    icon.setAttribute("data-icon", "mdi:eye");
+                }
+            });
+        }
+
+        // Apply toggles for all password fields
+        setupPasswordToggle("toggleStudentPassword", "studentPassword");
+        setupPasswordToggle("toggleStudentPassword2", "studentPassword2");
+        setupPasswordToggle("toggleTutorPassword", "tutorPassword");
+        setupPasswordToggle("toggleTutorPassword2", "tutorPassword2");
+    </script>
     </div>
 </div>
 <div style="height: 20vh;">
