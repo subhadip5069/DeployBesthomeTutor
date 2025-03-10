@@ -184,9 +184,14 @@ TemplateMo 590 topic listing
                                     <label for="email">Email</label>
                                     <input type="email" class="form-control" name="email" id="email" placeholder="Enter your email" required>
                                 </div>
-                                <div class="form-group mb-3">
+                                 <div class="form-group mb-3">
                                     <label for="password">Password</label>
-                                    <input type="password" class="form-control" name="password" id="password" placeholder="Enter your password" required>   
+                                    <div class="input-group">
+                                        <input type="password" class="form-control" name="password" id="password" placeholder="Enter your password" required>
+                                        <button type="button" class="btn btn-outline-secondary" id="togglePassword">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
                                 </div>
                                 <div class="form-group mb-3">
                                     <input type="checkbox" id="terms-student" required>
