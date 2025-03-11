@@ -657,7 +657,7 @@ class userPagesController {
     // primum
     primum=async(req,res)=>{
         try {
-            const userId = req.user || null;
+            const userId = req.userId || null;
             if(userId == null  || userId == undefined ){
                 res.redirect("/login")
             }
@@ -815,7 +815,7 @@ class userPagesController {
 
     paymentsuccess= async(req,res) =>{
 
-        const userId =req.user ;
+        const userId =req.userId ;
 
         res.render("user/paymentsuccess",{
             title:"/ paymet successfully",

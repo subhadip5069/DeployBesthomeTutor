@@ -3,7 +3,7 @@ const PurchasePlan = require("../../model/purchaceplane");
 class PaymentController {
     payment = async (req, res) => {
         try {
-          const userId = req.user ;
+          const userId = req.userId ;
 
           
           // Retrieve the specific plan by ID from req.params.id
@@ -26,13 +26,9 @@ class PaymentController {
           });
         } catch (error) {
           console.error("Error fetching plan:", error);
-          res.status(500).render("user/error", { 
-            title: "Error", 
-            message: "Internal Server Error" 
-          });
-        }
+          res.redirect("/");
       };
-      
+    }
 }
 
 module.exports = new PaymentController();
