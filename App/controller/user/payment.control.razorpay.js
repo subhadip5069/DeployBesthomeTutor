@@ -3,7 +3,7 @@ const PurchasePlan = require("../../model/purchaceplane");
 class PaymentController {
     payment = async (req, res) => {
         try {
-          const userId = req.userId ;
+          const userId = req.user?.userId ;
 
           
           // Retrieve the specific plan by ID from req.params.id
@@ -20,7 +20,7 @@ class PaymentController {
       
           res.render("user/payment", {
             title: "Payment",
-            user: userId.id,
+            user: req.user?.userId,
             userId,
             plan: plan
           });
