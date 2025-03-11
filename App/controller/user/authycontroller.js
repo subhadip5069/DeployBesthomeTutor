@@ -102,11 +102,11 @@ class UserAuthController {
             to: email,
             subject: "Verify Your Email - Tutor",
             html: `
-                <div style="max-width: 400px; margin: auto; padding: 20px; border-radius: 10px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); font-family: Arial, sans-serif; text-align: center; background-color: #ffffff; border: 1px solid #ddd;">
+                <div style="max-width: 400px; margin: auto; padding: 20px; border-radius: 10px; box-shadow: 0px 4px 10px rgba(0, 255, 221, 0.73); font-family: Arial, sans-serif; text-align: center; background-color:rgb(24, 22, 22); border: 1px solid #ddd;">
     <h2 style="color: #333; margin-bottom: 10px;">Verify Your Email</h2>
     <p style="color: #555;">Hello,</p>
-    <p style="color: #555;">Thank you for signing up at <strong style="color: #007bff;">Best home tutor</strong>. Enter the OTP below to verify your email:</p>
-    <div style="font-size: 22px; font-weight: bold; color: red; background: #f8d7da; padding: 10px; display: inline-block; border-radius: 5px; margin: 10px 0;">
+    <p style="color: #555;">Thank you for signing up at <strong style="color:rgb(166, 255, 0);">Best home tutor</strong>. Enter the OTP below to verify your email:</p>
+    <div style="font-size: 22px; font-weight: bold; color: red; background:rgb(222, 248, 215); padding: 10px; display: inline-block; border-radius: 5px; margin: 10px 0;">
         ${otp}
     </div>
     <p style="color: #555;">This OTP will expire in 5 minutes.</p>

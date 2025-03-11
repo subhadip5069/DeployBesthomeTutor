@@ -288,28 +288,28 @@ class userPagesController {
             const roleToFetch = "tutor";
     
             let {
-                classFilter,
-                subjectFilter,
-                preferredTutor,
-                state,
-                city,
-                pincode,
-                priceRange,
-                page = 1,
-                limit = 15,
-                searchQuery
+                classFilter = "",
+                subjectFilter = "",
+                preferredTutor = "",
+                state = "",
+                city = "",
+                pincode = "",
+                priceRange = "",
+                page = "1",
+                limit = "15",
+                searchQuery = ""
             } = req.query;
     
-            page = parseInt(page);
-            limit = parseInt(limit);
+            page = parseInt(page) || 1;
+            limit = parseInt(limit) || 15;
             const skip = (page - 1) * limit;
     
-            let registrationFilter = { status: "active" }; // Ensure only active tutors are fetched
+            let registrationFilter = { status: "active" }; // Fetch only active tutors
     
-            if (classFilter) {
+            if (classFilter && typeof classFilter === "string") {
                 registrationFilter.class = { $in: classFilter.split(",").map(c => c.trim()) };
             }
-            if (subjectFilter) {
+            if (subjectFilter && typeof subjectFilter === "string") {
                 registrationFilter.subject = { $in: subjectFilter.split(",").map(s => s.trim()) };
             }
             if (preferredTutor) {
@@ -321,10 +321,10 @@ class userPagesController {
             if (city) {
                 registrationFilter.city = { $regex: city.trim(), $options: "i" };
             }
-            if (pincode && !isNaN(pincode)) {
+            if (pincode && /^\d+$/.test(pincode)) {
                 registrationFilter.pincode = Number(pincode);
             }
-            if (priceRange) {
+            if (priceRange && priceRange.includes("-")) {
                 const [minPrice, maxPrice] = priceRange.split("-").map(Number);
                 if (!isNaN(minPrice) && !isNaN(maxPrice)) {
                     registrationFilter.feeAmount = { $gte: minPrice, $lte: maxPrice };
@@ -333,7 +333,7 @@ class userPagesController {
     
             let userFilter = { role: roleToFetch };
     
-            if (searchQuery) {
+            if (searchQuery && typeof searchQuery === "string") {
                 const regex = new RegExp(searchQuery.trim(), "i");
     
                 registrationFilter.$or = [
@@ -344,7 +344,7 @@ class userPagesController {
                     { state: regex },
                     { city: regex },
                     { locality: regex },
-                    {pincode: regex},
+                    { pincode: regex },
                     { subject: regex },
                     { class: regex },
                     { board: regex },
@@ -359,7 +359,6 @@ class userPagesController {
                     );
                 }
     
-                // **Filter by randomId directly inside userId**
                 userFilter.randomId = regex;
             }
     
@@ -370,46 +369,50 @@ class userPagesController {
                 .populate({
                     path: "userId",
                     select: "name role randomId",
-                    match: userFilter // Filter `randomId` inside user
+                    match: userFilter
                 })
                 .skip(skip)
                 .limit(limit)
                 .lean();
-                const requirement = await Registration.find({ status: "active" })
+    
+            const requirement = await Registration.find({ status: "active" })
                 .populate("userId")
                 .lean();
-            // Remove tutors without associated user data
+    
+            // Remove tutors without user data
             registrations = registrations.filter(reg => reg.userId);
     
-            // Flash message if no results found
             if (registrations.length === 0) {
                 req.flash("error_msg", "No tutors found matching your search criteria.");
             } else {
                 req.flash("success_msg", "Tutors retrieved successfully.");
             }
+
+            console.log("Tutors:", registrations);
             const message = req.session.message;
             req.session.message = null;
             res.render("user/listoftutor", {
                 title: "/ Tutors",
                 userId,
-                requirement,
+                requirement:registrations,
                 registrations,
                 currentPage: page,
-                totalPages,
                 message,
+                totalPages,
                 filters: {
-                    classFilter: classFilter || "",
-                    subjectFilter: subjectFilter || "",
-                    preferredTutor: preferredTutor || "",
-                    state: state || "",
-                    city: city || "",
-                    pincode: pincode || "",
-                    priceRange: priceRange || "",
-                    searchQuery: searchQuery || "",
+                    classFilter,
+                    subjectFilter,
+                    preferredTutor,
+                    state,
+                    city,
+                    pincode,
+                    priceRange,
+                    searchQuery,
                 },
                 success_msg: req.flash("success_msg"),
                 error_msg: req.flash("error_msg"),
             });
+    
         } catch (error) {
             console.error("Error in listingoftutor:", error);
             req.flash("error_msg", "An error occurred while fetching tutors.");
