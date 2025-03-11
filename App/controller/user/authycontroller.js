@@ -12,6 +12,7 @@ const { title } = require("process");
 const Registration = require("../../model/registration");
 const { default: mongoose } = require("mongoose");
 const otpmodel = require("../../model/otpmodel");
+const { console } = require("inspector");
 
 
 let otpData = { otp: null, expiresAt: null };
@@ -440,10 +441,9 @@ class UserAuthController {
           const { email, password } = req.body;
           const user = await User.findOne({ email });
 
-          const registration = await Registration.findOne(req.user);
+          const registration = await Registration.findOne(req.userId);
 
          
-
       
           if (!user) {
               req.session.message = { type: "danger", text: "Invalid email or password." };
@@ -473,9 +473,11 @@ class UserAuthController {
               sameSite: "Strict", // Prevents CSRF attacks
               maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days expiry
           });
-  
+          
           req.session.message = { type: "success", text: "Login successful!" };
-          if (!registration) {
+          console.log("user",user);
+        console.log( "registration",registration);
+          if (registration === null) {
             return res.redirect("/registration");
         }else{
             return res.redirect("/");
