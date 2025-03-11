@@ -241,7 +241,8 @@ class userPagesController {
     
             // Filter out registrations that have no associated user
             requirements = requirements.filter(req => req.userId);
-    
+            const message = req.session.message;
+            req.session.message = null;
             // **Flash messages for better UX**
             if (requirements.length === 0) {
                 req.flash("error_msg", "No students found matching your search criteria.");
@@ -251,10 +252,12 @@ class userPagesController {
     
             res.render("user/listingofstudent", {
                 title: "/ Students",
+                
                 userId,
                 requirements,
                 requirement: requirements,
                 currentPage: page,
+                message,
                 totalPages,
                 filters: {
                     classFilter: classFilter || "",
@@ -384,7 +387,8 @@ class userPagesController {
             } else {
                 req.flash("success_msg", "Tutors retrieved successfully.");
             }
-    
+            const message = req.session.message;
+            req.session.message = null;
             res.render("user/listoftutor", {
                 title: "/ Tutors",
                 userId,
@@ -392,6 +396,7 @@ class userPagesController {
                 registrations,
                 currentPage: page,
                 totalPages,
+                message,
                 filters: {
                     classFilter: classFilter || "",
                     subjectFilter: subjectFilter || "",

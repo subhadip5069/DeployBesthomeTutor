@@ -68,28 +68,26 @@ class TuitionController {
     async createTuitionRequirement(req, res) {
         try {
             if (req.user.role === "student") {
-                //    if exist refistration show listof tutor
-                    const registrations = await Registration.find({ userId: req.user._id });
-                    if (registrations.length > 0) {
-                        res.redirect("/listofTutor");
-                    }
-    
-                }else if (req.user.role === "tutor") {
-                    // if exist registration show listof student
-                    const registrations = await Registration.find({ userId: req.user._id });
-                    if (registrations.length > 0) {
-                        res.redirect("/listofStudents");
-                    }
-                }else{
-                    
+                const registrations = await Registration.find({ userId: req.user._id });
+                if (registrations.length > 0) {
+                    req.session.message = { type: "info", text: "You are already registered. Redirecting to the tutor list." };
+                    return res.redirect("/listofTutor");
                 }
+            } else if (req.user.role === "tutor") {
+                const registrations = await Registration.find({ userId: req.user._id });
+                if (registrations.length > 0) {
+                    req.session.message = { type: "info", text: "You are already registered. Redirecting to the student list." };
+                    return res.redirect("/listofStudents");
+                }
+            }
     
-            const { tuitionLocation, preferredTime, preferredTutor, state, city, pincode, locality, subject, class: className, userId , board,status} = req.body;
+            const { tuitionLocation, preferredTime, preferredTutor, state, city, pincode, locality, subject, class: className, userId, board } = req.body;
     
             // Find user email based on userId
             const user = await User.findById(userId);
             if (!user) {
-                res.redirect('/login');
+                req.session.message = { type: "error", text: "User not found. Please log in." };
+                return res.redirect('/login');
             }
     
             const newRequirement = new Registration({
@@ -99,13 +97,12 @@ class TuitionController {
                 preferredTutor,
                 state,
                 city,
-
                 pincode,
                 locality,
                 subject,
                 class: className,
                 board,
-                status:"active",
+                status: "active",
             });
     
             await newRequirement.save();
@@ -113,88 +110,95 @@ class TuitionController {
             // Send Email Notifications
             await sendEmails(user.email, newRequirement);
     
+            req.session.message = { type: "success", text: "Your tuition requirement has been successfully submitted." };
             return res.redirect('/listingoftutor');
         } catch (error) {
             console.error("Error saving tuition requirement:", error);
+            req.session.message = { type: "error", text: "Something went wrong. Please try again." };
             return res.redirect('/login');
         }
     }
+    
 
 
- createRegistration = async (req, res) => {
+    createRegistration = async (req, res) => {
         try {
-          console.log("Received req.body:", req.body);
-          console.log("Received req.user:", req.user);
-      
-          const {
-            userId, // Expecting userId from req.body
-            tuitionLocation,
-            preferredTime,
-            state,
-            city,
-            pincode,
-            locality,
-            subject,
-            about,
-            sorted,
-            experience,
-            qualification,
-            board,
-            age,
-          } = req.body;
-      
-          // Determine userId (from req.body or req.user)
-          const validUserId = userId || (req.user ? req.user.id : null);
-      
-          // Validate userId
-          if (!validUserId || !mongoose.Types.ObjectId.isValid(validUserId)) {
-            console.error("Invalid userId received:", validUserId);
-            return res.redirect("/login");
-          }
-      
-          // Check if user exists
-          const user = await User.findById(validUserId);
-          if (!user) {
-            return res.redirect("/login");
-          }
-      
-          // Handle file uploads (only if files are uploaded)
-          const attachedFiles = req.files
-            ? req.files.map((file) => ({
-                fileType: req.body.fileType || "Other",
-                filePath: file.path,
-              }))
-            : [];
-      
-          // Create a new registration
-          const registration = new Registration({
-            userId: validUserId,
-            tuitionLocation,
-            preferredTime,
-            state,
-            city,
-            pincode,
-            locality,
-            subject,
-            about,
-            sorted,
-            experience,
-            qualification,
-            board,
-            age,
-            attachedFiles,
-          });
-      
-          await registration.save();
-          await sendEmails(user.email, registration);
-      
-          res.redirect("/listingofstudent"); // Redirect after success
+            console.log("Received req.body:", req.body);
+            console.log("Received req.user:", req.user);
+    
+            const {
+                userId, // Expecting userId from req.body
+                tuitionLocation,
+                preferredTime,
+                state,
+                city,
+                pincode,
+                locality,
+                subject,
+                about,
+                sorted,
+                experience,
+                qualification,
+                board,
+                age,
+            } = req.body;
+    
+            // Determine userId (from req.body or req.user)
+            const validUserId = userId || (req.user ? req.user.id : null);
+    
+            // Validate userId
+            if (!validUserId || !mongoose.Types.ObjectId.isValid(validUserId)) {
+                console.error("Invalid userId received:", validUserId);
+                req.session.message = { type: "error", text: "Invalid user ID. Please log in again." };
+                return res.redirect("/login");
+            }
+    
+            // Check if user exists
+            const user = await User.findById(validUserId);
+            if (!user) {
+                req.session.message = { type: "error", text: "User not found. Please log in." };
+                return res.redirect("/login");
+            }
+    
+            // Handle file uploads (only if files are uploaded)
+            const attachedFiles = req.files
+                ? req.files.map((file) => ({
+                    fileType: req.body.fileType || "Other",
+                    filePath: file.path,
+                }))
+                : [];
+    
+            // Create a new registration
+            const registration = new Registration({
+                userId: validUserId,
+                tuitionLocation,
+                preferredTime,
+                state,
+                city,
+                pincode,
+                locality,
+                subject,
+                about,
+                sorted,
+                experience,
+                qualification,
+                board,
+                age,
+                attachedFiles,
+            });
+    
+            await registration.save();
+            await sendEmails(user.email, registration);
+    
+            req.session.message = { type: "success", text: "Registration successful! You will be contacted soon." };
+            res.redirect("/listingofstudent");
         } catch (error) {
-          console.error("Error in createRegistration:", error);
-          res.status(500).redirect("/login");
+            console.error("Error in createRegistration:", error);
+            req.session.message = { type: "error", text: "Something went wrong. Please try again." };
+            res.status(500).redirect("/login");
         }
-      };
-      
+    };
+    
     
     
     

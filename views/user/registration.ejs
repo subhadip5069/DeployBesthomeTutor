@@ -287,7 +287,49 @@
                 </form>
                 
                 <!-- for tutor -->
-              
+              <!-- Success Modal -->
+<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-success" id="successModalLabel">Success</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Your registration has been submitted successfully!
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("registrationForm").addEventListener("submit", function (event) {
+        event.preventDefault(); // Prevent default form submission
+
+        const formData = new FormData(this);
+
+        fetch(this.action, {
+            method: "POST",
+            body: formData
+        })
+        .then(response => response.json()) // Expecting JSON response
+        .then(data => {
+            if (data.success) {
+                var successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                successModal.show();
+                document.getElementById("registrationForm").reset(); // Reset form after success
+            } else {
+                alert("Error: " + data.message);
+            }
+        })
+        .catch(error => console.error("Error:", error));
+    });
+});
+</script>
                 
                 
             </div>
@@ -463,50 +505,68 @@
                     <!-- uploade documents -->
                 
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Upload Documents (Aadhar & Pancard) <span class="text-warning">*</span></label>
-                        <!-- Aadhar Upload -->
-                        <label>Attached Files:</label>
-                    <input type="file" name="attachedFiles" multiple>
+                        <label class="form-label fw-bold">
+                            Upload Documents (Aadhar & Pancard) <span class="text-warning">*</span>
+                        </label>
+                    
+                        <!-- File Input -->
+                        <label for="fileInput">Select exactly 2 files: Aadhar & Pancard (jpg/png/jpeg)</label>
+                        <input type="file" name="attachedFiles" required id="fileInput" multiple accept=".jpg,.jpeg,.png">
+                        <small id="fileError" class="text-danger"></small>
                     </div>
+                    
                     <!-- Submit Button -->
+                    
+                    
                     <div class="text-center">
-                        <button type="submit" class="btn btn-warning fw-bold px-4 py-2">SUBMIT</button>
+                        <button type="submit" id="submitBtn" class="btn btn-warning fw-bold px-4 py-2" disabled>SUBMIT</button>
                     </div>
+                
+                    <!-- JavaScript Validation -->
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function () {
+                            const fileInput = document.getElementById('fileInput');
+                            const errorMsg = document.getElementById('fileError');
+                            const submitBtn = document.getElementById('submitBtn');
+                
+                            fileInput.addEventListener('change', function () {
+                                const files = fileInput.files;
+                                const allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
+                                let valid = true;
+                
+                                if (files.length !== 2) {
+                                    errorMsg.textContent = "Please select exactly 2 files.";
+                                    valid = false;
+                                } else {
+                                    for (let i = 0; i < files.length; i++) {
+                                        if (!allowedExtensions.test(files[i].name)) {
+                                            errorMsg.textContent = "Only JPG, JPEG, or PNG files are allowed.";
+                                            valid = false;
+                                            break;
+                                        }
+                                    }
+                                }
+                
+                                submitBtn.disabled = !valid;
+                                if (valid) errorMsg.textContent = "";
+                            });
+                        });
+                    </script>
+                    
                 </form>
                 
+                <!-- Toast Notification -->
                 <div class="toast-container position-fixed bottom-0 end-0 p-3">
                     <div id="uploadToast" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
                         <div class="d-flex">
-                            <div class="toast-body" id="toastMessage">
-                                Multer error message here!
-                            </div>
+                            <div class="toast-body" id="toastMessage">Multer error message here!</div>
                             <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
                         </div>
                     </div>
                 </div>
                 
-                <script>
-                    document.getElementById("imageUpload").addEventListener("change", function(event) {
-                        const file = event.target.files[0];
-                        if (file) {
-                            const reader = new FileReader();
-                            reader.onload = function(e) {
-                                const preview = document.getElementById("imagePreview");
-                                preview.src = e.target.result;
-                                preview.classList.remove("d-none");
-                            };
-                            reader.readAsDataURL(file);
-                        }
-                    });
-                
-                    // Function to show toast (Call this function when an error occurs)
-                    function showToast(message) {
-                        document.getElementById("toastMessage").textContent = message;
-                        var toast = new bootstrap.Toast(document.getElementById("uploadToast"));
-                        toast.show();
-                    }
-                </script>
                
+                
                 <!-- for tutor -->
                 
                 

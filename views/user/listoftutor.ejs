@@ -7,7 +7,30 @@
         <input type="text" id="searchInput" class="form-control text-center" 
                style="max-width: 500px;" placeholder="Search by Name, ID, or Email">
     </div>
-
+<!-- Bootstrap Toast -->
+<div aria-live="polite" aria-atomic="true" class="position-fixed bottom-0 end-0 p-3">
+    <div id="toastMessage" class="toast align-items-center text-bg-<%= message ? (message.type === 'success' ? 'success' : 'danger') : '' %> border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <% if (message) { %>
+                    <%= message.text %>
+                <% } %>
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+  </div>
+  
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var toastEl = document.getElementById('toastMessage');
+        if (toastEl && toastEl.innerText.trim() !== "") {
+            var toast = new bootstrap.Toast(toastEl);
+            toast.show();
+        }
+    });
+  </script>
+  <% message = null; %>
     <div class="container-fluid">
         <div class="row justify-content-center">
             <!-- Filters Form -->
