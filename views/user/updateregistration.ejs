@@ -116,7 +116,7 @@
                 
                         <!-- Tuition Location -->
                         <div class="mb-3">
-                            <label class="form-label fw-bold">Tuition Location <span class="text-warning">*</span></label>
+                            <label class="form-label fw-bold">Your Preferance <span class="text-warning">*</span></label>
                             <div class="d-flex flex-wrap gap-3">
                                 <% const locations = Array.isArray(registration?.tuitionLocation) ? registration.tuitionLocation : []; %>
                                 <div class="form-check">
@@ -201,25 +201,7 @@
                         </div>
                 
                         <!-- Fee Offered -->
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Fee Offered <span class="text-warning">*</span></label>
-                            <div class="d-flex flex-wrap align-items-center gap-3">
-                                <% const feeType = registration?.feeType || ""; %>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="feeType" id="hourly" value="Hourly" <%= feeType === 'Hourly' ? 'checked' : '' %>>
-                                    <label class="form-check-label" for="hourly">Hourly</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="feeType" id="monthly" value="Monthly" <%= feeType === 'Monthly' ? 'checked' : '' %>>
-                                    <label class="form-check-label" for="monthly">Monthly</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="feeType" id="onetime" value="OneTime" <%= feeType === 'OneTime' ? 'checked' : '' %>>
-                                    <label class="form-check-label" for="onetime">OneTime</label>
-                                </div>
-                                <input type="number" class="form-control" name="feeAmount" placeholder="Amount" value="<%= registration?.feeAmount || '' %>" required>
-                            </div>
-                        </div>
+                        
                 
                         <!-- Submit Button -->
                         <div class="text-center">
@@ -261,7 +243,7 @@
                 
                         <!-- Tuition Location -->
                         <div class="mb-3">
-                            <label class="form-label fw-bold">Tuition Location <span class="text-warning">*</span></label>
+                            <label class="form-label fw-bold">Preferred Location <span class="text-warning">*</span></label>
                             <div class="d-flex flex-wrap gap-3">
                                 <% const locations = Array.isArray(registration.tuitionLocation) ? registration.tuitionLocation : []; %>
                                 <div class="form-check">
@@ -289,31 +271,9 @@
                         </div>
                 
                         <!-- Preferred Tutor -->
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Preferred Tutor <span class="text-warning">*</span></label>
-                            <div class="d-flex flex-wrap gap-3">
-                                <% const preferredTutor = registration.preferredTutor || ""; %>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="preferredTutor" id="male" value="Male" <%= preferredTutor === 'Male' ? 'checked' : '' %>>
-                                    <label class="form-check-label" for="male">Male</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="preferredTutor" id="female" value="Female" <%= preferredTutor === 'Female' ? 'checked' : '' %>>
-                                    <label class="form-check-label" for="female">Female</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="preferredTutor" id="any" value="Any" <%= preferredTutor === 'Any' ? 'checked' : '' %>>
-                                    <label class="form-check-label" for="any">Any</label>
-                                </div>
-                            </div>
-                        </div>
+                       
                 
-                        <!-- Board -->
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Board <span class="text-warning">*</span></label>
-                            <input type="text" class="form-control" name="board" placeholder="Enter Board" value="<%= registration.board || '' %>" required>
-                        </div>
-                
+                        
                         <!-- Experience, Qualification, Age -->
                         <div class="mb-3 row">
                             <div class="col-md-5">
@@ -336,15 +296,7 @@
                                 <label class="form-label fw-bold">Subject <span class="text-warning">*</span></label>
                                 <input type="text" class="form-control" name="subject" placeholder="Enter Subject" value="<%= registration.subject || '' %>" required>
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label fw-bold">Class <span class="text-warning">*</span></label>
-                                <select class="form-control " name="class" value="<%= registration.class || '' %>" required>
-                                    <option value=" <%= registration.class %>" disabled selected>Select Class/Grade</option>
-                                    <% for (let i = 1; i <= 12; i++) { %>
-                                        <option value="<%= i %>">Class <%= i %></option>
-                                    <% } %>
-                                </select>
-                            </div>
+                            
                         </div>
                 
                         <!-- Fee Offered -->

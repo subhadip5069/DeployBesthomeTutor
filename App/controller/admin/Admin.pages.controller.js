@@ -22,12 +22,33 @@ class AdminPagesController {
             const userId = req.user;
     
             // Fetch total counts
-            const [totalUsers, totalStudents, totalTeachers, totalRequirements] = await Promise.all([
+            const [
+                totalUsers,
+                totalStudents,
+                totalTeachers,
+                totalRequirements,
+                activeStudents,
+                inactiveStudents,
+                activeTutors,
+                inactiveTutors,
+            ] = await Promise.all([
                 User.countDocuments(),
                 User.countDocuments({ role: "student" }),
                 User.countDocuments({ role: "tutor" }),
-                Registration.countDocuments(), // Assuming "Registration" stores some requirement data
+                Registration.countDocuments(), // Total requirements
+                User.countDocuments({ role: "student", status: "active" }),  // Active students
+                User.countDocuments({ role: "student", status: "inactive" }), // Inactive students
+                User.countDocuments({ role: "tutor", status: "active" }),  // Active tutors
+                User.countDocuments({ role: "tutor", status: "inactive" })  // Inactive tutors
             ]);
+    
+            // Fetch total student & tutor requirements using `populate`
+            const registrations = await Registration.find({ userId: { $exists: true } }).populate("userId");
+    
+            // Filter student and tutor requirements based on user role
+            const totalStudentRequirements = registrations.filter(reg => reg.userId?.role === "student").length;
+            const activeTutorRequirements = registrations.filter(reg => reg.userId?.role === "tutor" && reg.status === "active").length;
+            const inactiveTutorRequirements = registrations.filter(reg => reg.userId?.role === "tutor" && reg.status === "inactive").length;
     
             // Fetch total payments correctly
             const totalPayments = await RazorpayPayment.aggregate([
@@ -44,13 +65,23 @@ class AdminPagesController {
                 totalStudents,
                 totalTeachers,
                 totalRequirements,
-                totalPayments: totalAmount/100,
+                totalPayments: totalAmount / 100,
+                activeStudents,
+                inactiveStudents,
+                activeTutors,
+                inactiveTutors,
+                totalStudentRequirements,
+                activeTutorRequirements,
+                inactiveTutorRequirements
             });
         } catch (error) {
             console.error("Error loading dashboard:", error);
             res.redirect('/admin/');
         }
     };
+    
+    
+    
     
     
     // API Route for Payment Data (to be called via AJAX)
@@ -152,7 +183,9 @@ class AdminPagesController {
                 .skip(skip)
                 .limit(limit)
                 .lean(); // Improves performance
-    
+                console.log("Total Registrations Found:", totalRegistrations);
+                console.log("Registrations Data:", registrations);
+                
             // Render view with pagination data
             res.render("Admin/documentVerification", {
                 title: "Inactive Registrations with Documents",

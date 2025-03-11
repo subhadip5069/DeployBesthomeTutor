@@ -9,12 +9,13 @@ class userPagesController {
     index=async(req, res)=>{
         try {
             const userId = req.user;
+            const message = req.session.message;
+        req.session.message = null;
         res.render("user/index",{
             title:"/ Home",
             user: userId,
             userId,
-            success_msg: req.flash("success_msg"),
-            error_msg: req.flash("error_msg"),
+            message
 
         });
     } catch (error) {
@@ -25,71 +26,119 @@ class userPagesController {
 
     register(req, res) {
         const userId = null;
+        const message = req.session.message;
+        req.session.message = null;
         res.render("user/register",{
             title:"/ Register",
-            success_msg: req.flash("success_msg"),
-            error_msg: req.flash("error_msg"),
+            message,
             userId
         });
     }
     login(req, res) {
+        const message = req.session.message;
+        req.session.message = null;
         res.render("user/login", {
             title: "/ Login",
-            success_msg: req.flash("success_msg"),
-            error_msg: req.flash("error_msg"),
-            messages :"hello",
+             message,
             userId: null
         });
     }
     
-    registration=async(req, res) =>{
-        const userId = req.user;
-        if(!userId || userId == null || userId == undefined){
-            return res.redirect('/register');
-        }
-        console.log(userId);
-        const user = await User.findOne({ _id: new mongoose.Types.ObjectId(userId.id) });
-
-       
-        res.render("user/registration",{
-            title:"/ Registration",
-            userId,
-            user,
-            success_msg: req.flash("success_msg"),
-            error_msg: req.flash("error_msg"),
-        });
-    }
-   editregistration = async (req, res) => {
+    
+  registration = async (req, res) => {
         try {
-          const userId = req.user;
-          console.log("userId:", userId);
-
-          const registrationId = req.params.id;
-
-          const user = await User.findOne({ _id: new mongoose.Types.ObjectId(userId.id) });
-
-          console.log("user:", user.role);
-            
-          const registration = await Registration.findById({
-            _id: new mongoose.Types.ObjectId(registrationId)}).populate("userId", "profileimage ");
-
-            console.log("registration:",registrationId, registration);
-
-          res.render("user/updateregistration", {
-            title: "/ Update Registration",
+          const userId = req.user?.userId; // Extract userId properly
+          const message = req.session.message;
+          req.session.message = null;
+      
+          // Validate userId
+          if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+            console.error("Invalid userId received:", userId);
+            return res.redirect("/register");
+          }
+      
+          console.log("User ID:", userId);
+      
+          // Fetch user from database
+          const user = await User.findById(userId);
+      
+          if (!user) {
+            console.error("User not found for ID:", userId);
+            return res.redirect("/register");
+          }
+      
+          res.render("user/registration", {
+            title: "Registration",
             userId,
             user,
-            registration,
-            success_msg: req.flash("success_msg"),
-            error_msg: req.flash("error_msg"),
+            message,
           });
+        } catch (error) {
+          console.error("Error in registration:", error);
+          res.status(500).redirect("/register");
+        }
+      };
+      
+       editregistration = async (req, res) => {
+        try {
+            const userId = req.user?.userId; // Ensure correct userId extraction
+            console.log("userId:", userId);
+    
+            const registrationId = req.params.id;
+            console.log("registrationId:", registrationId);
+    
+            // Validate userId before using it
+            if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+                console.error("Invalid userId:", userId);
+                req.flash("error_msg", "Invalid user ID.");
+                return res.redirect("/registration");
+            }
+    
+            // Validate registrationId before using it
+            if (!mongoose.Types.ObjectId.isValid(registrationId)) {
+                console.error("Invalid registrationId:", registrationId);
+                req.flash("error_msg", "Invalid registration ID.");
+                return res.redirect("/registration");
+            }
+    
+            // Fetch user details
+            const user = await User.findById(userId).lean();
+            if (!user) {
+                console.error("User not found:", userId);
+                req.flash("error_msg", "User not found.");
+                return res.redirect("/registration");
+            }
+    
+            // Fetch registration details
+            const registration = await Registration.findById(registrationId)
+                .populate("userId", "profileimage")
+                .lean();
+    
+            if (!registration) {
+                console.error("Registration not found:", registrationId);
+                req.flash("error_msg", "Registration not found.");
+                return res.redirect("/registration");
+            }
+    
+            console.log("Fetched Registration:", registration);
+    
+            // Render the update registration page
+            res.render("user/updateregistration", {
+                title: "/ Update Registration",
+                userId,
+                user,
+                registration,
+                success_msg: req.flash("success_msg"),
+                error_msg: req.flash("error_msg"),
+            });
+    
         } catch (error) {
             console.error("Error in editregistration:", error);
             req.flash("error_msg", "Something went wrong.");
-            res.redirect("/registration");
-            
+            if (!res.headersSent) res.redirect("/registration"); // Avoid duplicate redirects
         }
     };
+    
     
     
     
@@ -577,38 +626,49 @@ class userPagesController {
     //const profile
     myprofile = async (req, res) => {
         try {
-            const userId = req.user;
-            
-            const user = await User.findOne({ _id: userId.id }).lean();
-            if (!user || !user._id) {
-                res.redirect("/login");
+            const userId = req.user?.userId; // Extract correct userId
+    
+            if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+                console.error("Invalid userId:", userId);
+                return res.redirect("/login");
             }
     
+            // Fetch user data
+            const user = await User.findById(userId).lean();
+            if (!user) {
+                console.error("User not found:", userId);
+                return res.redirect("/login");
+            }
+    
+            // Fetch user requirement
             const requirement = await Registration.findOne({ userId: new mongoose.Types.ObjectId(userId) })
                 .populate("userId", "name email randomId")
                 .select("userId tuitionLocation preferredTime preferredTutor feeType feeAmount state city pincode locality subject class sorted attachedFiles board qualification experience age about")
                 .lean();
     
+            // Pagination setup
             const page = parseInt(req.query.page) || 1;
             const limit = parseInt(req.query.limit) || 3;
             const skip = (page - 1) * limit;
     
-            const studentIds = (user.unlockedStudents || []).map(id => new mongoose.Types.ObjectId(id));
-            const teacherIds = (user.unlockedTutors || []).map(id => new mongoose.Types.ObjectId(id));
-            
-    
+            // Convert unlocked student/tutor IDs into ObjectId array
+            const studentIds = (user.unlockedStudents || []).filter(mongoose.Types.ObjectId.isValid).map(id => new mongoose.Types.ObjectId(id));
+            const teacherIds = (user.unlockedTutors || []).filter(mongoose.Types.ObjectId.isValid).map(id => new mongoose.Types.ObjectId(id));
             const allIds = [...studentIds, ...teacherIds]; // Combine both arrays
-
-        const orders = await Registration.find({ _id: { $in: allIds } })
-           .populate("userId", "name email randomId") // Populate user information
-         .select("userId tuitionLocation preferredTime preferredTutor feeType feeAmount state city pincode locality subject class sorted attachedFiles board qualification experience age")
-         .skip(skip)
-            .limit(limit)
-        .lean();
     
+            // Fetch orders based on unlocked IDs
+            const orders = await Registration.find({ _id: { $in: allIds } })
+                .populate("userId", "name email randomId")
+                .select("userId tuitionLocation preferredTime preferredTutor feeType feeAmount state city pincode locality subject class sorted attachedFiles board qualification experience age")
+                .skip(skip)
+                .limit(limit)
+                .lean();
+    
+            // Count total orders
             const totalOrders = await Registration.countDocuments({ _id: { $in: allIds } });
             const totalPages = Math.ceil(totalOrders / limit); // Calculate total pages
     
+            // Render the profile page
             res.render("user/myprofile", {
                 title: "/ My Profile",
                 user,
@@ -620,13 +680,15 @@ class userPagesController {
                 limit,
                 currentPage: page,
                 success_msg: req.flash("success_msg"),
-            error_msg: req.flash("error_msg"),
+                error_msg: req.flash("error_msg"),
             });
+    
         } catch (error) {
             console.error("Error in myprofile:", error);
-           res.redirect("/login")
+            if (!res.headersSent) res.redirect("/login"); // Prevent duplicate redirects
         }
     };
+    
     
     
 

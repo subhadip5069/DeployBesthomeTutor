@@ -14,19 +14,6 @@ require("dotenv").config();
 
 const app = express();
 
-app.use(cookieParser());
-app.use(session({
-  secret: process.env.SESSION_SECRET || "your_secret_key",
-  resave: false,
-  saveUninitialized: false,
-  store: MongoStore.create({ mongoUrl: process.env.MONGO_URI }),
-  cookie: { secure: false, maxAge: 1000 * 60 * 60 * 24 } // 1 day
-}));
-app.use((req, res, next) => {
-  res.locals.session = req.session;
-  next();
-});; // Place before flash
-app.use(flash());
 
 
 
@@ -34,15 +21,22 @@ app.use(flash());
  connectDB();
 
 
+ app.use(session({
+  secret: "best home tutors",
+  resave: false,
+  saveUninitialized: true
+}));
 
+app.use(flash()); // Initialize flash messages
 
-// Middleware to make flash messages available in templates
 app.use((req, res, next) => {
-  res.locals.success = req.flash("success");
-  res.locals.error = req.flash("error");
-  res.locals.info = req.flash("info");
+  res.locals.success_msg = req.flash("success");
+  res.locals.error_msg = req.flash("error");
   next();
 });
+
+// Middleware to make flash messages available in templates
+
 
 app.use(cookieParser());
 app.use(express.json());

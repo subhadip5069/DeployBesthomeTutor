@@ -6,23 +6,21 @@ class FilterationController {
         try {
             let userId = req.user || null;
             let {
-                category,
-                classFilter, subjectFilter, preferredTutor, state, city, pincode,
-                priceRange, searchQuery, page = 1
+                category, classFilter, subjectFilter, preferredTutor,
+                state, city, pincode, priceRange, searchQuery, page = 1
             } = req.query;
-
+    
             let roleToFetch = category || null;
-
             page = parseInt(page) || 1;
             let limit = 9;
             let skip = (page - 1) * limit;
-
-            // ✅ Build User Filter
+    
+            // Build User Filter
             let userFilter = roleToFetch ? { role: roleToFetch } : {};
-
-            // ✅ Build Registration Filter
+    
+            // Build Registration Filter
             let registrationFilter = { status: "active" };
-
+    
             if (classFilter) {
                 registrationFilter.class = { $in: classFilter.split(",").map(c => c.trim()) };
             }
@@ -33,10 +31,10 @@ class FilterationController {
                 registrationFilter.preferredTutor = preferredTutor.trim();
             }
             if (state) {
-                registrationFilter.state = { $regex: state.trim(), $options: "i" };
+                registrationFilter.state = new RegExp(state.trim(), "i");
             }
             if (city) {
-                registrationFilter.city = { $regex: city.trim(), $options: "i" };
+                registrationFilter.city = new RegExp(city.trim(), "i");
             }
             if (pincode && !isNaN(pincode)) {
                 registrationFilter.pincode = Number(pincode);
@@ -47,8 +45,8 @@ class FilterationController {
                     registrationFilter.feeAmount = { $gte: minPrice, $lte: maxPrice };
                 }
             }
-
-            // ✅ Apply Search Query
+    
+            // Apply Search Query
             if (searchQuery) {
                 const regex = new RegExp(searchQuery.trim(), "i");
                 registrationFilter.$or = [
@@ -64,7 +62,7 @@ class FilterationController {
                     { board: regex },
                     { qualification: regex }
                 ];
-
+    
                 if (!isNaN(searchQuery)) {
                     registrationFilter.$or.push(
                         { pincode: Number(searchQuery) },
@@ -73,73 +71,54 @@ class FilterationController {
                     );
                 }
             }
-
-            // ✅ Fetch Registrations with Filters
+    
+            // Fetch Registrations
             let registrations = await Registration.find(registrationFilter)
                 .populate({ path: "userId", match: userFilter, select: "name email role randomId" })
                 .lean();
-
-            // ✅ Ensure Filtering by Role & State AFTER Fetching
+    
+            // Filter by Role & State AFTER Fetching
             registrations = registrations.filter(reg =>
                 reg.userId &&
                 reg.userId.role === roleToFetch &&
                 (!state || new RegExp(state.trim(), "i").test(reg.userId.state))
             );
-
-            console.log(`Filtered Registrations (After Role & State): ${registrations.length}`);
-
-            // ✅ Count Total Matching Registrations (AFTER Filtering)
+    
+            console.log(`Filtered Registrations: ${registrations.length}`);
+    
+            // Pagination Logic
             let totalUsers = registrations.length;
             let totalPages = totalUsers > 0 ? Math.ceil(totalUsers / limit) : 1;
-
-            // ✅ Ensure Page Number is in Range
+    
             if (page > totalPages) {
                 page = totalPages;
             }
             let paginatedRegistrations = registrations.slice(skip, skip + limit);
             const queryString = req.originalUrl.split('?')[1] || "";
-            res.render("user/listing", { title: "Listing",
-                requirements: paginatedRegistrations,
-                userId,
-                currentPage: page,
-                roleToFetch,
-                queryParams: req.query,
-                filters: {
-                    category,
-                    classFilter, subjectFilter, preferredTutor, state, city, pincode,
-                    priceRange, searchQuery, page
-                },
-                totalPages,
-                currentPage: page, 
-                totalPages,
-                 queryString });
-
-
-            // ✅ Paginate Results AFTER Filtering
-            
-
-            console.log(`Final Pagination: Showing Page ${page}/${totalPages}, Results: ${paginatedRegistrations.length}`);
-
+    
+            // Render EJS Page
             res.render("user/listing", {
                 title: "Listing",
                 requirements: paginatedRegistrations,
                 userId,
                 currentPage: page,
-                queryParams: req.query,
+                totalPages,
                 roleToFetch,
+                queryParams: req.query,
                 filters: {
-                    category,
-                    classFilter, subjectFilter, preferredTutor, state, city, pincode,
-                    priceRange, searchQuery, page
+                    category, classFilter, subjectFilter, preferredTutor,
+                    state, city, pincode, priceRange, searchQuery, page
                 },
-                totalPages
+                queryString
             });
-
+    
+            console.log(`Page ${page}/${totalPages}, Results: ${paginatedRegistrations.length}`);
         } catch (error) {
             console.error("Error fetching registrations:", error);
             res.status(500).render("user/error", { title: "Error", message: "Internal Server Error" });
         }
     };
+    
 }
 
 module.exports = new FilterationController();

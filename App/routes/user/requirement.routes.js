@@ -12,7 +12,14 @@ const { profileuploade,compressImage2 } = require("../../multer/profileimage");
 
 
 router.post("/registration", authMiddleware, requiremntController.createTuitionRequirement);
-router.post("/tutor/registration",authMiddleware, upload.array("attachedFiles", 2), compressImage, requiremntController.createRegistration);
+router.post(
+    "/tutor/registration",
+    authMiddleware,
+    upload.array("attachedFiles", 2), // Max 2 files
+    compressImage,
+    requiremntController.createRegistration
+  );
+  
 router.post("/updatereg/:id", authMiddleware, profileuploade,compressImage2,requiremntController.updateRegistration);
 router.post("/updaterequirment/:id", authMiddleware, requiremntController.updateTuitionRequirement);
 

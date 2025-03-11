@@ -1,55 +1,120 @@
 <%- include('partial/header') %>
-<div style="height: 10vh;">
 
-</div>
-<section class="container d-flex justify-content-center align-items-center flex-column min-vh-100" >
+<section class="container d-flex justify-content-center align-items-center flex-column min-vh-100">
     <div class="container mt-4">
         <h2 class="text-center mb-4">Student Registrations Without Documents</h2>
 
         <!-- Search Form -->
-        <form id="searchForm" action="/admin/allstudentrequirment?query" method="GET" class="text-center mb-4">
-            <input type="text" name="query" id="searchQuery" placeholder="Search..." style="padding: 8px; width: 50%; border: 1px solid #ccc; border-radius: 5px;">
-            <button type="submit" style="padding: 8px 15px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">Search</button>
-        </form>
-        
-        <!-- Search Results -->
-        <div id="searchResults" class="mt-4"></div>
+        <div class="text-center mb-4">
+            <input type="text" id="searchInput" placeholder="Search by Name, Email, or Subject..."
+                style="padding: 8px; width: 50%; border: 1px solid #ccc; border-radius: 5px;">
+            <button id="searchButton"
+                style="padding: 8px 15px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                Search
+            </button>
+        </div>
 
-        <!-- Student List -->
-        <div class="row">
-            <% if (registrations.length > 0) { %>
-                <% registrations.forEach(reg => { %>
-                    <div class="col-md-4 mb-4">
-                        <div class="card shadow-sm" style="border-radius: 10px;">
-                            <div class="card-body">
-                                <h5 class="card-title">
-                                    <%= reg.userId.name || "N/A" %> 
-                                    <span class="badge bg-success">Active</span>
-                                </h5>
-                                <p class="card-text" style="font-size: 14px;">
-                                    <strong>Email:</strong> <%= reg.userId.email || "N/A" %> <br>
-                                    <strong>Phone:</strong> <%= reg.userId.phone || "N/A" %> <br>
-                                    <strong>Location:</strong> <%= reg.tuitionLocation.join(", ") || "N/A" %> <br>
-                                    <strong>Subject:</strong> <%= reg.subject || "N/A" %> <br>
-                                    <strong>Class:</strong> <%= reg.class || "N/A" %> <br>
-                                    <strong>Board:</strong> <%= reg.board || "N/A" %> <br>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                <% }) %>
-            <% } else { %>
-                <div class="col-12 text-center">
-                    <p class="alert alert-warning">No student registrations found.</p>
-                </div>
-            <% } %>
+        <!-- Student Table -->
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover text-center">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Location</th>
+                        <th>Subject</th>
+                        <th>Class</th>
+                        <th>Board</th>
+                    </tr>
+                </thead>
+                <tbody id="studentTableBody">
+                    <% if (registrations.length > 0) { %>
+                        <% registrations.reverse().forEach(reg => { %>
+                            <tr class="user-row">
+                                <td><%= reg.userId.name || "N/A" %></td>
+                                <td><%= reg.userId.email || "N/A" %></td>
+                                <td><%= reg.userId.phone || "N/A" %></td>
+                                <td><%= reg.tuitionLocation.join(", ") || "N/A" %></td>
+                                <td><%= reg.subject || "N/A" %></td>
+                                <td><%= reg.class || "N/A" %></td>
+                                <td><%= reg.board || "N/A" %></td>
+                            </tr>
+                        <% }) %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="7" class="text-center">No student registrations found.</td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination Controls -->
+        <div class="d-flex justify-content-center mt-3">
+            <nav>
+                <ul class="pagination">
+                    <li class="page-item disabled"><a class="page-link" href="#" id="prevPage">Previous</a></li>
+                    <li class="page-item"><a class="page-link" href="#" id="nextPage">Next</a></li>
+                </ul>
+            </nav>
         </div>
     </div>
-    <div style="height: 50px; background-color: transparent;">
-
-    </div>
-
 </section>
 
-<!-- Footer -->
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        let currentPage = 1;
+        const rowsPerPage = 10;
+
+        function showPage(page) {
+            let rows = $(".user-row:visible"); // Get only visible rows
+            let totalPages = Math.ceil(rows.length / rowsPerPage);
+
+            if (page < 1) page = 1;
+            if (page > totalPages) page = totalPages;
+
+            rows.hide().slice((page - 1) * rowsPerPage, page * rowsPerPage).show();
+
+            // Disable/Enable pagination buttons
+            $("#prevPage").parent().toggleClass("disabled", page === 1);
+            $("#nextPage").parent().toggleClass("disabled", page === totalPages);
+        }
+
+        // Previous Page Click
+        $("#prevPage").click(function (e) {
+            e.preventDefault();
+            if (currentPage > 1) {
+                currentPage--;
+                showPage(currentPage);
+            }
+        });
+
+        // Next Page Click
+        $("#nextPage").click(function (e) {
+            e.preventDefault();
+            if (currentPage * rowsPerPage < $(".user-row:visible").length) {
+                currentPage++;
+                showPage(currentPage);
+            }
+        });
+
+        // Search Functionality
+        $("#searchInput").on("keyup", function () {
+            let searchTerm = $(this).val().toLowerCase();
+            $(".user-row").each(function () {
+                $(this).toggle($(this).text().toLowerCase().includes(searchTerm));
+            });
+            currentPage = 1; // Reset to first page after filtering
+            showPage(currentPage);
+        });
+
+        // Initial Page Load
+        showPage(currentPage);
+    });
+</script>
+
 <%- include('partial/footer') %>

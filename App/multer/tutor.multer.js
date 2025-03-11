@@ -14,7 +14,10 @@ const uploadPath = path.join(__dirname, "uploads/documents");
   }
 })();
 
-// Multer storage with 2MB limit
+// Allowed file types
+const allowedMimeTypes = ["image/jpeg", "image/png", "application/pdf"];
+
+// Multer storage configuration
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, uploadPath);
@@ -29,24 +32,26 @@ const upload = multer({
   storage,
   limits: { fileSize: 2 * 1024 * 1024 }, // 2MB max file size
   fileFilter: (req, file, cb) => {
-    if (!file.mimetype.startsWith("image/")) {
-      return cb(new Error("Only image files are allowed"), false);
+    if (!allowedMimeTypes.includes(file.mimetype)) {
+      return cb(new Error("Only JPEG, PNG, and PDF files are allowed"), false);
     }
     cb(null, true);
   },
 });
 
-// Image compression middleware (Compress to ~10KB)
+// Image compression middleware
 const compressImage = async (req, res, next) => {
   if (!req.files || req.files.length === 0) return next();
 
   try {
     await Promise.all(
       req.files.map(async (file) => {
+        if (!file.mimetype.startsWith("image/")) return; // Skip non-image files
+
         const compressedPath = path.join(uploadPath, `compressed-${file.filename}`);
 
-        let quality = 70; // Start with high quality
-        let width = 800; // Start with high width
+        let quality = 70;
+        let width = 800;
         let fileSize;
 
         do {
@@ -56,14 +61,14 @@ const compressImage = async (req, res, next) => {
             .toFile(compressedPath);
 
           fileSize = (await fs.stat(compressedPath)).size / 1024; // Convert bytes to KB
-          
+
           if (fileSize > 10) {
-            quality -= 10; // Reduce quality
-            if (quality < 20) width -= 50; // Reduce width only if necessary
+            quality -= 10;
+            if (quality < 20) width -= 50;
           }
         } while (fileSize > 10 && quality >= 20 && width > 100);
 
-        // Delete the original file
+        // Delete original file
         await fs.unlink(file.path).catch((err) => console.error("Failed to delete original file:", err));
 
         // Update file details

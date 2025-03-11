@@ -50,206 +50,218 @@ class UserAuthController {
   // Signup and Send OTP
  
   
-   signup = async (req, res) => {
+  signup = async (req, res) => {
     try {
-      const { name, email, password, phone, role, password2  } = req.body;
+        const { name, email, password, phone, role, password2 } = req.body;
+        const profileimage = req.file ? req.file.filename : "/user/images/profile.png";
 
-      // Validate user input
-      const profileimage = req.file ? req.file.filename : "/user/images/profile.png";
-  
-      // Check if passwords match
-      if (password !== password2) {
-        req.flash("error", "Passwords do not match.");
-        return res.redirect("/register");
-      }
-  
-      // Check if user already exists
-      const userExists = await User.findOne({ email });
-      if (userExists) {
-        req.flash("error", "Email is already registered. Please log in.");
-        return res.redirect("/login");
-      }
-  
-      // Hash password
-      const hashedPassword = await bcrypt.hash(password, 10);
-  
-      // Generate an 8-digit unique alphanumeric ID
-      const randomId = crypto.randomBytes(4).toString("hex").toUpperCase();
-  
-      // Generate OTP
-      const otp = generateOTP();
-  
-      // Save new user
-      const newUser = new User({
-        name,
-        email,
-        password: hashedPassword,
-        phone,
-        role,
-        randomId,
-        isVerified: false,
-        profileimage
-      });
-  
-      await newUser.save();
-  
-      // Store OTP in database
-      await Otp.create({ email, otp, createdAt: Date.now() });
-  
-      // Send OTP Email
-      const mailOptions = {
-        from: `"A-world" <${process.env.EMAIL_USER}>`,
-        to: email,
-        subject: "Verify Your Email -Tutor",
-        html: `
-          <h2>Verify Your Email</h2>
-          <p>Hello,</p>
-          <p>Thank you for signing up at <strong>A-world</strong>. Enter the OTP below to verify your email:</p>
-          <h3 style="color: red;">${otp}</h3>
-          <p>This OTP will expire in 5 minutes.</p>
-        `,
-      };
-  
-      transporter.sendMail(mailOptions, (err, info) => {
-        if (err) {
-          console.error("Error sending email:", err);
-          req.flash("error", "Error sending OTP. Please try again.");
-          return res.redirect("/register");
+        // Check if passwords match
+        if (password !== password2) {
+            req.session.message = { type: "danger", text: "Passwords do not match." };
+            return res.redirect("/register");
         }
-        console.log("Email sent:", info.response);
-        req.flash("success", "OTP sent successfully. Please check your email.");
-        return res.render(`user/verifyemail`,{
-          title:"tutor",
-          email,
-          userId : newUser._id
+
+        // Check if user already exists
+        const userExists = await User.findOne({ email });
+        if (userExists) {
+            req.session.message = { type: "danger", text: "Email is already registered. Please log in." };
+            return res.redirect("/login");
+        }
+
+        // Hash password
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Generate an 8-digit unique alphanumeric ID
+        const randomId = crypto.randomBytes(4).toString("hex").toUpperCase();
+
+        // Generate OTP
+        const otp = generateOTP();
+
+        // Save new user with creation timestamp
+        const newUser = new User({
+            name,
+            email,
+            password: hashedPassword,
+            phone,
+            role,
+            randomId,
+            isVerified: false,
+            profileimage,
+            createdAt: new Date(), // Save signup time
         });
-      });
-  
+
+        await newUser.save();
+
+        // Store OTP in database
+        await Otp.create({ email, otp, createdAt: Date.now() });
+
+        // Send OTP Email
+        const mailOptions = {
+            from: `"A-world" <${process.env.EMAIL_USER}>`,
+            to: email,
+            subject: "Verify Your Email - Tutor",
+            html: `
+                <div style="max-width: 400px; margin: auto; padding: 20px; border-radius: 10px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); font-family: Arial, sans-serif; text-align: center; background-color: #ffffff; border: 1px solid #ddd;">
+    <h2 style="color: #333; margin-bottom: 10px;">Verify Your Email</h2>
+    <p style="color: #555;">Hello,</p>
+    <p style="color: #555;">Thank you for signing up at <strong style="color: #007bff;">Best home tutor</strong>. Enter the OTP below to verify your email:</p>
+    <div style="font-size: 22px; font-weight: bold; color: red; background: #f8d7da; padding: 10px; display: inline-block; border-radius: 5px; margin: 10px 0;">
+        ${otp}
+    </div>
+    <p style="color: #555;">This OTP will expire in 5 minutes.</p>
+</div>
+
+            `,
+        };
+
+        transporter.sendMail(mailOptions, async (err, info) => {
+            if (err) {
+                console.error("Error sending email:", err);
+                req.session.message = { type: "danger", text: "Error sending OTP. Please try again." };
+                await User.deleteOne({ _id: newUser._id }); // Delete user if email fails
+                return res.redirect("/register");
+            }
+
+            console.log("Email sent:", info.response);
+            req.session.message = { type: "success", text: "OTP sent successfully. Please check your email." };
+
+            return res.render("user/verifyemail", {
+                title: "Tutor",
+                email,
+                message: { type: "success", text: "OTP sent successfully. Please check your email." },
+                userId: newUser._id
+            });
+        });
+
     } catch (error) {
-      console.error("Signup Error:", error);
-      req.flash("error", "Something went wrong. Please try again.");
-      return res.redirect("/register");
+        console.error("Signup Error:", error);
+        req.session.message = { type: "danger", text: "Something went wrong. Please try again." };
+        return res.redirect("/register");
     }
-  };
-  verifyOtp = async (req, res) => {
-    try {
+};
+
+
+ verifyOtp = async (req, res) => {
+  try {
       const { email, otp } = req.body;
-  
+
       // Find OTP in the database
       const otpEntry = await Otp.findOne({ email });
-      // user
       const user = await User.findOne({ email });
-  
+
       if (!otpEntry) {
-        req.flash("error", "OTP expired or invalid.");
-        return res.render("user/verifyemail", {
-          title: "Verify Email",
-          email,
-          userId: user,
-          error: "No OTP found for this email. Please request a new one.",
-        });
+          return res.render("user/verifyemail", {
+              title: "Verify Email",
+              email,
+              userId: user ? user._id : null,
+              message: { type: "danger", text: "OTP expired or invalid. Please request a new one." }
+          });
       }
-  
+
       // Check if OTP matches
       if (otpEntry.otp !== otp) {
-        req.flash("error", "Incorrect OTP. Please try again.");
-        return res.render("user/verifyemail", {
-          title: "Verify Email",
-          email,
-          userId: user,
-          error: "No OTP found for this email. Please request a new one.",
-        });
+          return res.render("user/verifyemail", {
+              title: "Verify Email",
+              email,
+              userId: user ? user._id : null,
+              message: { type: "danger", text: "Incorrect OTP. Please try again." }
+          });
       }
-  
+
       // Mark user as verified
       await User.findOneAndUpdate({ email }, { isVerified: true });
-  
+
       // Delete OTP after successful verification
       await Otp.deleteOne({ email });
-  
-      req.flash("success", "Email verified successfully. You can now log in.");
-      return res.redirect("/login");
-  
-    } catch (error) {
-      console.error("OTP Verification Error:", error);
-      req.flash("error", "Something went wrong. Please try again.");
-      return res.render("user/verifyemail", {
-        title: "Verify Email",
-        email,
-        userId: user,
-        error: "No OTP found for this email. Please request a new one.",
+
+      return res.render("user/login", {
+          title: "Login",
+          message: { type: "success", text: "Email verified successfully. You can now log in." }
       });
-    }
-  };
+
+  } catch (error) {
+      console.error("OTP Verification Error:", error);
+      return res.render("user/verifyemail", {
+          title: "Verify Email",
+          email,
+          message: { type: "danger", text: "Something went wrong. Please try again." }
+      });
+  }
+};
+
+
   
   // RESEND OTP CONTROLLER
   resendOtp2 = async (req, res) => {
     try {
-      const { email } = req.body;
-  
-      // Check if user exists
-      const user = await User.findOne({ email });
-      if (!user) {
-        req.flash("error", "User not found.");
-        return res.redirect("/register");
-      }
-  
-      // Generate a new OTP
-      const newOtp = generateOTP();
-  
-      // Update or create a new OTP record
-      await Otp.findOneAndUpdate(
-        { email },
-        { otp: newOtp, createdAt: Date.now() },
-        { upsert: true }
-      );
-  
-      // Send OTP Email
-      const mailOptions = {
-        from: `"A-world" <${process.env.EMAIL_USER}>`,
-        to: email,
-        subject: "Resend OTP - Tutor",
-        html: `
-          <h2>New OTP</h2>
-          <p>Hello,</p>
-          <p>Your new OTP for email verification is:</p>
-          <h3 style="color: red;">${newOtp}</h3>
-          <p>This OTP will expire in 5 minutes.</p>
-        `,
-      };
-  
-      transporter.sendMail(mailOptions, (err, info) => {
-        if (err) {
-          console.error("Error sending email:", err);
-          req.flash("error", "Error sending OTP. Please try again.");
-          return res.render("user/verifyemail", {
+        const { email } = req.body;
+
+        // Check if user exists
+        const user = await User.findOne({ email });
+        if (!user) {
+            req.session.message = { type: "danger", text: "User not found." };
+            return res.render("user/verifyemail", {
+                title: "Verify Email",
+                email,
+                userId: null
+            });
+        }
+
+        // Generate a new OTP
+        const newOtp = generateOTP();
+
+        // Update or create a new OTP record
+        await Otp.findOneAndUpdate(
+            { email },
+            { otp: newOtp, createdAt: Date.now() },
+            { upsert: true }
+        );
+
+        // Send OTP Email
+        const mailOptions = {
+            from: `"A-world" <${process.env.EMAIL_USER}>`,
+            to: email,
+            subject: "Resend OTP - Tutor",
+            html: `
+                <h2>New OTP</h2>
+                <p>Hello,</p>
+                <p>Your new OTP for email verification is:</p>
+                <h3 style="color: red;">${newOtp}</h3>
+                <p>This OTP will expire in 5 minutes.</p>
+            `,
+        };
+
+        transporter.sendMail(mailOptions, (err, info) => {
+            if (err) {
+                console.error("Error sending email:", err);
+                req.session.message = { type: "danger", text: "Error sending OTP. Please try again." };
+                return res.render("user/verifyemail", {
+                    title: "Verify Email",
+                    email,
+                    userId: user._id
+                });
+            }
+
+            console.log("OTP Resent:", info.response);
+            req.session.message = { type: "success", text: "New OTP sent successfully. Please check your email." };
+            return res.render("user/verifyemail", {
+                title: "Verify Email",
+                email,
+                userId: user._id
+            });
+        });
+
+    } catch (error) {
+        console.error("Resend OTP Error:", error);
+        req.session.message = { type: "danger", text: "Something went wrong. Please try again." };
+        return res.render("user/verifyemail", {
             title: "Verify Email",
             email,
-            userId: user,
-            error: "No OTP found for this email. Please request a new one.",
-          });
-        }
-        console.log("OTP Resent:", info.response);
-        req.flash("success", "New OTP sent successfully. Please check your email.");
-        return res.render("user/verifyemail", {
-          title: "Verify Email",
-          email,
-          userId: user,
-          error: "No OTP found for this email. Please request a new one.",
+            userId: null
         });
-      });
-  
-    } catch (error) {
-      console.error("Resend OTP Error:", error);
-      req.flash("error", "Something went wrong. Please try again.");
-      return res.render("user/verifyemail", {
-        title: "Verify Email",
-        email,
-        userId: null,
-        error: "No OTP found for this email. Please request a new one.",
-      });
     }
-  };
+};
+
   // Verify OTP and Activate Account
  verifyOTP = async (req, res) => {
     try {
@@ -421,71 +433,64 @@ class UserAuthController {
   };
   
 
-  // Login
- login = async (req, res) => {
-    try {
-      const { email, password } = req.body;
+
+
+  login = async (req, res) => {
+      try {
+          const { email, password } = req.body;
+          const user = await User.findOne({ email });
+
+          const registration = await Registration.findOne(req.user);
+
+         
+
+      
+          if (!user) {
+              req.session.message = { type: "danger", text: "Invalid email or password." };
+              return res.redirect("/login");
+          }
   
-      const user = await User.findOne({ email });
-      if (!user) {
-        req.flash("error", "Invalid email or password.");
-        return res.redirect("/login");
+          if (!user.isVerified) {
+              req.session.message = { type: "warning", text: "Your account is not verified. Please check your email." };
+              return res.redirect("/login");
+          }
+  
+          const isMatch = await bcrypt.compare(password, user.password);
+          if (!isMatch) {
+              req.session.message = { type: "danger", text: "Invalid email or password." };
+              return res.redirect("/login");
+          }
+  
+          // Generate JWT token
+          const token = jwt.sign({ userId: user._id , role: user.role, email: user.email}, process.env.JWT_SECRET, {
+              expiresIn: "7d", // Token valid for 7 days
+          });
+  
+          // Set token in cookies
+          res.cookie("token", token, {
+              httpOnly: true,  // Prevents JavaScript access (security)
+              secure: process.env.NODE_ENV === "production", // Secure flag in production
+              sameSite: "Strict", // Prevents CSRF attacks
+              maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days expiry
+          });
+  
+          req.session.message = { type: "success", text: "Login successful!" };
+          if (!registration) {
+            return res.redirect("/registration");
+        }else{
+            return res.redirect("/");
+          }
+          
+  
+      } catch (error) {
+          console.error("Error logging in:", error);
+          req.session.message = { type: "danger", text: "Something went wrong. Please try again." };
+          return res.redirect("/login");
       }
-  
-      if (!user.isVerified) {
-        req.flash("error", "Your account is not verified. Please check your email.");
-        return res.redirect("/login");
-      }
-  
-      const isMatch = await bcrypt.compare(password, user.password);
-      if (!isMatch) {
-        req.flash("error", "Invalid email or password.");
-        return res.redirect("/login");
-      }
-  
-      // Generate JWT Token
-      const token = jwt.sign(
-        { id: user._id, username: user.name, role: user.role },
-        process.env.JWT_SECRET,
-        { expiresIn: "7d" }
-      );
-  
-      // Set token in HTTP-only cookie
-      res.cookie("token", token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "Strict",
-        maxAge: 48 * 60 * 60 * 1000, // 2 days
-      });
-  
-      // Now, manually set req.user since login is creating a new session
-      req.user = user;
-  
-      const users = new mongoose.Types.ObjectId(user._id);
-  
-      // Check if user has a registration record
-      const registration = await Registration.findOne({ userId: users });
-  
-      if (!registration) {
-        req.flash("info", "Please complete your registration.");
-        return res.redirect("/registration");
-      } else {
-        req.flash("success", "Login successful!");
-        if (req.user.role === "student") {
-          return res.redirect("/listingoftutor");
-        } else if (req.user.role === "tutor") {
-          return res.redirect("/listingofstudent");
-        } else {
-          return res.redirect("/scearch");
-        }
-      }
-    } catch (error) {
-      console.error("Error logging in:", error);
-      req.flash("error", "Something went wrong. Please try again.");
-      return res.redirect("/login");
-    }
   };
   
+
+
   forgotPassword = async (req, res) => {
     try {
       const { email } = req.body;

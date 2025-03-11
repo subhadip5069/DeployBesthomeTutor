@@ -16,10 +16,9 @@
                     <th>Name</th>
                     <th>ID</th>
                     <th>Email</th>
-                    <th>Class</th>
+                   
                     <th>Subject</th>
-                    <th>Fee Type</th>
-                    <th>Preferred Tutor</th>
+                   
                     <th>Location</th>
                     <th>Document Status</th>
                     <th>Files</th>
@@ -31,10 +30,9 @@
                         <td><%= registration.userId.name %> <span class="badge bg-success">Active</span></td>
                         <td><%= registration.userId.randomId %></td>
                         <td><%= registration.userId.email %></td>
-                        <td><%= registration.class || "N/A" %></td>
+                       
                         <td><%= registration.subject || "N/A" %></td>
-                        <td><%= registration.feeType || "N/A" %> (<%= registration.feeAmount || "N/A" %>)</td>
-                        <td><%= registration.preferredTutor || "N/A" %></td>
+                       
                         <td><%= registration.tuitionLocation?.length ? registration.tuitionLocation.join(", ") : "N/A" %></td>
                         
                         <td>

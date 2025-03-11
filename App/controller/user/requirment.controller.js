@@ -21,24 +21,39 @@ const sendEmails = async (userEmail, requirement) => {
         from: process.env.EMAIL_USER,
         to: userEmail,
         subject: "Tuition Requirement Submitted Successfully",
-        html: `<p>Dear User,</p>
-               <p>Your tuition requirement has been successfully submitted.</p>
-               <p><strong>Location:</strong> ${requirement.tuitionLocation}</p>
-               <p><strong>Preferred Time:</strong> ${requirement.preferredTime}</p>
-               <p>Thank you for using our platform!</p>`,
+        html: `
+            <div style="max-width: 500px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px; box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1); font-family: Arial, sans-serif;">
+                <h2 style="color: #007bff; text-align: center;">Tuition Requirement Submitted</h2>
+                <p>Dear User,</p>
+                <p>Your tuition requirement has been successfully submitted.</p>
+                <div style="background: #f8f9fa; padding: 10px; border-radius: 8px;">
+                    <p><strong>📍 Location:</strong> ${requirement.tuitionLocation}</p>
+                    <p><strong>⏰ Preferred Time:</strong> ${requirement.preferredTime}</p>
+                </div>
+                <p>Thank you for using our platform!</p>
+            </div>
+        `,
     };
-
+    
     const adminMailOptions = {
         from: process.env.EMAIL_USER,
         to: adminEmail,
         subject: "New Tuition Requirement Submitted",
-        html: `<p>Dear Admin,</p>
-               <p>A new tuition requirement has been submitted by a user.</p>
-               <p><strong>User ID:</strong> ${requirement.userId}</p>
-               <p><strong>Location:</strong> ${requirement.tuitionLocation}</p>
-               <p><strong>Preferred Time:</strong> ${requirement.preferredTime}</p>
-               <p>Login to the admin panel to review.</p>`,
+        html: `
+            <div style="max-width: 500px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px; box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1); font-family: Arial, sans-serif;">
+                <h2 style="color: #dc3545; text-align: center;">New Tuition Requirement</h2>
+                <p>Dear Admin,</p>
+                <p>A new tuition requirement has been submitted by a user.</p>
+                <div style="background: #f8f9fa; padding: 10px; border-radius: 8px;">
+                    <p><strong>🆔 User ID:</strong> ${requirement.userId}</p>
+                    <p><strong>📍 Location:</strong> ${requirement.tuitionLocation}</p>
+                    <p><strong>⏰ Preferred Time:</strong> ${requirement.preferredTime}</p>
+                </div>
+                <p>Login to the admin panel to review.</p>
+            </div>
+        `,
     };
+    
 
     await transporter.sendMail(userMailOptions);
 
@@ -69,7 +84,7 @@ class TuitionController {
                     
                 }
     
-            const { tuitionLocation, preferredTime, preferredTutor, feeType, feeAmount, state, city, pincode, locality, subject, class: className, userId , board,status} = req.body;
+            const { tuitionLocation, preferredTime, preferredTutor, state, city, pincode, locality, subject, class: className, userId , board,status} = req.body;
     
             // Find user email based on userId
             const user = await User.findById(userId);
@@ -82,11 +97,9 @@ class TuitionController {
                 tuitionLocation,
                 preferredTime,
                 preferredTutor,
-                feeType,
-                feeAmount,
                 state,
                 city,
-                
+
                 pincode,
                 locality,
                 subject,
@@ -106,77 +119,82 @@ class TuitionController {
             return res.redirect('/login');
         }
     }
-    createRegistration =async (req, res) => {
-       
-        
-        
+
+
+ createRegistration = async (req, res) => {
         try {
-            // if exists user role student and status active show listof tutor
-
-           
-
+          console.log("Received req.body:", req.body);
+          console.log("Received req.user:", req.user);
+      
           const {
-            userId,
+            userId, // Expecting userId from req.body
             tuitionLocation,
             preferredTime,
-            preferredTutor,
-            feeType,
-            feeAmount,
             state,
             city,
             pincode,
             locality,
             subject,
             about,
-            class: classLevel,
             sorted,
             experience,
             qualification,
             board,
-            age
+            age,
           } = req.body;
-        //   if already exists
-          
-          const user = await User.findById(userId);
+      
+          // Determine userId (from req.body or req.user)
+          const validUserId = userId || (req.user ? req.user.id : null);
+      
+          // Validate userId
+          if (!validUserId || !mongoose.Types.ObjectId.isValid(validUserId)) {
+            console.error("Invalid userId received:", validUserId);
+            return res.redirect("/login");
+          }
+      
+          // Check if user exists
+          const user = await User.findById(validUserId);
           if (!user) {
             return res.redirect("/login");
           }
-          const attachedFiles = req.files.map((file) => ({
-            fileType: req.body.fileType || "Other",
-            filePath: file.path,
-          }));
-
       
+          // Handle file uploads (only if files are uploaded)
+          const attachedFiles = req.files
+            ? req.files.map((file) => ({
+                fileType: req.body.fileType || "Other",
+                filePath: file.path,
+              }))
+            : [];
+      
+          // Create a new registration
           const registration = new Registration({
-            userId,
+            userId: validUserId,
             tuitionLocation,
             preferredTime,
-            preferredTutor,
-            feeType,
-            feeAmount,
             state,
             city,
-            board,
-            about,
             pincode,
             locality,
             subject,
-            class: classLevel,
+            about,
             sorted,
-            attachedFiles,
             experience,
             qualification,
-            age
+            board,
+            age,
+            attachedFiles,
           });
       
           await registration.save();
           await sendEmails(user.email, registration);
+      
           res.redirect("/listingofstudent"); // Redirect after success
         } catch (error) {
-          console.error(error);
-          res.redirect("/login");
+          console.error("Error in createRegistration:", error);
+          res.status(500).redirect("/login");
         }
       };
+      
     
     
     
@@ -187,9 +205,6 @@ async updateTuitionRequirement(req, res) {
         const {
             tuitionLocation,
             preferredTime,
-            preferredTutor,
-            feeType,
-            feeAmount,
             state,
             city,
             pincode,
@@ -205,18 +220,15 @@ async updateTuitionRequirement(req, res) {
             {_id: new mongoose.Types.ObjectId(req.params.id)},
             {
                 tuitionLocation,
-                preferredTime,
-                preferredTutor,
-                feeType,
-                feeAmount,
-                state,
-                city,
-                pincode,
-                locality,
-                subject,
-                class: className,
-                board,
-                status
+            preferredTime,
+            state,
+            city,
+            pincode,
+            locality,
+            subject,
+            class: className,
+            board,
+            status
             },
             { new: true }
         );
@@ -240,22 +252,20 @@ updateRegistration=async(req, res)=> {
         const { registrationId } = req.params; // Corrected destructuring
         const {
             tuitionLocation,
-            preferredTime,
-            preferredTutor,
-            feeType,
-            feeAmount,
-            state,
-            city,
-            pincode,
-            locality,
-            subject,
-            about,
-            class: classLevel,
-            sorted,
-            experience,
-            qualification,
-            board,
-            age
+                preferredTime,
+            
+                state,
+                city,
+                pincode,
+                locality,
+                subject,
+                about,
+               
+                sorted,
+                experience,
+                qualification,
+              
+                age
         } = req.body;
 
         // Find the existing registration
@@ -278,7 +288,7 @@ updateRegistration=async(req, res)=> {
             }
 
             // Save the new image path
-            user.profileimage = req.file.path;
+            user.profileImage = req.file.path;
             await user.save(); // Update the user document
         }
 
@@ -288,20 +298,18 @@ updateRegistration=async(req, res)=> {
             {
                 tuitionLocation,
                 preferredTime,
-                preferredTutor,
-                feeType,
-                feeAmount,
+            
                 state,
                 city,
                 pincode,
                 locality,
                 subject,
                 about,
-                class: classLevel,
+               
                 sorted,
                 experience,
                 qualification,
-                board,
+              
                 age
             },
             { new: true }

@@ -79,7 +79,7 @@
     
     <div class="row justify-content-center align-items-center g-4">
         <!-- Image Section -->
-        <% if(userId.role == "student"){ %>
+        <% if(user.role == "student"){ %>
         <div class="col text-center ">
            
                     
@@ -111,13 +111,21 @@
                 <h4 class="text-center text-warning mb-3">Please Enter Tutor Requirements</h4>
                 <!--  -->
                 <!-- for tution -->
+                <div class="container mt-3">
+                    <% if (message) { %>
+                        <div class="alert alert-<%= message.type %> alert-dismissible fade show" role="alert">
+                            <%= message.text %>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    <% } %>
+                </div>
                 
                 <form action="/requirment/registration" method="post">
-                    <input type="hidden" name="userId" value="<%= userId.id %>"> 
+                    <input type="hidden" name="userId" value="<%= user._id %>"> 
                 
                     <!-- Tuition Location -->
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Tuition Location <span class="text-warning">*</span></label>
+                        <label class="form-label fw-bold">Preferance <span class="text-warning">*</span></label>
                         <div class="d-flex flex-wrap gap-3">
                             <div class="form-check">
                                 <input class="form-check-input" name="tuitionLocation[]" type="checkbox" id="home" value="Your Home">
@@ -203,32 +211,15 @@
                     </div>
                     
                 
-                    <!-- Fee Offered -->
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Fee Offered <span class="text-warning">*</span></label>
-                        <div class="d-flex flex-wrap align-items-center gap-3">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="feeType" id="hourly" value="Hourly">
-                                <label class="form-check-label" for="hourly">Hourly</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="feeType" id="monthly" value="Monthly">
-                                <label class="form-check-label" for="monthly">Monthly</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="feeType" id="onetime" value="OneTime">
-                                <label class="form-check-label" for="onetime">OneTime</label>
-                            </div>
-                            <input type="number" class="form-control" name="feeAmount" placeholder="Amount" style="width: 120px;" required>
-                        </div>
-                    </div>
-                
+                   
                     <!-- State & City -->
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label class="form-label fw-bold">State <span class="text-warning">*</span></label>
+                            <label class="form-label fw-bold">State/UT <span class="text-warning">*</span></label>
                             <select class="form-select" name="state" required>
-                                <option value="" disabled selected>Select State</option>
+                                <option value="" disabled selected>Select State/UT</option>
+                                
+                                <!-- Indian States -->
                                 <option value="andhra pradesh">Andhra Pradesh</option>
                                 <option value="arunachal pradesh">Arunachal Pradesh</option>
                                 <option value="assam">Assam</option>
@@ -257,14 +248,25 @@
                                 <option value="uttar pradesh">Uttar Pradesh</option>
                                 <option value="uttarakhand">Uttarakhand</option>
                                 <option value="west bengal">West Bengal</option>
+                    
+                                <!-- Indian Union Territories (UTs) -->
+                                <option value="andaman and nicobar islands">Andaman and Nicobar Islands</option>
+                                <option value="chandigarh">Chandigarh</option>
+                                <option value="dadra and nagar haveli and daman and diu">Dadra and Nagar Haveli and Daman and Diu</option>
+                                <option value="delhi">Delhi</option>
+                                <option value="jammu and kashmir">Jammu and Kashmir</option>
+                                <option value="ladakh">Ladakh</option>
+                                <option value="lakshadweep">Lakshadweep</option>
+                                <option value="puducherry">Puducherry</option>
                             </select>
-                            
                         </div>
+                    
                         <div class="col-md-6">
                             <label class="form-label fw-bold">City <span class="text-warning">*</span></label>
                             <input type="text" class="form-control" name="city" placeholder="Enter City" required>
                         </div>
                     </div>
+                    
                 
                     <!-- Pincode & Locality -->
                     <div class="row mb-4">
@@ -311,13 +313,20 @@
                 <h4 class="text-center text-warning mb-3">Please Enter Students Requirements</h4>
                 
                 <!-- for tution -->
-                
+                <div class="container mt-3">
+                    <% if (message) { %>
+                        <div class="alert alert-<%= message.type %> alert-dismissible fade show" role="alert">
+                            <%= message.text %>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    <% } %>
+                </div>
                 <form action="/requirment/tutor/registration" method="post" enctype="multipart/form-data">
-                    <input type="hidden" name="userId" value="<%= userId.id %>"> 
+                    <input type="hidden" name="userId" value="<%= user._id %>"> 
                 
                     <!-- Tuition Location -->
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Tuition Location <span class="text-warning">*</span></label>
+                        <label class="form-label fw-bold">Preferance <span class="text-warning">*</span></label>
                         <div class="d-flex flex-wrap gap-3">
                             <div class="form-check">
                                 <input class="form-check-input" name="tuitionLocation[]" type="checkbox" id="home" value="Your Home">
@@ -364,30 +373,8 @@
                         </div>
                     </div>
                 
-                    <!-- Preferred Tutor -->
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Preferred Tutor <span class="text-warning">*</span></label>
-                        <div class="d-flex flex-wrap gap-3">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="preferredTutor" id="male" value="Male">
-                                <label class="form-check-label" for="male">Male</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="preferredTutor" id="female" value="Female">
-                                <label class="form-check-label" for="female">Female</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="preferredTutor" id="any" value="Any">
-                                <label class="form-check-label" for="any">Any</label>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- board -->
-                    <div class="mb-3">
-                        <label class="form-label
-                        fw-bold">Board <span class="text-warning">*</span></label>
-                        <input type="text" class="form-control" name="board" placeholder="Enter Class/Grade" required>
-                    </div>
+                    
+                   
                 
                     <!-- Experiance -->
                     <div class="mb-3 row">
@@ -400,49 +387,24 @@
                             <input type="text" class="form-control" name="qualification" placeholder="Enter Class/Grade" required>
                         </div>
                         <div class="col-md-2">
-                            <label class="form-label fw-bold">Age :<span class="text-warning">*</span></label>
+                            <label class="form-label fw-bold">Your Age :<span class="text-warning">*</span></label>
                             <input type="number" class="form-control" name="age" placeholder="Enter Year" required>
                         </div>
                     </div>
 
                 
                     <!-- Subject & Class -->
+
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label class="form-label fw-bold">Subject <span class="text-warning">*</span></label>
+                            <label class="form-label fw-bold">Subject (Using ",") <span class="text-warning">*</span></label>
                             <input type="text" class="form-control" name="subject" placeholder="Enter Subject" required>
                         </div>
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold">Class <span class="text-warning">*</span></label>
-                            <select class="form-control" name="class" required>
-                                <option value="" disabled selected>Select Class/Grade</option>
-                                <% for (let i = 1; i <= 12; i++) { %>
-                                    <option value="<%= i %>">Class <%= i %></option>
-                                <% } %>
-                            </select>
-                        </div>
-                        
+                       
                     </div>
+                    
                 
-                    <!-- Fee Offered -->
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Fee Offered <span class="text-warning">*</span></label>
-                        <div class="d-flex flex-wrap align-items-center gap-3">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="feeType" id="hourly" value="Hourly">
-                                <label class="form-check-label" for="hourly">Hourly</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="feeType" id="monthly" value="Monthly">
-                                <label class="form-check-label" for="monthly">Monthly</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="feeType" id="onetime" value="OneTime">
-                                <label class="form-check-label" for="onetime">OneTime</label>
-                            </div>
-                            <input type="number" class="form-control" name="feeAmount" placeholder="Amount" style="width: 120px;" required>
-                        </div>
-                    </div>
+                   
                 
                     <!-- State & City -->
                     <div class="row mb-3">

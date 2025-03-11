@@ -1,5 +1,118 @@
 
-<%- include('layout/navbar') %>
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+        <title><%= title %></title>
+        <link rel="icon" type="images/x-icon" href="/user/images/favicon.ico">
+        <!-- CSS FILES -->        
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Open+Sans&display=swap" rel="stylesheet">
+                        
+        <link href="/user/css/bootstrap.min.css" rel="stylesheet">
+
+        <link href="/user/css/bootstrap-icons.css" rel="stylesheet">
+
+        <link href="/user/css/templatemo-topic-listing.css" rel="stylesheet">
+<!--
+
+TemplateMo 590 topic listing
+
+
+
+-->
+    </head>
+    
+    <body class="topics-listing-page" id="top">
+
+        <main>
+
+           
+            <nav class="navbar navbar-expand-lg">
+                <div class="container">
+                    <a class="navbar-brand" style="boder:none" href="/">
+                        <img src="/user/images/logo.jpg" style="height:40px; border-radius:20px" alt="logo">
+                    </a>
+            
+                    <!-- Mobile Profile Icon -->
+                    
+                    <!-- Navbar Toggler -->
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+            
+                    <!-- Navbar Links -->
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav ms-lg-5 me-lg-auto">
+                            <li class="nav-item">
+                                <a class="nav-link click-scroll" href="/#section_1">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link click-scroll" href="/#section_2">How it works</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link click-scroll" href="/#section_3">Review</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link click-scroll" href="/#section_4">FAQs</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/listingoftutor?page=2">I NEED A TUTOR</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/listingofstudent">ONLINE TUITION</a>
+                            </li>
+            
+                            <!-- Dropdown Menu -->
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" id="navbarLightDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">More</a>
+                                <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="navbarLightDropdownMenuLink">
+                                    <li><a class="dropdown-item" href="/register">Signup</a></li>
+                                    <li><a class="dropdown-item" href="/terms&condition">Terms & <br> Conditions</a></li>
+                                    <li><a class="dropdown-item" href="/privacypolicy">Privacy Policy</a></li>
+                                    <li><a class="dropdown-item" href="/primum">Pricing</a></li>
+
+            
+                                   
+                                     
+                                        <li class="dropdown-item d-lg-none">
+                                            <a class="btn" style="color: rgb(0, 0, 0); background-color: #ffc107;" href="/login">Login</a>
+                                        </li>
+                                        <li class="dropdown-item d-lg-none">
+                                            <a class="btn" style="color: rgb(0, 0, 0); background-color: #55ff07;" href="/register">Register</a>
+                                        </li>
+                                 
+                                </ul>
+                            </li>
+                        </ul>
+            
+                        <!-- Desktop View: Profile and Auth Buttons -->
+                        <ul class="navbar-nav">
+                           
+                                <li class="nav-item d-none d-lg-block">
+                                    <a href="/login" class="navbar-icon bi-person smoothscroll"></a>
+                                </li>
+                                <li class="nav-item d-none d-lg-block">
+                                    <a class="btn ms-2" style="color: rgb(0, 0, 0); background-color: #ffc107;" href="/login">Login</a>
+                                </li>
+                                <li class="nav-item d-none d-lg-block">
+                                    <a class="btn ms-2" style="color: rgb(0, 0, 0); background-color: #55ff07;" href="/register">Register</a>
+                                </li>
+                          
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+            
+
 <%- include('layout/header') %>
 
   <style>
@@ -31,6 +144,37 @@
   <div style="height: 20vh;">
 
   </div>
+  <!-- Bootstrap Toast Container -->
+<!-- Bootstrap Toast Container -->
+<!-- Bootstrap Toast Container -->
+<!-- Bootstrap Toast Container -->
+<div class="toast-container position-fixed top-0 end-0 p-3">
+  <% if (message) { %>
+      <div id="liveToast" class="toast align-items-center text-bg-<%= message.type %> border-0" role="alert" aria-live="assertive" aria-atomic="true">
+          <div class="d-flex">
+              <div class="toast-body">
+                  <%= message.text %>
+              </div>
+              <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+          </div>
+      </div>
+  <% } %>
+</div>
+
+<!-- Bootstrap JS to Auto-Show Toast -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+      var toastEl = document.getElementById("liveToast");
+      if (toastEl) {
+          var toast = new bootstrap.Toast(toastEl);
+          toast.show();
+      }
+  });
+</script>
+
+
+
+
 <section class="container body mt-5">
   <div class="card p-4">
     <h2 class="text-center">Verify Your Email</h2>
@@ -42,11 +186,7 @@
 
         <p>Did not receive the OTP? Resend OTP</a></p>
       </div>
-      <% if (typeof message !== 'undefined') { %>
-        <div class="alert alert-info">
-          <%= message %>
-        </div>
-      <% } %>
+    
       <button type="submit" class="btn btn-custom btn-block">Verify OTP</button>
     </form>
     <form action="/auth/send-otp" method="POST" class="text-center mt-3">

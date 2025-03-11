@@ -218,7 +218,36 @@ https://templatemo.com/tm-590-topic-listing
                 </div>
             </div>
         </nav>
-            
+            <!-- Include Bootstrap CSS & JS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Toast Notification Container -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <% if (message) { %>
+        <div id="toastMessage" class="toast align-items-center text-white bg-<%= message.type %> border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <%=message.text %>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+        <% message = null; %> <!-- Clear session message after displaying -->
+    <% } %>
+</div>
+
+<script>
+    // Show the toast when the page loads
+    window.onload = () => {
+        const toastElement = document.getElementById("toastMessage");
+        if (toastElement) {
+            const toast = new bootstrap.Toast(toastElement);
+            toast.show();
+        }
+    };
+</script>
+
 
         <section class="hero-section d-flex justify-content-center align-items-center text-center" id="section_1">
             <div class="container-fluid">

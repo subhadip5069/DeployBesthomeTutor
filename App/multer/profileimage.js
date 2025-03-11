@@ -14,6 +14,9 @@ const uploadPath = path.join(__dirname, "uploads/profile_images");
   }
 })();
 
+// Allowed image types (JPG, PNG only)
+const allowedTypes = ["image/jpeg", "image/png", "image/jpg", "image/webp", "image/gif", "image/svg+xml"];
+
 // Multer storage with 2MB limit
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -24,13 +27,13 @@ const storage = multer.diskStorage({
   },
 });
 
-// Multer upload configuration (only images, max 2MB)
+// Multer upload configuration (JPG & PNG only, max 2MB)
 const profileuploade = multer({
   storage,
   limits: { fileSize: 2 * 1024 * 1024 }, // 2MB max file size
   fileFilter: (req, file, cb) => {
-    if (!file.mimetype.startsWith("image/")) {
-      return cb(new Error("Only image files are allowed"), false);
+    if (!allowedTypes.includes(file.mimetype)) {
+      return cb(new Error("Only JPG and PNG images are allowed"), false);
     }
     cb(null, true);
   },
