@@ -129,7 +129,7 @@ class UserAuthController {
             return res.render("user/verifyemail", {
                 title: "Tutor",
                 email,
-                message: { type: "success", text: "verify email successfully please login" },
+                message: { type: "success", text: "OTP sent successfully. Please check your email." },
                 userId: newUser._id
             });
         });
