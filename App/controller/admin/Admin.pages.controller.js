@@ -42,7 +42,7 @@ class AdminPagesController {
                 Registration.countDocuments(), // Total requirements
                 User.countDocuments({ role: "student", status: "active" }),  // Active students
                 User.countDocuments({ role: "student", status: "inactive" }), // Inactive students
-                User.countDocuments({ role: "tutor", status: "active" }),  // Active tutors
+                  // Active tutors
                 User.countDocuments({ role: "tutor", status: "inactive" })  // Inactive tutors
             ]);
     

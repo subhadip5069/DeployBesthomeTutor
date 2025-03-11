@@ -441,7 +441,7 @@ class UserAuthController {
           const { email, password } = req.body;
           const user = await User.findOne({ email });
 
-          const registration = await Registration.findOne(req.userId);
+         
 
          
       
@@ -475,6 +475,7 @@ class UserAuthController {
           });
           
           req.session.message = { type: "success", text: "Login successful!" };
+          const registration = await Registration.findById(user._id);
           console.log("user",user);
         console.log( "registration",registration);
           if (registration === null) {
