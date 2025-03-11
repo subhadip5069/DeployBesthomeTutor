@@ -7,8 +7,12 @@ const userModel = require('../../model/user.model');
 class AdminPagesController {
 
     Login=async(req,res)=>{
-    
-            res.render('Admin/login')
+        const message = req.session.message;
+        req.session.message = null;
+            res.render('Admin/login',{
+                title:"/ Login",
+                message
+            })
        
     }
 

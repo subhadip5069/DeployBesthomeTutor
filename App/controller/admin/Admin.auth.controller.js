@@ -4,25 +4,30 @@ const jwt = require("jsonwebtoken");
 
 
 class AdminAuthController {
-   login = async (req, res) => {
+
+
+login = async (req, res) => {
     try {
         const { email, password } = req.body;
 
         if (!email || !password) {
-            return res.redirect('/admin/'); // ✅ Stops execution
+            req.session.message = { type: 'error', text: 'Email and password are required.' };
+            return res.redirect('/admin/');
         }
 
         const user = await User.findOne({ email });
 
         if (!user || user.role !== 'admin') {
-            return res.redirect('/admin/'); // ✅ Stops execution
+            req.session.message = { type: 'error', text: 'Invalid credentials or unauthorized access.' };
+            return res.redirect('/admin/');
         }
 
         // Check if password matches
         const isPasswordValid = await bcrypt.compare(password, user.password);
 
         if (!isPasswordValid) {
-            return res.redirect('/admin/'); // ✅ Stops execution
+            req.session.message = { type: 'error', text: 'Invalid credentials.' };
+            return res.redirect('/admin/');
         }
 
         // Generate JWT Token
@@ -33,24 +38,28 @@ class AdminAuthController {
         );
 
         if (!token) {
-            return res.redirect('/admin/'); // ✅ Stops execution
+            req.session.message = { type: 'error', text: 'Failed to generate authentication token.' };
+            return res.redirect('/admin/');
         }
 
         // Store token in a cookie
         res.cookie('token', token, { httpOnly: true, maxAge: 3600000 }); // 1-hour expiry
         console.log(token);
 
-        return res.redirect('/admin/dashboard'); // ✅ Final response, no further execution
+        req.session.message = { type: 'success', text: 'Login successful!' };
+        return res.redirect('/admin/dashboard');
     } catch (error) {
         console.error("Login Error:", error);
-        return res.redirect('/admin/'); // ✅ Ensure execution stops in case of errors
+        req.session.message = { type: 'error', text: 'Something went wrong. Please try again.' };
+        return res.redirect('/admin/');
     }
 };
 
     
       logout= async (req, res) => {
         res.clearCookie('token');
-        res.redirect('/admin/');
+        req.session.message = { type: 'success', text: 'Logout successful!' };
+        res.redirect('/admin/', { message: 'Logout successful!' });
       };
     }    
 

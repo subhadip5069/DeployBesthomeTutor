@@ -7,66 +7,93 @@
   <title>SeoDash Free Bootstrap Admin Template by Adminmart</title>
   <link rel="icon" type="images/x-icon" href="/user/images/favicon.ico">
   <link rel="stylesheet" href="/Admin/assets/css/styles.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
 
-<body >
+<body>
+  <!--  Toast Notification -->
+  <% if (message) { %>
+  <div class="toast-container position-fixed top-0 end-0 p-3">
+    <div id="liveToast" class="toast align-items-center text-bg-<%= message.type === 'error' ? 'danger' : 'success' %> border-0 show"
+      role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body">
+          <%= message.text %>
+        </div>
+        <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+    </div>
+  </div>
+  <% } %>
+
   <!--  Body Wrapper -->
   <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
     data-sidebar-position="fixed" data-header-position="fixed">
-    <div
-      class="position-relative overflow-hidden radial-gradient min-vh-100 d-flex align-items-center justify-content-center" style="background-image: url(/Admin/background.jpg); background-position: center; background-size: cover; backdrop-filter: blur(6px);"> 
-      <div class="d-flex align-items-center justify-content-center w-100" >
+    <div class="position-relative overflow-hidden radial-gradient min-vh-100 d-flex align-items-center justify-content-center"
+      style="background-image: url(/Admin/background.jpg); background-position: center; background-size: cover; backdrop-filter: blur(6px);">
+      <div class="d-flex align-items-center justify-content-center w-100">
         <div class="row justify-content-center w-100" style="background-color: transparent;">
-          <div class="col-md-8 col-lg-6 col-xxl-3" style="background-color: transparent;" >
+          <div class="col-md-8 col-lg-6 col-xxl-3" style="background-color: transparent;">
             <div class="card mb-0" style="background-color: transparent;">
-              <div class="card-body" style="background-color: rgba(50, 56, 56, 0.589); border-radius: 10px;  backdrop-filter: blur(15px); color: aliceblue;">
+              <div class="card-body"
+                style="background-color: rgba(50, 56, 56, 0.589); border-radius: 10px; backdrop-filter: blur(15px); color: aliceblue;">
                 <a href="/admin/" class="text-nowrap logo-img text-center d-block py-3 w-100">
                   <img src="/user/images/logo.jpg" style="height: 50px; border-radius: 30px;" alt="logo">
                 </a>
                 <p class="text-center text-white">WELCOME TO ADMIN-DASHBOARD</p>
-                <form action="/admin/auth/login" method="post" style="color: aliceblue;">
+                <form action="/admin/auth/login" method="post" style="color: rgb(0, 0, 0);">
                   <div class="mb-3">
                     <label for="exampleInputEmail1" class="form-label text-white">Username</label>
-                    <input type="email" name="email" class="form-control" id="exampleInputEmail1" placeholder="Enter your email" aria-describedby="emailHelp">
+                    <input type="email" name="email" class="form-control" id="exampleInputEmail1"
+                      placeholder="Enter your email" aria-describedby="emailHelp">
                   </div>
                   <div class="mb-4">
-                    <label for="exampleInputPassword1" class="form-label text-white">Password</label>
+                    <label for="exampleInputPassword1" class="form-label text-dark">Password</label>
                     <div class="input-group">
-                        <input type="password" name="password" class="form-control text-white" id="exampleInputPassword1" placeholder="Enter your password" required>
-                        <button type="button" class="btn btn-outline-light" onclick="togglePassword()">
-                            <i id="toggleIcon" class="fas fa-eye"></i>
-                        </button>
+                      <input type="password" name="password" class="form-control text-dark" id="exampleInputPassword1"
+                        placeholder="Enter your password" required>
+                      <button type="button" class="btn btn-outline-light" onclick="togglePassword()">
+                        <i id="toggleIcon" class="fas fa-eye"></i>
+                      </button>
                     </div>
-                </div>
-                
-                <script>
+                  </div>
+
+                  <script>
                     function togglePassword() {
-                        const passwordField = document.getElementById("exampleInputPassword1");
-                        const toggleIcon = document.getElementById("toggleIcon");
-                
-                        if (passwordField.type === "password") {
-                            passwordField.type = "text";
-                            toggleIcon.classList.remove("fa-eye");
-                            toggleIcon.classList.add("fa-eye-slash");
-                        } else {
-                            passwordField.type = "password";
-                            toggleIcon.classList.remove("fa-eye-slash");
-                            toggleIcon.classList.add("fa-eye");
-                        }
+                      const passwordField = document.getElementById("exampleInputPassword1");
+                      const toggleIcon = document.getElementById("toggleIcon");
+
+                      if (passwordField.type === "password") {
+                        passwordField.type = "text";
+                        toggleIcon.classList.remove("fa-eye");
+                        toggleIcon.classList.add("fa-eye-slash");
+                      } else {
+                        passwordField.type = "password";
+                        toggleIcon.classList.remove("fa-eye-slash");
+                        toggleIcon.classList.add("fa-eye");
+                      }
                     }
-                </script>
-                
+
+                    // Auto-show toast if it exists
+                    document.addEventListener("DOMContentLoaded", function () {
+                      var toastElement = document.getElementById("liveToast");
+                      if (toastElement) {
+                        var toast = new bootstrap.Toast(toastElement);
+                        toast.show();
+                      }
+                    });
+                  </script>
+
                   <div class="d-flex align-items-center justify-content-between mb-4">
                     <div class="form-check">
                       <input class="form-check-input primary" type="checkbox" value="" id="flexCheckChecked" checked>
                       <label class="form-check-label text-white" for="flexCheckChecked">
-                        Remeber this Device
+                        Remember this Device
                       </label>
                     </div>
-                    
                   </div>
-                  <button type ="submit" class="btn btn-primary w-100 py-8 fs-4 mb-4">Sign In</button>
-                  
+                  <button type="submit" class="btn btn-primary w-100 py-8 fs-4 mb-4">Sign In</button>
                 </form>
               </div>
             </div>
@@ -75,6 +102,7 @@
       </div>
     </div>
   </div>
+
   <script src="/Admin/assets/libs/jquery/dist/jquery.min.js"></script>
   <script src="/Admin/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/dist/iconify-icon.min.js"></script>

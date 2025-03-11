@@ -372,7 +372,9 @@ class userPagesController {
                 .skip(skip)
                 .limit(limit)
                 .lean();
-    
+                const requirement = await Registration.find({ status: "active" })
+                .populate("userId")
+                .lean();
             // Remove tutors without associated user data
             registrations = registrations.filter(reg => reg.userId);
     
@@ -386,7 +388,8 @@ class userPagesController {
             res.render("user/listoftutor", {
                 title: "/ Tutors",
                 userId,
-                requirement: registrations,
+                requirement,
+                registrations,
                 currentPage: page,
                 totalPages,
                 filters: {
