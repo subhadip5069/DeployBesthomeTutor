@@ -14,7 +14,7 @@ const registrationSchema = new mongoose.Schema(
     city: { type: String},
     pincode: { type: Number},
     locality: { type: String},
-    subject: { type: String},
+    subject: { type: [String], required: true },
     class: { type: String},
     sorted: { type: String, enum: ["Yes", "No"], default: "No",},
     attachedFiles: [

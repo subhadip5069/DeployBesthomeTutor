@@ -43,20 +43,7 @@
             <input type="number" id="pincode" name="pincode" placeholder="Enter pincode" class="form-control">
         </div>
 
-        <!-- Gender -->
-        <div class="mb-3">
-            <label class="form-label">Gender</label>
-            <div class="d-flex gap-3">
-                <div>
-                    <input type="radio" id="male" name="preferredTutor" value="Male">
-                    <label for="male">Male</label>
-                </div>
-                <div>
-                    <input type="radio" id="female" name="preferredTutor" value="Female">
-                    <label for="female">Female</label>
-                </div>
-            </div>
-        </div>
+      
 
         <!-- Submit Button -->
         <div class="text-center">
@@ -208,12 +195,13 @@ const queryString = query.toString() ? `&${query.toString()}` : "";
 </div>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
+      document.addEventListener("DOMContentLoaded", function () {
     const searchInput = document.getElementById("<%= roleToFetch %>SearchInput");
     const cardContainers = document.querySelectorAll(".col-lg-4, .col-md-6, .col-lg-3, .col-md-4, .col-sm-6");
 
     searchInput.addEventListener("input", function () {
         const searchText = searchInput.value.trim().toLowerCase();
+        const searchTerms = searchText.split(",").map(term => term.trim()); // Split search terms by comma
 
         cardContainers.forEach(container => {
             const name = container.querySelector("h5")?.textContent.toLowerCase() || "";
@@ -223,13 +211,15 @@ const queryString = query.toString() ? `&${query.toString()}` : "";
             const pincode = container.querySelector(".fa-map-marker-alt + strong + strong")?.nextSibling?.textContent.trim().toLowerCase() || "";
             const randomId = container.querySelector(".fa-graduation-cap + strong")?.nextSibling?.textContent.trim().toLowerCase() || "";
 
-
             const cardText = `${name} ${subject} ${city} ${state} ${pincode} ${randomId}`;
 
-            container.style.display = cardText.includes(searchText) ? "block" : "none";
+            // Check if at least one search term matches
+            const isMatch = searchTerms.some(term => cardText.includes(term));
+            container.style.display = isMatch ? "block" : "none";
         });
     });
 });
+
 
     </script>
     

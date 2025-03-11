@@ -300,21 +300,7 @@
                         </div>
                 
                         <!-- Fee Offered -->
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Fee Offered <span class="text-warning">*</span></label>
-                            <div class="d-flex flex-wrap align-items-center gap-3">
-                                <% const feeType = registration.feeType || ""; %>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="feeType" id="hourly" value="Hourly" <%= feeType === 'Hourly' ? 'checked' : '' %>>
-                                    <label class="form-check-label" for="hourly">Hourly</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="feeType" id="monthly" value="Monthly" <%= feeType === 'Monthly' ? 'checked' : '' %>>
-                                    <label class="form-check-label" for="monthly">Monthly</label>
-                                </div>
-                                <input type="number" class="form-control" name="feeAmount" placeholder="Amount" style="width: 120px;" value="<%= registration.feeAmount || '' %>" required>
-                            </div>
-                        </div>
+                       
                 
                         <!-- Upload Documents -->
                         <div class="mb-3">

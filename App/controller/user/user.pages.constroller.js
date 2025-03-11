@@ -287,12 +287,13 @@ class userPagesController {
             const userId = req.user;
             const roleToFetch = "tutor";
     
+            // Extract query params with default values
             let {
                 classFilter = "",
                 subjectFilter = "",
                 preferredTutor = "",
                 state = "",
-                city = "",
+                cityFilter = "",
                 pincode = "",
                 priceRange = "",
                 page = "1",
@@ -300,30 +301,55 @@ class userPagesController {
                 searchQuery = ""
             } = req.query;
     
+            // Convert numeric values
             page = parseInt(page) || 1;
             limit = parseInt(limit) || 15;
             const skip = (page - 1) * limit;
     
-            let registrationFilter = { status: "active" }; // Fetch only active tutors
+            // Define the filter for active tutors
+            let registrationFilter = { status: "active" };
     
+            // **Class Filter** (Multiple values allowed)
             if (classFilter && typeof classFilter === "string") {
                 registrationFilter.class = { $in: classFilter.split(",").map(c => c.trim()) };
             }
-            if (subjectFilter && typeof subjectFilter === "string") {
-                registrationFilter.subject = { $in: subjectFilter.split(",").map(s => s.trim()) };
+    
+            // **Subject Filter** (Multiple values allowed)
+           
+            if (subjectFilter) {
+                if (Array.isArray(subjectFilter)) {
+                    // If subjectFilter is already an array (from a multi-select input), use it directly
+                    registrationFilter.subject = { $in: subjectFilter.map(s => s.trim()) };
+                } else if (typeof subjectFilter === "string") {
+                    // If subjectFilter is a comma-separated string, split it into an array
+                    const subjectsArray = subjectFilter.split(",").map(s => s.trim()).filter(Boolean);
+                    if (subjectsArray.length > 0) {
+                        registrationFilter.subject = { $in: subjectsArray };
+                    }
+                }
             }
+            
+            // **Preferred Tutor Filter**
             if (preferredTutor) {
                 registrationFilter.preferredTutor = preferredTutor.trim();
             }
+    
+            // **State Filter (Case-Insensitive)**
             if (state) {
-                registrationFilter.state = { $regex: state.trim(), $options: "i" };
+                registrationFilter.state = { $regex: new RegExp(state.trim(), "i") };
             }
-            if (city) {
-                registrationFilter.city = { $regex: city.trim(), $options: "i" };
+    
+            // **City Filter (Case-Insensitive)**
+            if (cityFilter) {
+                registrationFilter.city = { $regex: new RegExp(cityFilter.trim(), "i") };
             }
+    
+            // **Pincode Filter (Must be a number)**
             if (pincode && /^\d+$/.test(pincode)) {
                 registrationFilter.pincode = Number(pincode);
             }
+    
+            // **Price Range Filter**
             if (priceRange && priceRange.includes("-")) {
                 const [minPrice, maxPrice] = priceRange.split("-").map(Number);
                 if (!isNaN(minPrice) && !isNaN(maxPrice)) {
@@ -331,11 +357,9 @@ class userPagesController {
                 }
             }
     
-            let userFilter = { role: roleToFetch };
-    
+            // **Global Search Query (Matches Various Fields)**
             if (searchQuery && typeof searchQuery === "string") {
                 const regex = new RegExp(searchQuery.trim(), "i");
-    
                 registrationFilter.$or = [
                     { tuitionLocation: regex },
                     { preferredTime: regex },
@@ -358,23 +382,27 @@ class userPagesController {
                         { age: Number(searchQuery) }
                     );
                 }
-    
-                userFilter.randomId = regex;
             }
     
+            // **User Filter (Random ID for Tutor Users)**
+            let userFilter = { role: roleToFetch };
+    
+            // Fetch total count for pagination
             const totalTutors = await Registration.countDocuments(registrationFilter);
             const totalPages = Math.ceil(totalTutors / limit);
     
+            // Fetch filtered tutors with pagination
             let registrations = await Registration.find(registrationFilter)
                 .populate({
                     path: "userId",
                     select: "name role randomId",
-                    match: userFilter
+                    match: userFilter // Ensure user has the correct role
                 })
                 .skip(skip)
                 .limit(limit)
                 .lean();
     
+            // Fetch all active registrations for requirements
             const requirement = await Registration.find({ status: "active" })
                 .populate("userId")
                 .lean();
@@ -382,15 +410,21 @@ class userPagesController {
             // Remove tutors without user data
             registrations = registrations.filter(reg => reg.userId);
     
+            // Flash messages
             if (registrations.length === 0) {
                 req.flash("error_msg", "No tutors found matching your search criteria.");
             } else {
                 req.flash("success_msg", "Tutors retrieved successfully.");
             }
-
+    
+            console.log("Received cityFilter:", req.query.cityFilter);
+            console.log("Final Query Filter:", JSON.stringify(registrationFilter, null, 2));
             console.log("Tutors:", registrations);
+    
             const message = req.session.message;
             req.session.message = null;
+    
+            // Render the page with results
             res.render("user/listoftutor", {
                 title: "/ Tutors",
                 userId,
@@ -404,7 +438,7 @@ class userPagesController {
                     subjectFilter,
                     preferredTutor,
                     state,
-                    city,
+                    cityFilter,
                     pincode,
                     priceRange,
                     searchQuery,
@@ -419,6 +453,7 @@ class userPagesController {
             res.redirect("/listingoftutor");
         }
     };
+    
     
     
     
