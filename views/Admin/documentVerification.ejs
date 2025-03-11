@@ -1,14 +1,15 @@
 <%- include('partial/header') %>
+
 <div style="height: 10vh;"></div>
 
 <section class="container min-vh-100">
     <h2 class="text-center mb-4">Inactive Registrations with Documents</h2>
-    
+
     <!-- Search Bar -->
     <div class="mb-3">
-        <input type="text" id="searchInput" class="form-control" placeholder="Search by Name, ID, or Email">
+        <input type="text" id="searchInput" class="form-control" placeholder="Search by any field...">
     </div>
-    
+
     <div class="table-responsive">
         <table class="table table-bordered table-striped text-center">
             <thead class="table-dark">
@@ -25,41 +26,52 @@
             <tbody id="registrationsTableBody">
                 <% registrations.reverse().forEach(registration => { %>
                     <tr>
-                        <td><%= registration.userId.name %> <span class="badge bg-danger">Inactive</span></td>
+                        <td>
+                            <%= registration.userId.name %> 
+                            <span class="badge bg-danger">Inactive</span>
+                        </td>
                         <td><%= registration.userId.randomId %></td>
                         <td><%= registration.userId.email %></td>
-                        
                         <td><%= registration.subject || "N/A" %></td>
                         <td><%= registration.tuitionLocation?.length ? registration.tuitionLocation.join(", ") : "N/A" %></td>
-                        
+
+                        <!-- Document Verification Status -->
                         <td>
                             <form action="/admin/documentverification/update/<%= registration._id %>?page=<%= currentPage %>" method="POST">
                                 <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" name="status" value="active" <%= registration.documentVerificationStatus === "active" ? "checked" : "" %> onchange="this.form.submit()">
-                                    <label class="form-check-label">Inactivate</label>
+                                    <input class="form-check-input" type="checkbox" name="status" value="active" 
+                                        <%= registration.documentVerificationStatus === "active" ? "checked" : "" %>
+                                        onchange="this.form.submit()">
+                                    <label class="form-check-label">
+                                        <%= registration.documentVerificationStatus === "active" ? "Active" : "Inactive" %>
+                                    </label>
                                 </div>
                             </form>
                         </td>
+
+                        <!-- Attached Files -->
+                       
+                            <td>
+                                <% if (registration.attachedFiles.length > 0) { %>
+                                    <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#files<%= registration._id %>">
+                                        View Files
+                                    </button>
+                                    <div class="collapse mt-2" id="files<%= registration._id %>">
+                                        <ul class="list-group">
+                                            <% registration.attachedFiles.forEach(file => { %>
+                                                <li class="list-group-item">
+                                                    <strong>File Type:</strong> <%= file.fileType %> <br>
+                                                    <img src="/uploads/documents/<%= file.filePath.split('\\').pop() %>" alt="Document" class="img-fluid preview-image">
+                                                </li>
+                                            <% }); %>
+                                        </ul>
+                                    </div>
+                                <% } else { %>
+                                    <p class="text-muted">No attached files</p>
+                                <% } %>
+                            </td>
                         
-                        <td>
-                            <% if (registration.attachedFiles.length > 0) { %>
-                                <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#files<%= registration._id %>">
-                                    View Files
-                                </button>
-                                <div class="collapse mt-2" id="files<%= registration._id %>">
-                                    <ul class="list-group">
-                                        <% registration.attachedFiles.forEach(file => { %>
-                                            <li class="list-group-item">
-                                                <strong>File Type:</strong> <%= file.fileType %> <br>
-                                                <img src="/uploads/documents/<%= file.filePath.split('\\').pop() %>" alt="Document" class="img-fluid preview-image">
-                                            </li>
-                                        <% }); %>
-                                    </ul>
-                                </div>
-                            <% } else { %>
-                                <p class="text-muted">No attached files</p>
-                            <% } %>
-                        </td>
+                        
                     </tr>
                 <% }); %>
             </tbody>
@@ -88,7 +100,7 @@
             </ul>
         </nav>
     <% } %>
-    
+
     <div style="height: 50px; background-color: transparent;"></div>
 </section>
 
@@ -98,15 +110,13 @@
         let rows = document.querySelectorAll("#registrationsTableBody tr");
 
         rows.forEach(row => {
-            let name = row.cells[0].innerText.toLowerCase();
-            let id = row.cells[1].innerText.toLowerCase();
-            let email = row.cells[2].innerText.toLowerCase();
-            
-            if (name.includes(filter) || id.includes(filter) || email.includes(filter)) {
-                row.style.display = "";
-            } else {
-                row.style.display = "none";
-            }
+            let found = false;
+            row.querySelectorAll("td").forEach(td => {
+                if (td.innerText.toLowerCase().includes(filter)) {
+                    found = true;
+                }
+            });
+            row.style.display = found ? "" : "none";
         });
     });
 </script>

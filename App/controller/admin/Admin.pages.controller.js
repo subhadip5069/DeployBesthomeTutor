@@ -156,54 +156,49 @@ class AdminPagesController {
         res.render('Admin/listOfTutor' ,{users ,userId})
        
     }
-
     document = async (req, res) => {
-        try {
-            const userId = req.user;
-            let page = parseInt(req.query.page) || 1;
-            let limit = 10;
-            if (page < 1) page = 1; // Ensures page number is valid
-    
-            let skip = (page - 1) * limit;
-    
-            // Count total inactive registrations with attached files
-            const totalRegistrations = await Registration.countDocuments({
-                status: "inactive",
-                attachedFiles: { $exists: true, $not: { $size: 0 } }
-            });
-    
-            const totalPages = Math.ceil(totalRegistrations / limit);
-    
-            // Prevents querying if page is out of range
-            if (page > totalPages && totalPages !== 0) {
-                return res.redirect(`?page=${totalPages}`);
-            }
-    
-            const registrations = await Registration.find(
-                { status: "inactive", attachedFiles: { $exists: true, $not: { $size: 0 } } }
-            )
-                .populate("userId", "name email randomId") // Populates user details
-                .select("userId tuitionLocation preferredTime preferredTutor feeType feeAmount state city pincode locality subject class sorted attachedFiles board qualification experience age createdAt updatedAt")
-                .skip(skip)
-                .limit(limit)
-                .lean(); // Improves performance
-                console.log("Total Registrations Found:", totalRegistrations);
-                console.log("Registrations Data:", registrations);
-                
-            // Render view with pagination data
-            res.render("Admin/documentVerification", {
-                title: "Inactive Registrations with Documents",
-                registrations,
-                currentPage: page,
-                totalPages,
-                userId
-            });
-    
-        } catch (err) {
-            console.error("Error fetching registrations:", err);
-           res.redirect("/admin/documentverification");
+        try{
+        let page = parseInt(req.query.page) || 1;
+        let limit = 10;
+        if (page < 1) page = 1;
+
+        let skip = (page - 1) * limit;
+
+        const totalRegistrations = await Registration.countDocuments({
+            status: "inactive",
+            attachedFiles: { $exists: true, $not: { $size: 0 } }
+        });
+
+        const totalPages = Math.ceil(totalRegistrations / limit);
+
+        if (page > totalPages && totalPages !== 0) {
+            return res.redirect(`?page=${totalPages}`);
         }
+
+        const registrations = await Registration.find({
+            status: "inactive",
+            attachedFiles: { $exists: true, $not: { $size: 0 } }
+        })
+            .populate("userId", "name email randomId")
+            .select("userId tuitionLocation subject attachedFiles documentVerificationStatus")
+            .skip(skip)
+            .limit(limit)
+            .lean();
+
+        res.render("Admin/documentVerification", {
+            title: "Inactive Registrations with Documents",
+            registrations,
+            currentPage: page,
+            totalPages
+        });
+
+    } catch (err) {
+        console.error("Error fetching registrations:", err);
+        res.status(500).send("Internal Server Error");
+    }
     };
+
+    
 
     
     allstudentsrequirment = async (req, res) => {
