@@ -240,29 +240,29 @@
   }
 </script>
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
-      const searchForm = document.getElementById("searchForm"); 
-      const tutorListContainer = document.getElementById("tutorList"); 
+ document.addEventListener("DOMContentLoaded", function () {
+    const searchForm = document.getElementById("searchForm"); 
+    const tutorListContainer = document.getElementById("tutorList"); 
 
-      searchForm.addEventListener("submit", function (event) {
-          event.preventDefault(); // Prevent default form submission
-          
-          const formData = new FormData(searchForm);
-          const searchParams = new URLSearchParams(formData).toString();
+    searchForm.addEventListener("submit", function (event) {
+        event.preventDefault(); // Prevent page reload
+        
+        const searchInput = document.getElementById("searchInput").value.trim(); // Get input value
+        const searchParams = new URLSearchParams({ search: searchInput }).toString();
 
-          fetch(`/listingoftutor?${searchParams}`, {
-              method: "GET",
-              headers: {
-                  "X-Requested-With": "XMLHttpRequest"
-              }
-          })
-          .then(response => response.text())
-          .then(data => {
-              tutorListContainer.innerHTML = data; // Replace tutor list with updated data
-          })
-          .catch(error => console.error("Error fetching tutors:", error));
-      });
-  });
+        fetch(`/listingoftutor?${searchParams}`, {
+            method: "GET",
+            headers: { "X-Requested-With": "XMLHttpRequest" }
+        })
+        .then(response => response.text())
+        .then(data => {
+            tutorListContainer.innerHTML = data; // Update tutor list dynamically
+        })
+        .catch(error => console.error("Error fetching tutors:", error));
+    });
+});
+
+ 
 </script>
 
 <!-- Add this below the form to display results -->
