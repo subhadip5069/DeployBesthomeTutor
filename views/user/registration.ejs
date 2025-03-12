@@ -510,7 +510,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         </label>
                         
                         <!-- File Input -->
-                        <label for="fileInput">Select exactly 2 files: Aadhar & Pancard (jpg/png/jpeg)</label>
+                        <label for="fileInput">Select exactly 2 files (jpg/png/jpeg)</label>
                         <input type="file" name="attachedFiles" id="fileInput" multiple accept=".jpg,.jpeg,.png" required>
                         <small id="fileError" class="text-danger"></small>
                     </div>
@@ -531,26 +531,17 @@ document.addEventListener("DOMContentLoaded", function () {
                                 const files = fileInput.files;
                                 const allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
                                 let valid = true;
-                                let fileNames = [];
                     
                                 if (files.length !== 2) {
-                                    errorMsg.textContent = "Please select exactly 2 files: Aadhar & Pancard.";
+                                    errorMsg.textContent = "Please select exactly 2 files.";
                                     valid = false;
                                 } else {
-                                    for (let i = 0; i < files.length; i++) {
-                                        if (!allowedExtensions.test(files[i].name)) {
+                                    for (let file of files) {
+                                        if (!allowedExtensions.test(file.name)) {
                                             errorMsg.textContent = "Only JPG, JPEG, or PNG files are allowed.";
                                             valid = false;
                                             break;
                                         }
-                                        fileNames.push(files[i].name.toLowerCase());
-                                    }
-                    
-                                    // Ensure both Aadhar & Pancard are uploaded
-                                    if (!fileNames.some(name => name.includes("aadhar")) || 
-                                        !fileNames.some(name => name.includes("pancard"))) {
-                                        errorMsg.textContent = "Files must include both Aadhar and Pancard.";
-                                        valid = false;
                                     }
                                 }
                     
@@ -559,6 +550,8 @@ document.addEventListener("DOMContentLoaded", function () {
                             });
                         });
                     </script>
+                    
+                    
                     
                     
                 </form>
