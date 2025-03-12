@@ -436,62 +436,64 @@ class UserAuthController {
 
 
 
-  login = async (req, res) => {
-      try {
-          const { email, password } = req.body;
-          const user = await User.findOne({ email });
+   login = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        const user = await User.findOne({ email });
 
-         
+        console.log("User:", user);
 
-         
-      
-          if (!user) {
-              req.session.message = { type: "danger", text: "Invalid email or password." };
-              return res.redirect("/login");
-          }
-  
-          if (!user.isVerified) {
-              req.session.message = { type: "warning", text: "Your account is not verified. Please check your email." };
-              return res.redirect("/login");
-          }
-  
-          const isMatch = await bcrypt.compare(password, user.password);
-          if (!isMatch) {
-              req.session.message = { type: "danger", text: "Invalid email or password." };
-              return res.redirect("/login");
-          }
-  
-          // Generate JWT token
-          const token = jwt.sign({ userId: user._id , role: user.role, email: user.email}, process.env.JWT_SECRET, {
-              expiresIn: "7d", // Token valid for 7 days
-          });
-  
-          // Set token in cookies
-          res.cookie("token", token, {
-              httpOnly: true,  // Prevents JavaScript access (security)
-              secure: process.env.NODE_ENV === "production", // Secure flag in production
-              sameSite: "Strict", // Prevents CSRF attacks
-              maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days expiry
-          });
-          
-          req.session.message = { type: "success", text: "Login successful!" };
-          const registration = await Registration.findById(user._id);
-          console.log("user",user);
-        console.log( "registration",registration);
-          if (registration === null) {
-            return res.redirect("/registration");
-        }else{
-            return res.redirect("/");
-          }
-          
-  
-      } catch (error) {
-          console.error("Error logging in:", error);
-          req.session.message = { type: "danger", text: "Something went wrong. Please try again." };
-          return res.redirect("/login");
-      }
-  };
-  
+        if (!user) {
+            req.session.message = { type: "danger", text: "Invalid email or password." };
+            return res.redirect("/login"); // ✅ RETURN here
+        }
+
+        if (!user.isVerified) {
+            req.session.message = { type: "warning", text: "Your account is not verified. Please check your email." };
+            return res.redirect("/login"); // ✅ RETURN here
+        }
+
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            req.session.message = { type: "danger", text: "Invalid email or password." };
+            return res.redirect("/login"); // ✅ RETURN here
+        }
+
+        // Generate JWT token
+        const token = jwt.sign(
+            { userId: user._id, role: user.role, email: user.email },
+            process.env.JWT_SECRET,
+            { expiresIn: "7d" } // Token valid for 7 days
+        );
+
+        // Set token in cookies
+        res.cookie("token", token, {
+            httpOnly: true, // Prevents JavaScript access (security)
+            secure: process.env.NODE_ENV === "production", // Secure flag in production
+            sameSite: "Strict", // Prevents CSRF attacks
+            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days expiry
+        });
+
+        req.session.message = { type: "success", text: "Login successful!" };
+
+        // ✅ FIXED: Use `findOne` instead of `findById`
+        const registration = await Registration.findOne({ userId: user._id });
+
+        console.log("Registration:", registration);
+
+        if (!registration) {
+            return res.redirect("/registration"); // ✅ RETURN here
+        }
+
+        return res.redirect("/"); // ✅ RETURN here
+
+    } catch (error) {
+        console.error("Error logging in:", error);
+        req.session.message = { type: "danger", text: "Something went wrong. Please try again." };
+        return res.redirect("/login"); // ✅ RETURN here
+    }
+};
+
 
 
   forgotPassword = async (req, res) => {

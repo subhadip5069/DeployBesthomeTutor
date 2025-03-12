@@ -657,7 +657,7 @@ class userPagesController {
     // primum
     primum=async(req,res)=>{
         try {
-            const userId = req.userId || null;
+            const userId = req.user || null;
             if(userId == null  || userId == undefined ){
                 res.redirect("/login")
             }

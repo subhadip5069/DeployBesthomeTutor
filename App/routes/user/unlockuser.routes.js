@@ -1,12 +1,12 @@
 const express = require("express");
-const { unlockRequirement } = require("../../controller/user/unlock.user.controller");
+const UnlockController = require("../../controller/user/unlock.user.controller");
 const { authMiddleware } = require("../../utils/auth.middleware");
 
 const router = express.Router();
 
 
 
-router.post("/",authMiddleware, unlockRequirement);
+router.post("/",authMiddleware, UnlockController.unlockRequirement);
 
 
 

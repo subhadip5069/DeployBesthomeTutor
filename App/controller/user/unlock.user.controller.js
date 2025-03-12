@@ -1,25 +1,25 @@
 const Registration = require("../../model/registration");
 const User = require("../../model/user.model");
+class UnlockController {
+  
 
-const unlockRequirement = async (req, res) => {
+ unlockRequirement = async (req, res) => {
   try {
     const { requirementId } = req.body;
     console.log("Received request:", { requirementId }, req.body);
 
     if (!requirementId) {
-      return res.status(400).json({ error: "Missing requirement ID" });
+      return res.redirect("/"); // ✅ RETURN here
     }
 
-    const user = await User.findById(req.user.id);
+    const user = await User.findById({_id:req.user.userId});
+    console.log("User ID:", req.user.userId);
     console.log("User:", user);
 
-    if (!user) {
-      return res.status(401).json({ error: "User not found. Please log in." });
-    }
+   
 
-    // Redirect to premium if no unlocks are left
     if (user.unlockedContactsRemaining <= 0) {
-      return res.redirect("/primum");
+      return res.redirect("/primum"); // ✅ RETURN here
     }
 
     const requirement = await Registration.findById(requirementId)
@@ -27,26 +27,19 @@ const unlockRequirement = async (req, res) => {
       .select("userId tuitionLocation preferredTime preferredTutor feeType feeAmount state city pincode locality subject class sorted attachedFiles board qualification experience age gender active")
       .lean();
 
-    if (!requirement || !requirement.userId) {
-      return res.status(404).json({ error: "Requirement or user not found." });
-    }
+   
 
-    // Calculate cost per unlock without changing balance
     const unlockCost = user.unlockedContacts > 0 ? user.balance / user.unlockedContacts : 0;
 
     if (user.balance < unlockCost) {
-      return res.status(403).json({ error: "Insufficient balance. Please recharge." });
+      res.redirect("/primum");
     }
 
-    // Decrement remaining unlocks
     user.unlockedContactsRemaining -= 1;
-
-    // Update current balance only (without modifying balance)
     user.currentbalance = user.unlockedContactsRemaining > 0 
       ? user.balance / user.unlockedContactsRemaining 
-      : 0; // Avoid division by zero
+      : 0;
 
-    // Push the requirement ID into the correct array based on the user role
     if (user.role === "tutor") {
       if (!user.unlockedStudents.includes(requirementId)) {
         user.unlockedStudents.push(requirementId);
@@ -56,14 +49,13 @@ const unlockRequirement = async (req, res) => {
         user.unlockedTutors.push(requirementId);
       }
     } else {
-      return res.status(400).json({ error: "Invalid user role." });
+      return res.redirect("/"); // ✅ RETURN here
     }
 
-    // Save the updated user object
     await user.save();
 
-    // Render the unlock details page
-    res.render("user/unlockdetails", {
+    // ✅ Ensure only ONE response is sent
+    return res.render("user/unlockdetails", {
       title: "/ Unlock Details",
       requirement,
       userId: req.user,
@@ -71,11 +63,11 @@ const unlockRequirement = async (req, res) => {
 
   } catch (error) {
     console.error("Error unlocking requirement:", error);
-    res.status(500).json({ error: "Something went wrong. Try again later." });
+   
   }
 };
 
 
+}
 
-
-module.exports = { unlockRequirement };
+module.exports = new UnlockController();
