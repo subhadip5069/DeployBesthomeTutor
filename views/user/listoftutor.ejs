@@ -70,50 +70,84 @@
                 <div class="row" id="registrationsContainer">
                     <% requirement.reverse().forEach(tutor => { %>
                         <% if (tutor && tutor.userId && tutor.userId.role === "tutor" && tutor.status === "active") { %>
-                            <div class="col-lg-4 col-md-6 mb-4">
-                                <div class="card border-0 shadow-sm p-3">
-                                    <div class="position-absolute top-0 start-0 bg-warning text-dark rounded fw-bold px-2">
+                            <div class="col-lg-3 col-md-4 col-sm-6 mb-3">
+                                <div class="card border-0 shadow-sm p-2"
+                                     style="border-radius: 10px; box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.08); transition: transform 0.2s ease-in-out; width: 100%;"
+                                     onmouseover="this.style.transform='translateY(-3px)'"
+                                     onmouseout="this.style.transform='translateY(0)'">
+                                    
+                                    <!-- Featured Badge -->
+                                    <div class="position-absolute top-0 start-0 bg-warning text-dark rounded fw-bold px-1"
+                                         style="font-size: 10px; padding: 3px 5px;">
                                         ★ Featured
                                     </div>
-                                    <div class="d-flex align-items-center mb-3">
+            
+                                    <!-- Profile Info -->
+                                    <div class="d-flex align-items-center mb-2">
                                         <img src="<%= tutor.userId.profileImg || '/user/images/profile.png' %>" 
-                                             class="rounded-circle me-3" 
-                                             style="width: 50px; height: 50px;">
+                                             class="rounded-circle me-2"
+                                             style="width: 40px; height: 40px;">
                                         <div>
-                                            <h5 class="text-primary m-0"><%= tutor.userId.name || "Unknown" %></h5> 
-                                            <small>
+                                            <h6 class="text-primary m-0" style="font-size: 14px; font-weight: bold;">
+                                                <%= tutor.userId.name || "Unknown" %>
+                                            </h6> 
+                                            <small style="font-size: 12px; color: #666;">
                                                 <p class="mb-0"><span><%= tutor.userId.randomId || "Unknown" %></span></p>
-                                                Exp: <%= tutor.experience || "N/A" %> Y | 
-                                                Age: <%= tutor.age || "N/A" %>
+                                                Exp: <%= tutor.experience || "N/A" %> Y | Age: <%= tutor.age || "N/A" %> 
                                             </small>
+                                            <p style="font-size: 12px; color: #666; margin-bottom: 4px;">
+                                                 <b> <%= tutor.preferredTutor || "N/A" %></b>
+                                            </p>
                                         </div>
                                     </div>
-
-                                    <p class="mb-1">
+                                    <p style="font-size: 12px; color: #666; margin-bottom: 4px;">
+                                        <b> class :</b> <%= tutor.class || "N/A" %>
+                                   </p>
+                                    <!-- Location -->
+                                    <p style="font-size: 12px; color: #666; margin-bottom: 4px;">
                                         <i class="fas fa-map-marker-alt"></i> <strong>Location:</strong> 
-                                        <%= tutor.pincode || "Not specified" %> | 
-                                        <%= tutor.city || "Not specified" %> | 
-                                        <%= tutor.state || "Not specified" %> 
+                                        <%= (tutor.city || "Not specified").toLowerCase().replace(/\b\w/g, char => char.toUpperCase()) %>, 
+                                        <%= (tutor.state || "Not specified").toLowerCase().replace(/\b\w/g, char => char.toUpperCase()) %>,
+                                      
                                     </p>
-
-                                    <p class="mb-1">
+                                    <p style="font-size: 12px; color: #666; margin-bottom: 4px;"><b> Pin:</b> <%= tutor.pincode || "Not specified" %></p>
+                                    
+            
+                                    <!-- Qualification -->
+                                    <p style="font-size: 12px; color: #666; margin-bottom: 4px;">
                                         <i class="fas fa-graduation-cap"></i> <strong>Qualification:</strong> 
                                         <%= tutor.qualification || "N/A" %>
                                     </p>
-
-                                    <p class="mb-1">
+            
+                                    <!-- Subjects -->
+                                    <p style="font-size: 12px; color: #666; margin-bottom: 4px;">
                                         <i class="fas fa-book"></i> <strong>Subjects:</strong>  
                                         <%= tutor.subject || "Various" %>
                                     </p>
-
-                                    <a href="/userDetails/<%= tutor._id %>" class="btn btn-primary w-100 mt-2">View Profile</a>
-                                    <a href="/primum" class="btn btn-success w-100 mt-2">Get Free Demo</a>
+            
+                                    <!-- Buttons -->
+                                    <div class="text-center" style="display: flex; justify-content: space-between;">
+                                        <a href="/userDetails/<%= tutor._id %>" 
+                                           class="btn btn-primary mt-1" 
+                                           style="font-size: 10px; padding: 4px 6px; border-radius: 6px; flex: 1; margin-right: 4px;">
+                                            View Profile
+                                        </a>
+            
+                                        <a href="/primum" 
+                                           class="btn btn-success mt-1" 
+                                           style="font-size: 10px; padding: 4px 6px; border-radius: 6px; flex: 1;">
+                                            Free Demo
+                                        </a>
+                                    </div>
+            
                                 </div>
                             </div>
                         <% } %>
                     <% }); %>
                 </div>
             </div>
+            
+            
         </div>
     </div>
 

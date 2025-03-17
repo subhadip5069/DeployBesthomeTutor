@@ -100,7 +100,7 @@ class TuitionController {
                 pincode,
                 locality,
                 subject,
-                class: className,
+                class: className.trim(),
                 board,
                 status: "active",
             });
@@ -130,6 +130,7 @@ class TuitionController {
                 userId, // Expecting userId from req.body
                 tuitionLocation,
                 preferredTime,
+                preferredTutor,
                 state,
                 city,
                 pincode,
@@ -141,6 +142,7 @@ class TuitionController {
                 qualification,
                 board,
                 age,
+                class: className // Handles class input
             } = req.body;
     
             // Determine userId (from req.body or req.user)
@@ -160,7 +162,14 @@ class TuitionController {
                 return res.redirect("/login");
             }
     
-            // Handle file uploads (only if files are uploaded)
+            // Ensure class is always an array
+            const formattedClass = Array.isArray(className)
+                ? className.map(c => c.trim())  // If already an array, trim each value
+                : className 
+                    ? className.split(",").map(c => c.trim()).filter(Boolean)  // If a string, split into array
+                    : []; // Default to empty array if undefined
+    
+            // Handle file uploads (if files exist)
             const attachedFiles = req.files
                 ? req.files.map((file) => ({
                     fileType: req.body.fileType || "Other",
@@ -173,6 +182,7 @@ class TuitionController {
                 userId: validUserId,
                 tuitionLocation,
                 preferredTime,
+                preferredTutor,
                 state,
                 city,
                 pincode,
@@ -184,6 +194,7 @@ class TuitionController {
                 qualification,
                 board,
                 age,
+                class: formattedClass, // Ensures class is stored correctly
                 attachedFiles,
             });
     

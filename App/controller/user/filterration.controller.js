@@ -4,7 +4,7 @@ const User = require("../../model/user.model");
 class FilterationController {
     searchRegistrations = async (req, res) => {
         try {
-            let userId = req.user || null;
+            let userId = req.user ;
             let {
                 category, classFilter, subjectFilter, preferredTutor,
                 state, city, pincode, priceRange, searchQuery, page = 1

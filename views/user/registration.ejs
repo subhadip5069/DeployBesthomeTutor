@@ -433,7 +433,24 @@ document.addEventListener("DOMContentLoaded", function () {
                             <input type="number" class="form-control" name="age" placeholder="Enter Year" required>
                         </div>
                     </div>
-
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Gender: <span class="text-warning">*</span></label>
+                        <div class="d-flex flex-wrap gap-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="preferredTutor" id="male" value="Male">
+                                <label class="form-check-label" for="male">Male</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="preferredTutor" id="female" value="Female">
+                                <label class="form-check-label" for="female">Female</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="preferredTutor" id="any" value="Any">
+                                <label class="form-check-label" for="any">Any</label>
+                            </div>
+                        </div>
+                        
+                    </div>
                 
                     <!-- Subject & Class -->
 
@@ -442,7 +459,53 @@ document.addEventListener("DOMContentLoaded", function () {
                             <label class="form-label fw-bold">Subject (Using ",") <span class="text-warning">*</span></label>
                             <input type="text" class="form-control" name="subject" placeholder="Enter Subject" required>
                         </div>
-                       
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Class <span class="text-warning">*</span></label>
+                            <div id="classContainer">
+                                <div class="class-group">
+                                    <select class="form-control" name="class[]" required>
+                                        <option value="" disabled selected>Select Class/Grade</option>
+                                        <% for (let i = 1; i <= 12; i++) { %>
+                                            <option value="<%= i %>">Class <%= i %></option>
+                                        <% } %>
+                                    </select>
+                                    <button type="button" class="btn btn-sm btn-danger remove-class d-none">✖</button>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-sm btn-primary mt-2" id="addClassBtn">+ Add Another Class</button>
+                        </div>
+<script>document.addEventListener("DOMContentLoaded", function () {
+    const addClassBtn = document.getElementById("addClassBtn");
+    const classContainer = document.getElementById("classContainer");
+
+    addClassBtn.addEventListener("click", function () {
+        const newClassGroup = document.createElement("div");
+        newClassGroup.classList.add("class-group", "mt-2");
+
+        newClassGroup.innerHTML = `
+            <select class="form-control" name="class[]" required>
+                <option value="" disabled selected>Select Class/Grade</option>
+                ${Array.from({ length: 12 }, (_, i) => `<option value="${i + 1}">Class ${i + 1}</option>`).join("")}
+            </select>
+            <button type="button" class="btn btn-sm btn-danger remove-class">✖</button>
+        `;
+
+        classContainer.appendChild(newClassGroup);
+
+        // Show remove button on additional class fields
+        const removeButtons = document.querySelectorAll(".remove-class");
+        removeButtons.forEach((btn) => btn.classList.remove("d-none"));
+
+        // Attach event to remove button
+        newClassGroup.querySelector(".remove-class").addEventListener("click", function () {
+            newClassGroup.remove();
+            if (classContainer.childElementCount === 1) {
+                document.querySelector(".remove-class").classList.add("d-none");
+            }
+        });
+    });
+});
+</script>                        
                     </div>
                     
                 

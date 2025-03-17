@@ -2,9 +2,7 @@
 <%-  include('layout/header') %>
 
             
-<div style="height: 20vh;">
 
-</div>
 <!-- main section -->
 <style>
      .tutor-container {
@@ -176,9 +174,10 @@
             <div class="tutor-info">
                 <div class="tutor-details">
                     <p><strong> Gender:</strong>  <%= requirement.preferredTutor || 'Not Specified' %></p>
-                    <p><strong>Qualification:</strong> <%= requirement.qualification || 'Not Specified' %></p>
+                    <p><strong>Class:</strong> <%= requirement.class || 'Not Specified' %></p>
                     <p><strong>Preferred Time:</strong> <%= requirement.preferredTime || 'Anytime' %></p>
                     <p><strong>City:</strong> <%= requirement.city || 'Online' %></p>
+
                     <p>
                         <strong>Active:</strong>
                         <% if (requirement.status) { %>
@@ -259,7 +258,7 @@
                       </p>
                       
                 </div>
-    
+    <% if (requirement.status === 'active') { %>
                 <form id="unlockContactForm" action="/unlockuser" method="POST">
                     <div class="contact-info">
                         <h2>Contact Info</h2>
@@ -273,7 +272,21 @@
                         <p><small>Viewing reduces your contact credits by 1.</small></p>
                     </div>
                 </form>
-               
+            <% }else{ %>
+                <form id="unlockContactForm" action="/unlockuser" method="POST">
+                    <div class="contact-info">
+                        <h2>Contact Info</h2>
+                        <a href="/primum" class="contact-info-btn">REQUEST FREE DEMO</a>
+                
+                        <input type="hidden" name="requirementId" value="<%= requirement._id %>">
+                        
+                
+                        <button type="submit" class="contact-info-btn">VIEW CONTACT DETAILS</button>
+                
+                        <p><small>Viewing reduces your contact credits by 1.</small></p>
+                    </div>
+                </form>
+            <% } %>
                 
             </div>
     

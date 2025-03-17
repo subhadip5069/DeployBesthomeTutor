@@ -96,7 +96,7 @@
     </div>
     
 
-    <div class="row w-100 mt-4 p-4 rounded shadow" style=" background-color: rgba(164, 224, 252, 0.671); backdrop-filter: blur(15px);" >
+    <div class="row w-100 mt-4 p-4 rounded shadow" style="background-color: rgba(164, 224, 252, 0.671); backdrop-filter: blur(15px);">
         <div class="col-md-6">
             <h4 class="text-center">Hourly Payment Tracking</h4>
             <canvas id="hourlyPaymentChart"></canvas>
@@ -106,71 +106,75 @@
             <canvas id="dailyPaymentChart"></canvas>
         </div>
     </div>
-    <div style="height: 50px; background-color: transparent;"></div>
-</div>
-
-<%- include('partial/footer') %>
-
-<!-- Chart.js -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-document.addEventListener("DOMContentLoaded", function () {
     
-    function fetchAndRenderChart(url, chartId, chartType, label, bgColor, borderColor) {
-        fetch(url)
-            .then(response => response.json())
-            .then(data => {
-                if (!data.success) {
-                    console.error("Failed to load data from " + url);
-                    return;
-                }
-
-                const labels = data.data.map(d => d.time || d.date);
-                const amounts = data.data.map(d => d.totalAmount / 100); // Divide by 100 to get actual amount
-
-                const ctx = document.getElementById(chartId).getContext("2d");
-                new Chart(ctx, {
-                    type: chartType,
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: label,
-                            data: amounts,
-                            backgroundColor: bgColor,
-                            borderColor: borderColor,
-                            borderWidth: 2,
-                            fill: true
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        scales: {
-                            y: { beginAtZero: true }
-                        }
+    <div class="row w-100 mt-4 p-4 rounded shadow" style="background-color: rgba(164, 224, 252, 0.671); backdrop-filter: blur(15px);">
+        <div class="col-md-6">
+            <h4 class="text-center">Monthly Payment Tracking</h4>
+            <canvas id="monthlyPaymentChart"></canvas>
+        </div>
+        <div class="col-md-6">
+            <h4 class="text-center">Yearly Payment Tracking</h4>
+            <canvas id="yearlyPaymentChart"></canvas>
+        </div>
+    </div>
+    
+    <div style="height: 50px; background-color: transparent;"></div>
+    </div>
+    
+    <%- include('partial/footer') %>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        function fetchAndRenderChart(url, chartId, chartType, label, bgColor, borderColor) {
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.success) {
+                        console.error("Failed to load data from " + url);
+                        return;
                     }
-                });
-            })
-            .catch(error => console.error("Error loading chart data from " + url, error));
-    }
-
-    // Load Hourly Payment Chart (Bar Chart)
-    fetchAndRenderChart(
-        "/admin/hourlyPaymentStats",
-        "hourlyPaymentChart",
-        "bar",
-        "Hourly Payments (INR)",
-        "rgba(54, 162, 235, 0.5)",
-        "blue"
-    );
-
-    // Load Daily Payment Chart (Line Chart)
-    fetchAndRenderChart(
-        "/admin/dailyPaymentStats",
-        "dailyPaymentChart",
-        "line",
-        "Daily Payments (INR)",
-        "rgba(255, 99, 132, 0.5)",
-        "red"
-    );
-});
-</script>
+    
+                    const labels = data.data.map(d => d.time || d.date || d.month || d.year);
+                    const amounts = data.data.map(d => d.totalAmount / 100);
+    
+                    const ctx = document.getElementById(chartId).getContext("2d");
+                    new Chart(ctx, {
+                        type: chartType,
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: label,
+                                data: amounts,
+                                backgroundColor: bgColor,
+                                borderColor: borderColor,
+                                borderWidth: 2,
+                                fill: true
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            scales: {
+                                y: { beginAtZero: true }
+                            }
+                        }
+                    });
+                })
+                .catch(error => console.error("Error loading chart data from " + url, error));
+        }
+    
+        // Load Hourly Payment Chart (Bar Chart)
+        fetchAndRenderChart("/admin/hourlyPaymentStats", "hourlyPaymentChart", "bar", "Hourly Payments (INR)", "rgba(54, 162, 235, 0.5)", "blue");
+    
+        // Load Daily Payment Chart (Line Chart)
+        fetchAndRenderChart("/admin/dailyPaymentStats", "dailyPaymentChart", "line", "Daily Payments (INR)", "rgba(255, 99, 132, 0.5)", "red");
+    
+        // Load Monthly Payment Chart (Bar Chart)
+        fetchAndRenderChart("/admin/monthlyPaymentStats", "monthlyPaymentChart", "bar", "Monthly Payments (INR)", "rgba(75, 192, 192, 0.5)", "green");
+    
+        // Load Yearly Payment Chart (Line Chart)
+        fetchAndRenderChart("/admin/yearlyPaymentStats", "yearlyPaymentChart", "line", "Yearly Payments (INR)", "rgba(153, 102, 255, 0.5)", "purple");
+    });
+    </script>
+    

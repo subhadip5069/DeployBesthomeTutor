@@ -104,9 +104,9 @@
       <div class="payment-order-row">
         <div class="payment-order-cell"><%= plan.planName %></div>
         <div class="payment-order-cell">Rs <%= plan.price %></div>
-        <div class="payment-order-cell">Rs <%= plan.igst %></div>
-        <div class="payment-order-cell">Rs <%= plan.cgst %></div>
-        <div class="payment-order-cell">Rs <%= plan.sgst %></div>
+        <div class="payment-order-cell"> <%= plan.igst %>% (<%= plan.price * (plan.igst / 100) %>)</div>
+        <div class="payment-order-cell"><%= plan.cgst %>% (<%= plan.price * (plan.cgst / 100) %>)</div>
+        <div class="payment-order-cell"><%= plan.sgst %>% (<%= plan.price * (plan.sgst / 100) %>) </div>
         <div class="payment-order-cell">Rs <%= plan.finalPrice %></div>
       </div>
     </div>

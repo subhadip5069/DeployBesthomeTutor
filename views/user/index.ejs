@@ -162,14 +162,25 @@ https://templatemo.com/tm-590-topic-listing
                         <li class="nav-item">
                             <a class="nav-link click-scroll" href="/#section_4">FAQs</a>
                         </li>
+                        <% if (userId && userId !== "null" && userId !== "undefined" ) { %>
+                            <% if (userId.role === "tutor") { %>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/listingofstudent">TUITION</a>
+                                </li>
+                            <% } else { %>
                         <li class="nav-item">
-                            <a class="nav-link" href="
-/listingoftutor?page=1
-">I NEED A TUTOR</a>
+                            <a class="nav-link" href="/listingoftutor?page=1">I NEED A TUTOR</a>
+                        </li>
+                            <% } %>
+                        <% } else { %>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/listingoftutor?page=1">I NEED A TUTOR</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/listingofstudent">ONLINE TUITION</a>
+                            <a class="nav-link" href="/listingofstudent"> TUITION</a>
                         </li>
+                        <% } %>
+                        
         
                         <!-- Dropdown Menu -->
                         <li class="nav-item dropdown">
@@ -331,11 +342,19 @@ https://templatemo.com/tm-590-topic-listing
                             <option value="west bengal">West Bengal</option>
                         </select> -->
                         
-                
+                        
                         <select name="category" class="form-control me-2">
                             <option value="">Select Tutors or Students</option>
+                            <% if (userId && userId !== "null" && userId !== "undefined" ) { %>
+                                <% if (userId.role === "tutor") { %>
+                                    <option value="student">Students</option>
+                                <% } else { %>
+                                <option value="tutor">Tutors</option>
+                                <% } %>
+                            <% } else { %>
                             <option value="tutor">Tutors</option>
                             <option value="student">Students</option>
+                            <% } %>
                         </select>
                 
                         <input name="searchQuery" type="search" class="form-control me-2" placeholder="Search Tutors / Students Near you ..." aria-label="Search">
@@ -433,97 +452,7 @@ https://templatemo.com/tm-590-topic-listing
             
             
 
-            <section class="timeline-section section-padding" id="section_2">
-                <div class="section-overlay"></div>
-            
-                <div class="container">
-                    <div class="row">
-                        <div class="col-12 text-center">
-                            <h2 class="text-white mb-4">How does it work?</h2>
-                        </div>
-            
-                        <!-- Timeline for Students -->
-                        <div class="col-lg-6 col-12 mx-auto">
-                            <h3 class="text-white text-center mb-4">For Students</h3>
-                            <div class="timeline-container">
-                                <ul class="vertical-scrollable-timeline" id="vertical-scrollable-timeline">
-                                    <div class="list-progress">
-                                        <div class="inner"></div>
-                                    </div>
-            
-                                    <li>
-                                        <h4 class="text-white mb-3">Search your favourite topic</h4>
-                                        <p class="text-white">Find the topics you want to learn more about and start exploring.</p>
-                                        <div class="icon-holder">
-                                            <i class="bi-search"></i>
-                                        </div>
-                                    </li>
-                                    
-                                    <li>
-                                        <h4 class="text-white mb-3">Bookmark &amp; Keep it for yourself</h4>
-                                        <p class="text-white">Save the topics you find interesting to come back to them later.</p>
-                                        <div class="icon-holder">
-                                            <i class="bi-bookmark"></i>
-                                        </div>
-                                    </li>
-            
-                                    <li>
-                                        <h4 class="text-white mb-3">Read &amp; Enjoy</h4>
-                                        <p class="text-white">Start learning by reading and absorbing the knowledge.</p>
-                                        <div class="icon-holder">
-                                            <i class="bi-book"></i>
-                                        </div>
-                                    </li>
-                                    
-                                    
-                                   
-                                </ul>
-                            </div>
-                        </div>
-            
-                        <!-- Timeline for Tutors -->
-                        <div class="col-lg-6 col-12 mx-auto">
-                            <h3 class="text-white text-center mb-4">For Tutors</h3>
-                            <div class="timeline-container">
-                                <ul class="vertical-scrollable-timeline" id="vertical-scrollable-timeline">
-                                    <div class="list-progress">
-                                        <div class="inner"></div>
-                                    </div>
-            
-                                    <li>
-                                        <h4 class="text-white mb-3">Create &amp; Share Topics</h4>
-                                        <p class="text-white">Create the topics you want to teach and share your knowledge with students.</p>
-                                        <div class="icon-holder">
-                                            <i class="bi-pencil"></i>
-                                        </div>
-                                    </li>
-                                    
-                                    <li>
-                                        <h4 class="text-white mb-3">Engage with Students</h4>
-                                        <p class="text-white">Answer questions, clarify doubts, and guide your students to success.</p>
-                                        <div class="icon-holder">
-                                            <i class="bi-chat-left-text"></i>
-                                        </div>
-                                    </li>
-            
-                                    <li>
-                                        <h4 class="text-white mb-3">Track Student Progress</h4>
-                                        <p class="text-white">Monitor the progress of your students and provide feedback to help them improve.</p>
-                                        <div class="icon-holder">
-                                            <i class="bi-bar-chart"></i>
-                                        </div>
-                                    </li>
-
-                                    
-                                </ul>
-                            </div>
-                        </div>
-            
-                        
-                    </div>
-                </div>
-            </section>
-
+           
             <!-- Instruction -->
 
             <style>
@@ -857,6 +786,97 @@ https://templatemo.com/tm-590-topic-listing
 }
 
     </style>
+     <section class="timeline-section section-padding" id="section_2">
+        <div class="section-overlay"></div>
+    
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <h2 class="text-white mb-4">How does it work?</h2>
+                </div>
+    
+                <!-- Timeline for Students -->
+                <div class="col-lg-6 col-12 mx-auto">
+                    <h3 class="text-white text-center mb-4">For Students</h3>
+                    <div class="timeline-container">
+                        <ul class="vertical-scrollable-timeline" id="vertical-scrollable-timeline">
+                            <div class="list-progress">
+                                <div class="inner"></div>
+                            </div>
+    
+                            <li>
+                                <h4 class="text-white mb-3">Search your favourite topic</h4>
+                                <p class="text-white">Find the topics you want to learn more about and start exploring.</p>
+                                <div class="icon-holder">
+                                    <i class="bi-search"></i>
+                                </div>
+                            </li>
+                            
+                            <li>
+                                <h4 class="text-white mb-3">Bookmark &amp; Keep it for yourself</h4>
+                                <p class="text-white">Save the topics you find interesting to come back to them later.</p>
+                                <div class="icon-holder">
+                                    <i class="bi-bookmark"></i>
+                                </div>
+                            </li>
+    
+                            <li>
+                                <h4 class="text-white mb-3">Read &amp; Enjoy</h4>
+                                <p class="text-white">Start learning by reading and absorbing the knowledge.</p>
+                                <div class="icon-holder">
+                                    <i class="bi-book"></i>
+                                </div>
+                            </li>
+                            
+                            
+                           
+                        </ul>
+                    </div>
+                </div>
+    
+                <!-- Timeline for Tutors -->
+                <div class="col-lg-6 col-12 mx-auto">
+                    <h3 class="text-white text-center mb-4">For Tutors</h3>
+                    <div class="timeline-container">
+                        <ul class="vertical-scrollable-timeline" id="vertical-scrollable-timeline">
+                            <div class="list-progress">
+                                <div class="inner"></div>
+                            </div>
+    
+                            <li>
+                                <h4 class="text-white mb-3">Create &amp; Share Topics</h4>
+                                <p class="text-white">Create the topics you want to teach and share your knowledge with students.</p>
+                                <div class="icon-holder">
+                                    <i class="bi-pencil"></i>
+                                </div>
+                            </li>
+                            
+                            <li>
+                                <h4 class="text-white mb-3">Engage with Students</h4>
+                                <p class="text-white">Answer questions, clarify doubts, and guide your students to success.</p>
+                                <div class="icon-holder">
+                                    <i class="bi-chat-left-text"></i>
+                                </div>
+                            </li>
+    
+                            <li>
+                                <h4 class="text-white mb-3">Track Student Progress</h4>
+                                <p class="text-white">Monitor the progress of your students and provide feedback to help them improve.</p>
+                                <div class="icon-holder">
+                                    <i class="bi-bar-chart"></i>
+                                </div>
+                            </li>
+
+                            
+                        </ul>
+                    </div>
+                </div>
+    
+                
+            </div>
+        </div>
+    </section>
+
 
                             <section class="testimonial-section" id="section_3">
                                 <div class="testimonial-container">

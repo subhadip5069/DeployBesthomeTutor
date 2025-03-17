@@ -146,6 +146,8 @@ class userPagesController {
     
     
     listingofstudent = async (req, res) => {
+        if (!req.user) {
+            
         try {
             const userId = req.user;
             const roleToFetch = "student"; // Fetch only students
@@ -286,12 +288,195 @@ class userPagesController {
             req.flash("error_msg", "An error occurred while fetching students.");
             res.redirect("/listingofstudent");
         }
-    };
+    }else{
+        try {
+            // Check if user is logged in
+           
+    
+            const userId = req.user.userId;
+            const roleToFetch = "student";
+    
+            // Validate userId format
+            if (!mongoose.Types.ObjectId.isValid(userId)) {
+                console.error("Invalid userId format:", userId);
+                req.flash("error_msg", "Invalid user ID format.");
+                return res.redirect("/listingofstudent");
+            }
+    
+            // Fetch user details to get city
+            let user = await Registration.findOne({ userId }).select("city");
+            let userCity = user ? user.city : null;
+    
+            console.log("User City:", userCity || "All Users Data Fetched");
+    
+            // Extract query params with default values
+            let {
+                classFilter = "",
+                subjectFilter = "",
+                preferredTutor = "",
+                state = "",
+                cityFilter = "",
+                pincode = "",
+                priceRange = "",
+                page = "1",
+                limit = "21",
+                searchQuery = ""
+            } = req.query;
+    
+            // Convert numeric values
+            page = parseInt(page) || 1;
+            limit = parseInt(limit) || 21;
+            const skip = (page - 1) * limit;
+    
+            // Define the filter for active students
+            let registrationFilter = { status: "active" };
+    
+            // If userCity exists, filter students by it; otherwise, show all students
+            if (userCity) {
+                registrationFilter.city = userCity;
+            }
+    
+            // Class Filter
+            if (classFilter) {
+                registrationFilter.class = { $in: classFilter.split(",").map(c => c.trim()) };
+            }
+    
+            // Subject Filter
+            if (subjectFilter) {
+                const subjectsArray = Array.isArray(subjectFilter)
+                    ? subjectFilter.map(s => s.trim())
+                    : subjectFilter.split(",").map(s => s.trim()).filter(Boolean);
+    
+                if (subjectsArray.length > 0) {
+                    registrationFilter.subject = { $in: subjectsArray };
+                }
+            }
+    
+            // Preferred Tutor Filter
+            if (preferredTutor) {
+                registrationFilter.preferredTutor = preferredTutor.trim();
+            }
+    
+            // State & City Filters (Case-Insensitive)
+            if (state) {
+                registrationFilter.state = { $regex: new RegExp(state.trim(), "i") };
+            }
+            if (cityFilter) {
+                registrationFilter.city = { $regex: new RegExp(cityFilter.trim(), "i") };
+            }
+    
+            // Pincode Filter
+            if (pincode && /^\d+$/.test(pincode)) {
+                registrationFilter.pincode = Number(pincode);
+            }
+    
+            // Price Range Filter
+            if (priceRange && priceRange.includes("-")) {
+                const [minPrice, maxPrice] = priceRange.split("-").map(Number);
+                if (!isNaN(minPrice) && !isNaN(maxPrice)) {
+                    registrationFilter.feeAmount = { $gte: minPrice, $lte: maxPrice };
+                }
+            }
+    
+            // Global Search Query
+            if (searchQuery) {
+                const regex = new RegExp(searchQuery.trim(), "i");
+                registrationFilter.$or = [
+                    { tuitionLocation: regex },
+                    { preferredTime: regex },
+                    { preferredTutor: regex },
+                    { feeType: regex },
+                    { state: regex },
+                    { city: regex },
+                    { locality: regex },
+                    { pincode: regex },
+                    { subject: regex },
+                    { class: regex },
+                    { board: regex },
+                    { qualification: regex }
+                ];
+    
+                if (!isNaN(searchQuery)) {
+                    registrationFilter.$or.push(
+                        { pincode: Number(searchQuery) },
+                        { experience: Number(searchQuery) },
+                        { age: Number(searchQuery) }
+                    );
+                }
+            }
+    
+            // User Role Filter
+            let userFilter = { role: roleToFetch };
+    
+            // Fetch total count for pagination
+            const totalStudents = await Registration.countDocuments(registrationFilter);
+            const totalPages = Math.ceil(totalStudents / limit);
+    
+            // Fetch filtered students with pagination
+            let registrations = await Registration.find(registrationFilter)
+                .populate({
+                    path: "userId",
+                    select: "name role randomId",
+                    match: userFilter // Ensure user has the correct role
+                })
+                .skip(skip)
+                .limit(limit)
+                .lean();
+    
+            // Remove students without user data
+            registrations = registrations.filter(reg => reg.userId);
+    
+            // Flash messages
+            if (registrations.length === 0) {
+                req.flash("error_msg", "No students found in your city matching your search criteria.");
+            } else {
+                req.flash("success_msg", "Students retrieved successfully.");
+            }
+    
+            console.log("Final Query Filter:", JSON.stringify(registrationFilter, null, 2));
+            console.log("Students Found:", registrations.length);
+    
+            const message = req.session.message;
+            req.session.message = null;
+    
+            res.render("user/listingofstudent", {
+                title: "/ Students",
+                userId,
+                requirements: registrations,
+                requirement: registrations,
+                currentPage: page,
+                message,
+                totalPages,
+                filters: {
+                    classFilter,
+                    subjectFilter,
+                    preferredTutor,
+                    state,
+                    cityFilter,
+                    pincode,
+                    priceRange,
+                    searchQuery,
+                },
+                success_msg: req.flash("success_msg"),
+                error_msg: req.flash("error_msg"),
+            });
+    
+        } catch (error) {
+            console.error("Error in listingofstudent:", error);
+            req.flash("error_msg", "An error occurred while fetching students.");
+            res.redirect("/listingofstudent");
+        }
+    }
+}
     
     
     
     
     listingoftutor = async (req, res) => {
+
+        if (!req.user) {
+           
+      
         try {
             const userId = req.user;
             const roleToFetch = "tutor";
@@ -461,6 +646,190 @@ class userPagesController {
             req.flash("error_msg", "An error occurred while fetching tutors.");
             res.redirect("/listingoftutor");
         }
+    }else{
+        try {
+            const userId = req.user;
+            const roleToFetch = "tutor";
+    
+            // Validate userId
+            if (!req.user.userId || !mongoose.Types.ObjectId.isValid(req.user.userId)) {
+                console.error("Invalid userId:", req.user.userId);
+                
+                
+            }
+    
+            // Fetch user details to get city
+            let user = await Registration.findOne({ userId: req.user.userId }).select("city");
+    
+            let userCity = null;
+            if (user) {
+                userCity = user.city;
+            } else {
+                console.warn("User not found. Showing all tutors...");
+            }
+    
+            console.log("User City:", userCity || "All Users Data Fetched");
+    
+            // Extract query params with default values
+            let {
+                classFilter = "",
+                subjectFilter = "",
+                preferredTutor = "",
+                state = "",
+                cityFilter = "",
+                pincode = "",
+                priceRange = "",
+                page = "1",
+                limit = "15",
+                searchQuery = ""
+            } = req.query;
+    
+            // Convert numeric values
+            page = parseInt(page) || 1;
+            limit = parseInt(limit) || 15;
+            const skip = (page - 1) * limit;
+    
+            // Define the filter for active tutors
+            let registrationFilter = { status: "active" };
+            
+            // If userCity exists, filter tutors by it; otherwise, show all tutors
+            if (userCity) {
+                registrationFilter.city = userCity;
+            }
+    
+            // Class Filter
+            if (classFilter && typeof classFilter === "string") {
+                registrationFilter.class = { $in: classFilter.split(",").map(c => c.trim()) };
+            }
+    
+            // Subject Filter
+            if (subjectFilter) {
+                const subjectsArray = Array.isArray(subjectFilter)
+                    ? subjectFilter.map(s => s.trim())
+                    : subjectFilter.split(",").map(s => s.trim()).filter(Boolean);
+    
+                if (subjectsArray.length > 0) {
+                    registrationFilter.subject = { $in: subjectsArray };
+                }
+            }
+    
+            // Preferred Tutor Filter
+            if (preferredTutor) {
+                registrationFilter.preferredTutor = preferredTutor.trim();
+            }
+    
+            // State & City Filters (Case-Insensitive)
+            if (state) {
+                registrationFilter.state = { $regex: new RegExp(state.trim(), "i") };
+            }
+            if (cityFilter) {
+                registrationFilter.city = { $regex: new RegExp(cityFilter.trim(), "i") };
+            }
+    
+            // Pincode Filter
+            if (pincode && /^\d+$/.test(pincode)) {
+                registrationFilter.pincode = Number(pincode);
+            }
+    
+            // Price Range Filter
+            if (priceRange && priceRange.includes("-")) {
+                const [minPrice, maxPrice] = priceRange.split("-").map(Number);
+                if (!isNaN(minPrice) && !isNaN(maxPrice)) {
+                    registrationFilter.feeAmount = { $gte: minPrice, $lte: maxPrice };
+                }
+            }
+    
+            // Global Search Query
+            if (searchQuery && typeof searchQuery === "string") {
+                const regex = new RegExp(searchQuery.trim(), "i");
+                registrationFilter.$or = [
+                    { tuitionLocation: regex },
+                    { preferredTime: regex },
+                    { preferredTutor: regex },
+                    { feeType: regex },
+                    { state: regex },
+                    { city: regex },
+                    { locality: regex },
+                    { pincode: regex },
+                    { subject: regex },
+                    { class: regex },
+                    { board: regex },
+                    { qualification: regex }
+                ];
+    
+                if (!isNaN(searchQuery)) {
+                    registrationFilter.$or.push(
+                        { pincode: Number(searchQuery) },
+                        { experience: Number(searchQuery) },
+                        { age: Number(searchQuery) }
+                    );
+                }
+            }
+    
+            // User Role Filter
+            let userFilter = { role: roleToFetch };
+    
+            // Fetch total count for pagination
+            const totalTutors = await Registration.countDocuments(registrationFilter);
+            const totalPages = Math.ceil(totalTutors / limit);
+    
+            // Fetch filtered tutors with pagination
+            let registrations = await Registration.find(registrationFilter)
+                .populate({
+                    path: "userId",
+                    select: "name role randomId",
+                    match: userFilter // Ensure user has the correct role
+                })
+                .skip(skip)
+                .limit(limit)
+                .lean();
+    
+            // Remove tutors without user data
+            registrations = registrations.filter(reg => reg.userId);
+    
+            // Flash messages
+            if (registrations.length === 0) {
+                req.flash("error_msg", "No tutors found in your city matching your search criteria.");
+            } else {
+                req.flash("success_msg", "Tutors retrieved successfully.");
+            }
+    
+            console.log("Final Query Filter:", JSON.stringify(registrationFilter, null, 2));
+            console.log("Tutors Found:", registrations.length);
+    
+            const message = req.session.message;
+            req.session.message = null;
+    
+             res.render("user/listoftutor", {
+                title: "/ Tutors",
+                userId,
+                requirement:registrations,
+                registrations,
+                currentPage: page,
+                message,
+                totalPages,
+                filters: {
+                    classFilter,
+                    subjectFilter,
+                    preferredTutor,
+                    state,
+                    cityFilter,
+                    pincode,
+                    priceRange,
+                    searchQuery,
+                },
+                success_msg: req.flash("success_msg"),
+                error_msg: req.flash("error_msg"),
+            });
+    
+    
+        } catch (error) {
+            console.error("Error in listingoftutor:", error);
+            req.flash("error_msg", "An error occurred while fetching tutors.");
+            res.redirect("/listingoftutor");
+        }
+    };
+    
     };
     
     
@@ -759,7 +1128,7 @@ class userPagesController {
         }
 
         const requirement = await Registration.findById(req.params.id)
-            .populate("userId", "name email randomId profilePicture role AboutMe")
+            .populate("userId", "name email randomId profilePicture role AboutMe unlockedStudents unlockedTutors")
             .select("userId tuitionLocation preferredTime preferredTutor feeType feeAmount state city pincode locality subject class sorted attachedFiles board qualification experience age gender active")
             .lean();
 

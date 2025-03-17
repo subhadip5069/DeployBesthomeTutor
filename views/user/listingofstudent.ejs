@@ -1,8 +1,6 @@
 <%- include('layout/navbar') %>
 <%- include('layout/header') %>
-<div style="height: 20vh">
 
-</div>
 <form action="/listingofstudent?" method="GET" class="mb-4 w-100 d-flex justify-content-center py-5"  >
         
   <input type="search" 
@@ -46,169 +44,152 @@
 
   <div style="display: flex; gap: 20px; align-items: flex-start;  margin: 0 auto;" class="container-fluid row ">
     
+  <!-- Search Form -->
+
+
+<!-- Main Content Layout -->
+<div class="container">
+  <div class="row">
+    
     <!-- Filter Section -->
     <form action="/listingofstudent?" method="GET" class="col-md-3">
       <div class="category-filter-container">
-          <button type="button" class="category-filter-search" onclick="toggleFilters()">
+          <button type="button" class="category-filter-search w-100" onclick="toggleFilters()">
               <h3 class="category-filter-title">Refine Search</h3>
               <span id="arrow-icon">▼</span>
           </button>
   
           <div id="category-filter-content" class="category-filter-content" style="display: none;">
-              <!-- Course -->
-              <div class="category-filter-group">
-                <div class="mb-3">
-                  <label class="form-label fw-bold">Class <span class="text-warning"></span></label>
-                  <select class="form-control"  id="course"  name="classFilter" >
+              <div class="mb-3">
+                  <label class="form-label fw-bold">Class</label>
+                  <select class="form-control" name="classFilter">
                       <option value="" disabled selected>Select Class/Grade</option>
                       <% for (let i = 1; i <= 12; i++) { %>
                           <option value="<%= i %>">Class <%= i %></option>
                       <% } %>
                   </select>
-                  
               </div>
-              </div>
-  
-              <!-- Subject -->
-              <div class="category-filter-group">
-                  <label for="subject">Subject</label>
-                  <input type="text" id="subject" name="subjectFilter" placeholder="Enter subject">
-              </div>
-              <div class="category-filter-group">
-                <label for="city" class="fw-bold">City</label>
-                <input type="text" class="form-control" id="city" name="city" placeholder="Enter city">
-            </div>
 
-            <!-- Pincode -->
-            <div class="category-filter-group">
-                <label for="pincode" class="fw-bold"   >Pincode</label>
-                <input type="number" class="form-control" id="pincode" name="pincode" placeholder="Enter pincode">
-            </div>
+              <div class="mb-3">
+                  <label class="fw-bold">Subject</label>
+                  <input type="text" class="form-control" name="subjectFilter" placeholder="Enter subject">
+              </div>
+
+              <div class="mb-3">
+                  <label class="fw-bold">City</label>
+                  <input type="text" class="form-control" name="city" placeholder="Enter city">
+              </div>
+
+              <div class="mb-3">
+                  <label class="fw-bold">Pincode</label>
+                  <input type="number" class="form-control" name="pincode" placeholder="Enter pincode">
+              </div>
   
-             
-  
-              <!-- Hourly Price Filter -->
-            
-              <!-- Submit Button -->
-              <div style="text-align: center; margin-top: 10px;">
-                  <button type="submit" class="btn btn-primary">Search</button>
+              <div class="text-center mt-3">
+                  <button type="submit" class="btn btn-primary w-100">Search</button>
               </div>
           </div>
       </div>
-  </form>
-   
-
+    </form>
 
     <!-- Cards Section -->
-   <!-- Cards Container -->
-<div style="flex: 1; display: flex; flex-wrap: wrap; gap: 20px;" id="searchResults" class="col">
-    <% requirement.forEach(tutor => { %>
-      <!-- Four cards per row: 25% width each (minus 20px gap) -->
-      <div style=" box-sizing: border-box; border: 1px solid #ddd; border-radius: 10px; padding: 15px; background: #fff; box-shadow: 2px 2px 10px rgba(0,0,0,0.1);">
-        
-        <!-- Date Posted -->
-        <p style="font-size: 12px; color: gray; margin-bottom: 5px;">
-          Posted On: <%= tutor.createdAt.toDateString().split(' ').slice(1, 4).join(' ') %>
-        </p>
-  
-        <!-- Title -->
-        <h5 style="color: #007bff; margin-bottom: 5px;">
-          <a href="#" style="text-decoration: none; color: #007bff;">
-            Home Tutor Wanted For...
-          </a>
-        </h5>
-  
-        <!-- Name | Class in one line -->
-        <p style="font-size: 14px; margin-bottom: 5px; font-weight: bold;">
-          <%= tutor.userId.name %> | <%= tutor.class %>
-        </p>
-  
-        <!-- Time & Location on one line -->
-        <p style="font-size: 14px; color: #555; margin-bottom: 5px;">
-          <i class="fas fa-clock"></i> <%= tutor.preferredTime %> 
-          | 
-          <i class="fas fa-map-marker-alt"></i> <%= tutor.tuitionLocation %>
-        </p>
-  
-        <!-- Preferred Tutor -->
-        <p style="color: red; font-weight: bold; font-size: 14px; margin-bottom: 5px;">
-          Preferred: <%= tutor.preferredTutor %>
-        </p>
-  
-        <!-- Subject, Board, and randomId -->
-        <p style="font-size: 14px; margin-bottom: 5px;">
-          <i class="fas fa-book"></i> <%= tutor.subject %> | <%= tutor.board %>
-        </p>
-        <p style="font-size: 14px; margin-bottom: 5px;">
-          <i class="fas fa-graduation-cap"></i> TuitionId: <b><%= tutor.userId.randomId %></b>
-        </p>
-  
-        <!-- Address -->
-        <p style="font-size: 14px; margin-bottom: 5px;">
-          <i class="fas fa-map-marker-alt"></i> Address: 
-          <%= tutor.pincode %> | <%= tutor.state %> | <%= tutor.city %>
-        </p>
-        <p style="font-size: 20px; margin-bottom: 5px;">
-
-        <%= tutor.feeAmount %>
-        </p>
-  
-        <!-- Sorted/Tutor Accepted Indicator -->
-        <div style="background: #eaf4ff; padding: 10px; border-radius: 5px; font-size: 14px;">
-          <%= tutor.sorted === 'Yes' ? 'Tutor Accepted' : 'Tutor Not Found' %>
-        </div>
-  
-        <!-- Action Buttons -->
-        <div style="display: flex; justify-content: space-between; margin-top: 10px;">
-          <a href="/userDetails/<%= tutor._id %>" 
-             style="width: 48%; background: #007bff; color: #fff; padding: 8px; border: none; border-radius: 5px; text-align: center; text-decoration: none;">
-            VIEW
-          </a>
-          <button style="width: 48%; background: #28a745; color: #fff; padding: 8px; border: none; border-radius: 5px;">
-            APPLY
-          </button>
-        </div>
+    <div class="col-md-9">
+      <div class="row g-2">
+        <% requirement.forEach(student => { %>
+          <div class="col-12 col-sm-6 col-md-3">
+            <div class="card p-2 shadow-sm" style="font-size: 14px;">
+              
+              <p class="text-muted small mb-1">
+                <i class="far fa-calendar-alt"></i> 
+                <%= student.createdAt.toDateString().split(' ').slice(1, 4).join(' ') %>
+              </p>
+    
+              <h6 class="text-primary mb-1">
+                <a href="#" class="text-decoration-none">Student Looking for Tutor...</a>
+              </h6>
+    
+              <p class="fw-bold mb-1" style="font-size: 13px;">
+                <%= student.userId.name %> | Class: <%= student.class %>
+              </p>
+    
+              <p class="text-muted small mb-1">
+                <i class="fas fa-clock"></i> <%= Array.isArray(student.preferredTime) ? student.preferredTime.join(", ") : student.preferredTime %> | 
+                <i class="fas fa-map-marker-alt"></i> <%= student.location %>
+              </p>
+    
+              <p class="text-danger fw-bold small mb-1">
+                Preferred Tutor: <%= student.preferredTutor %>
+              </p>
+    
+              <p class="small mb-1">
+                <i class="fas fa-book"></i> <%= student.subject %> | <%= student.board %>
+              </p>
+    
+              <p class="small mb-1">
+                <i class="fas fa-graduation-cap"></i> ID: <b><%= student.userId.randomId %></b>
+              </p>
+    
+             
+              <p class="small mb-1">
+                <i class="fas fa-map-marker-alt"></i> 
+                <%= student.city.charAt(0).toUpperCase() + student.city.slice(1).toLowerCase() %>, 
+                <%= student.state.charAt(0).toUpperCase() + student.state.slice(1).toLowerCase() %> 
+                (Pin: <%= student.pincode %>)
+              </p>
+              
+    
+              <div class="bg-light p-1 text-center small rounded">
+                <%= student.status === 'Matched' ? 'Tutor Found' : 'Tutor Not Found' %>
+              </div>
+    
+              <div class="d-flex gap-1 mt-2">
+                <a href="/userDetails/<%= student._id %>" class="btn btn-sm btn-primary w-50">VIEW</a>
+                <button class="btn btn-sm btn-success w-50">APPLY</button>
+              </div>
+    
+            </div>
+          </div>
+        <% }); %>
       </div>
-    <% }); %>
+    </div>
+    
+    
   </div>
-  
-  
+
+  <!-- Pagination -->
   <% if (totalPages > 1) { %>
-    <nav aria-label="Page navigation">
-      <ul class="pagination mt-4">
-        <!-- Previous Button -->
+    <nav class="d-flex justify-content-center mt-4">
+      <ul class="pagination">
         <% if (currentPage > 1) { %>
           <li class="page-item">
-            <a class="page-link" 
-               href="?page=<%= currentPage - 1 %>&classFilter=<%= filters.classFilter || '' %>&subjectFilter=<%= filters.subjectFilter || '' %>&preferredTutor=<%= filters.preferredTutor || '' %>&priceRange=<%= filters.priceRange || '' %>">
-              Previous
-            </a>
+            <a class="page-link" href="?page=<%= currentPage - 1 %>">Previous</a>
           </li>
         <% } %>
-  
-        <!-- Page Numbers -->
         <% for (let i = 1; i <= totalPages; i++) { %>
           <li class="page-item <%= i === currentPage ? 'active' : '' %>">
-            <a class="page-link" 
-               href="?page=<%= i %>&classFilter=<%= filters.classFilter || '' %>&subjectFilter=<%= filters.subjectFilter || '' %>&preferredTutor=<%= filters.preferredTutor || '' %>&priceRange=<%= filters.priceRange || '' %>">
-              <%= i %>
-            </a>
+            <a class="page-link" href="?page=<%= i %>"><%= i %></a>
           </li>
         <% } %>
-  
-        <!-- Next Button -->
         <% if (currentPage < totalPages) { %>
           <li class="page-item">
-            <a class="page-link" 
-               href="?page=<%= currentPage + 1 %>&classFilter=<%= filters.classFilter || '' %>&subjectFilter=<%= filters.subjectFilter || '' %>&preferredTutor=<%= filters.preferredTutor || '' %>&priceRange=<%= filters.priceRange || '' %>">
-              Next
-            </a>
+            <a class="page-link" href="?page=<%= currentPage + 1 %>">Next</a>
           </li>
         <% } %>
       </ul>
     </nav>
   <% } %>
-  
+</div>
+
+<!-- Scripts -->
+<script>
+  function toggleFilters() {
+    const filterContent = document.getElementById("category-filter-content");
+    const arrowIcon = document.getElementById("arrow-icon");
+    filterContent.style.display = (filterContent.style.display === "none") ? "block" : "none";
+    arrowIcon.innerHTML = (filterContent.style.display === "block") ? "▲" : "▼";
+  }
+</script>
+
 </div>
 
 </div>

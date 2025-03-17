@@ -19,7 +19,6 @@ router.get("/alltutorrequirment",AdminauthMiddleware, AdminPagesController.alltu
 
 
 
-
 // Fetch hourly payments
 router.get("/hourlyPaymentStats", async (req, res) => {
     try {
@@ -77,6 +76,63 @@ router.get("/dailyPaymentStats", async (req, res) => {
         res.json({ success: true, data: formattedData });
     } catch (error) {
         console.error("Error fetching daily payment data:", error);
+        res.status(500).json({ success: false, error: "Internal Server Error" });
+    }
+});
+
+// Fetch monthly payments
+router.get("/monthlyPaymentStats", async (req, res) => {
+    try {
+        const monthlyPayments = await RazorpayPayment.aggregate([
+            { $match: { paymentStatus: "successful" } },
+            {
+                $group: {
+                    _id: {
+                        year: { $year: "$createdAt" },
+                        month: { $month: "$createdAt" }
+                    },
+                    totalAmount: { $sum: "$amount" }
+                }
+            },
+            { $sort: { "_id.year": 1, "_id.month": 1 } }
+        ]);
+
+        const formattedData = monthlyPayments.map(p => ({
+            month: `${p._id.month}-${p._id.year}`,
+            totalAmount: p.totalAmount / 100  // ✅ Convert paise to INR
+        }));
+
+        res.json({ success: true, data: formattedData });
+    } catch (error) {
+        console.error("Error fetching monthly payment data:", error);
+        res.status(500).json({ success: false, error: "Internal Server Error" });
+    }
+});
+
+// Fetch yearly payments
+router.get("/yearlyPaymentStats", async (req, res) => {
+    try {
+        const yearlyPayments = await RazorpayPayment.aggregate([
+            { $match: { paymentStatus: "successful" } },
+            {
+                $group: {
+                    _id: {
+                        year: { $year: "$createdAt" }
+                    },
+                    totalAmount: { $sum: "$amount" }
+                }
+            },
+            { $sort: { "_id.year": 1 } }
+        ]);
+
+        const formattedData = yearlyPayments.map(p => ({
+            year: `${p._id.year}`,
+            totalAmount: p.totalAmount / 100  // ✅ Convert paise to INR
+        }));
+
+        res.json({ success: true, data: formattedData });
+    } catch (error) {
+        console.error("Error fetching yearly payment data:", error);
         res.status(500).json({ success: false, error: "Internal Server Error" });
     }
 });
