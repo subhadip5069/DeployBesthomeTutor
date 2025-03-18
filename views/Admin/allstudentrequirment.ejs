@@ -26,6 +26,8 @@
                         <th>Subject</th>
                         <th>Class</th>
                         <th>Board</th>
+                        <th>Status</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody id="studentTableBody">
@@ -39,16 +41,63 @@
                                 <td><%= reg.subject || "N/A" %></td>
                                 <td><%= reg.class || "N/A" %></td>
                                 <td><%= reg.board || "N/A" %></td>
+                                <td>
+                                    <span class="status-label" data-id="<%= reg._id %>" 
+                                        style="font-weight: bold; color: <%= reg.status === 'active' ? '#28a745' : '#dc3545' %>;">
+                                        <%= reg.status %>
+                                    </span>
+                                </td>
+                                <td>
+                                    <button class="status-toggle-btn btn <%= reg.status === 'active' ? 'btn-danger' : 'btn-success' %>"
+                                        data-id="<%= reg._id %>">
+                                        <%= reg.status === 'Active' ? 'Deactivate' : 'Activate' %>
+                                    </button>
+                                </td>
                             </tr>
                         <% }) %>
                     <% } else { %>
                         <tr>
-                            <td colspan="7" class="text-center">No student registrations found.</td>
+                            <td colspan="9" class="text-center">No student registrations found.</td>
                         </tr>
                     <% } %>
                 </tbody>
             </table>
         </div>
+        
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            $(document).ready(function() {
+                $(".status-toggle-btn").click(function() {
+                    let button = $(this);
+                    let id = button.data("id");
+                    let currentStatus = button.text().trim();
+                    let newStatus = currentStatus === "Deactivate" ? "Inactive" : "Active";
+        
+                    $.ajax({
+                        url: `/admin/adminupdatedtuition/${id}`,
+                        type: "POST",
+                        data: { status: newStatus },
+                        success: function(response) {
+                            let row = button.closest("tr");
+                            
+                            // Update status label
+                            row.find(".status-label").text(newStatus)
+                                .css("color", newStatus === "Active" ? "#28a745" : "#dc3545");
+        
+                            // Update button text & style
+                            button.text(newStatus === "Active" ? "Deactivate" : "Activate")
+                                .toggleClass("btn-danger btn-success");
+                            
+                            alert(response.message); // Show success message
+                        },
+                        error: function() {
+                            alert("Error updating status. Please try again.");
+                        }
+                    });
+                });
+            });
+        </script>
+        
 
         <!-- Pagination Controls -->
         <div class="d-flex justify-content-center mt-3">

@@ -68,6 +68,11 @@ class UserAuthController {
             req.session.message = { type: "danger", text: "Email is already registered. Please log in." };
             return res.redirect("/login");
         }
+        const userexists = await User.findOne({ phone });
+        if (userexists) {
+            req.session.message = { type: "danger", text: "Phone is already registered. Please log in." };
+            return res.redirect("/login");
+        }
 
         // Hash password
         const hashedPassword = await bcrypt.hash(password, 10);

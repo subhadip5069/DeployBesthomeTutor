@@ -151,7 +151,7 @@ class AdminPagesController {
     }
     listOfTutor=async(req,res)=>{
             const userId = req.user;
-        const users = await userModel.find({role:'tutor'}).lean();
+        const users = await User.find({role:'tutor'}).lean();
        
         res.render('Admin/listOfTutor' ,{users ,userId})
        
@@ -180,7 +180,7 @@ class AdminPagesController {
             attachedFiles: { $exists: true, $not: { $size: 0 } }
         })
             .populate("userId", "name email randomId")
-            .select("userId tuitionLocation subject attachedFiles documentVerificationStatus")
+            .select("userId tuitionLocation subject attachedFiles documentVerificationStatus class about")
             .skip(skip)
             .limit(limit)
             .lean();
@@ -214,6 +214,7 @@ class AdminPagesController {
             // Base filter: Fetch students WITHOUT documents
             let filter = {
                 status: "active",
+
                 attachedFiles: { $exists: true, $size: 0 }
             };
     
@@ -248,7 +249,7 @@ class AdminPagesController {
                     match: { role: "student" }, // Ensure only students are fetched
                     select: "name email randomId role phone"
                 })
-                .select("userId tuitionLocation preferredTime preferredTutor feeType feeAmount state city pincode locality subject class sorted board qualification experience age createdAt updatedAt")
+                .select("userId tuitionLocation preferredTime preferredTutor feeType feeAmount state city pincode locality subject class sorted board qualification experience age createdAt updatedAt status")
                 .skip(skip)
                 .limit(limit)
                 .lean();
@@ -274,9 +275,61 @@ class AdminPagesController {
         }
     };
     
+    updateUserContactRemaining = async (req, res) => {
+        try {
+            const id = req.params.id;
+            const additionalUnlocks = parseInt(req.body.additionalUnlocks, 10);
+    
+            if (isNaN(additionalUnlocks) || additionalUnlocks <= 0) {
+                req.session.message = { type: "error", text: "Please enter a valid positive number." };
+                return res.redirect("/admin/alltutorrequirment");
+            }
+    
+            const updatedUser = await User.findByIdAndUpdate(
+                id,
+                { $inc: { unlockedContactsRemaining: additionalUnlocks } }, // Increment unlocks
+                { new: true }
+            );
+    
+            if (!updatedUser) {
+                req.session.message = { type: "error", text: "User not found. Please try again." };
+                return res.redirect("/admin/alltutorrequirment");
+            }
+    
+            req.session.message = { type: "success", text: `Added ${additionalUnlocks} unlocks successfully!` };
+            return res.redirect("/admin/alltutorrequirment");
+    
+        } catch (error) {
+            console.error("Error updating unlocks:", error);
+            req.session.message = { type: "error", text: "Something went wrong. Please try again." };
+            return res.redirect("/admin/alltutorrequirment");
+        }
+    };
     
     
-            
+    
+    
+    adminupdatedtuition = async (req, res) => {
+        try{
+            const userId = req.user.userId;
+            const id = req.params.id;
+        //   if current status active then change to inactive
+        // if current status inactive then not change to active 
+
+            const status = req.body.status;
+            const updatedRegistration = await Registration.findByIdAndUpdate(id, { status }, { new: true });
+            if (!updatedRegistration) {
+                req.session.message = { type: "error", text: "Something went wrong. Please try again." };
+                return res.redirect("/admin/allstudentrequirment");
+            }
+             req.session.message = { type: "error", text: "Thank you for your response." };
+             return res.redirect("/admin/allstudentrequirment");
+        } catch (error) {
+             req.session.message = { type: "error", text: "Something went wrong. Please try again." };
+             return res.redirect("/admin/allstudentrequirment");
+
+        }
+    }
            
             
     alltutorrequirment = async (req, res) => {
@@ -300,7 +353,7 @@ class AdminPagesController {
                 .populate({
                     path: "userId",
                     match: { role: "tutor" }, // Ensures only tutors are fetched
-                    select: "name email randomId role phone"
+                    select: "name email randomId role phone status unlockedContactsRemaining" 
                 })
                 .lean(); // Improves performance
     

@@ -16,6 +16,8 @@ router.get("/createprimium",AdminauthMiddleware, AdminPagesController.createPrim
 router.get("/getprimium", AdminauthMiddleware,AdminPagesController.getpurchaseplan);
 router.get("/allstudentrequirment",AdminauthMiddleware, AdminPagesController.allstudentsrequirment);
 router.get("/alltutorrequirment",AdminauthMiddleware, AdminPagesController.alltutorrequirment);
+router.post("/adminupdatedtuition/:id",AdminauthMiddleware, AdminPagesController.adminupdatedtuition);
+router.post("/upadteusercontactremaining/:id",AdminauthMiddleware, AdminPagesController.updateUserContactRemaining);
 
 
 

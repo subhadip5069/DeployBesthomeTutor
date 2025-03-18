@@ -227,7 +227,7 @@ async updateTuitionRequirement(req, res) {
             subject,
             class: className,
             board,
-            status
+            
         } = req.body;
 
         // Find and update the requirement
@@ -243,7 +243,7 @@ async updateTuitionRequirement(req, res) {
             subject,
             class: className,
             board,
-            status
+            status:"active"
             },
             { new: true }
         );
@@ -324,7 +324,7 @@ updateRegistration=async(req, res)=> {
                 sorted,
                 experience,
                 qualification,
-              
+              status: "active",
                 age
             },
             { new: true }
@@ -370,6 +370,29 @@ updateRegistration=async(req, res)=> {
             return res.status(200).json({ message: "Marked as sorted", updatedRequirement });
         } catch (error) {
             return res.status(500).json({ message: "Error updating requirement", error });
+        }
+    }
+
+
+    updatedtuition = async (req, res) => {
+        try{
+            const userId = req.user.userId;
+            const id = req.params.id;
+        //   if current status active then change to inactive
+        // if current status inactive then not change to active 
+
+            const status = req.body.status;
+            const updatedRegistration = await Registration.findByIdAndUpdate(id, { status }, { new: true });
+            if (!updatedRegistration) {
+                req.session.message = { type: "error", text: "Something went wrong. Please try again." };
+                return res.redirect("/myprofile");
+            }
+             req.session.message = { type: "error", text: "Thank you for your response." };
+             return res.redirect("/myprofile");
+        } catch (error) {
+             req.session.message = { type: "error", text: "Something went wrong. Please try again." };
+             return res.redirect("/myprofile");
+
         }
     }
 }

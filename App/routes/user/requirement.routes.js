@@ -22,6 +22,7 @@ router.post(
   
 router.post("/updatereg/:id", authMiddleware, profileuploade,compressImage2,requiremntController.updateRegistration);
 router.post("/updaterequirment/:id", authMiddleware, requiremntController.updateTuitionRequirement);
+router.post("/updatedtuition/:id", authMiddleware, requiremntController.updatedtuition);
 
 
 

@@ -73,11 +73,17 @@ TemplateMo 590 topic listing
                             <% if (userId && userId !== "null" && userId !== "undefined" ) { %>
                                 <% if (userId.role === "tutor") { %>
                                     <li class="nav-item">
-                                        <a class="nav-link" href="/listingofstudent">TUITION</a>
+                                        <a class="nav-link" href="/listingofstudent?page=1"> Matched Tution</a>
                                     </li>
-                                <% } else { %>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/allstudents">All Tution</a>
+                                    </li>
+                                <% } else  { %>
                             <li class="nav-item">
-                                <a class="nav-link" href="/listingoftutor?page=1">I NEED A TUTOR</a>
+                                <a class="nav-link" href="/listingoftutor?page=1">Match TUTOR</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/alltutors">All Tutor</a>
                             </li>
                                 <% } %>
                             <% } else { %>

@@ -24,6 +24,8 @@ router.get("/terms&condition",authMiddleware,userPagesController.termsandconditi
 router.get("/privacypolicy",authMiddleware,userPagesController.privacypolicy)
 router.get("/payment-success",authMiddleware,userPagesController.paymentsuccess)
 router.get("/updatereg/:id",authMiddleware,userPagesController.editregistration)
+router.get("/allstudents",authMiddleware,userPagesController.allstudents)
+router.get("/alltutors",authMiddleware,userPagesController.alltutors)
 
 
 

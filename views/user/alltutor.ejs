@@ -1,0 +1,213 @@
+<%- include('layout/navbar') %>
+<%- include('layout/header') %>
+
+<section class="container min-vh-100 d-flex flex-column align-items-center">
+    <!-- Search Bar -->
+    <div class="mb-3 d-flex justify-content-center w-100">
+        <input type="text" id="searchInput" class="form-control text-center" 
+               style="max-width: 500px;" placeholder="Search by Name, ID, or Email">
+    </div>
+<!-- Bootstrap Toast -->
+<div aria-live="polite" aria-atomic="true" class="position-fixed bottom-0 end-0 p-3">
+    <div id="toastMessage" class="toast align-items-center text-bg-<%= message ? (message.type === 'success' ? 'success' : 'danger') : '' %> border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <% if (message) { %>
+                    <%= message.text %>
+                <% } %>
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+  </div>
+  
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var toastEl = document.getElementById('toastMessage');
+        if (toastEl && toastEl.innerText.trim() !== "") {
+            var toast = new bootstrap.Toast(toastEl);
+            toast.show();
+        }
+    });
+  </script>
+  <% message = null; %>
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <!-- Filters Form -->
+            <div class="col-lg-3 col-md-4">
+                <form action="/listingoftutor?" method="GET" class="p-3 shadow-sm rounded bg-light">
+                    <h5 class="text-center text-primary mb-3">Refine Search</h5>
+
+                    <!-- Subject -->
+                    <div class="mb-3">
+                        <label class="form-label">Subject</label>
+                        <input type="text" id="subject" name="subjectFilter" class="form-control" placeholder="Enter subject">
+                    </div>
+
+                    <!-- City -->
+                    <div class="mb-3">
+                        <label class="form-label">City</label>
+                        <input type="text" id="city" name="cityFilter" class="form-control" placeholder="Enter city">
+
+                    </div>
+
+                    <!-- Pincode -->
+                    <div class="mb-3">
+                        <label class="form-label">Pincode</label>
+                        <input type="number" id="pincode" name="pincode" class="form-control" placeholder="Enter pincode">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Preferred Tutor: <span class="text-warning">*</span></label>
+                        <div class="d-flex flex-wrap gap-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="preferredTutor" id="male" value="Male">
+                                <label class="form-check-label" for="male">Male</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="preferredTutor" id="female" value="Female">
+                                <label class="form-check-label" for="female">Female</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="preferredTutor" id="any" value="Any">
+                                <label class="form-check-label" for="any">Any</label>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <!-- Submit -->
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary w-100">Search</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Tutor Listing -->
+            <div class="col-lg-9 col-md-8">
+                <div class="row" id="registrationsContainer">
+                    <% requirement.reverse().forEach(tutor => { %>
+                        <% if (tutor && tutor.userId && tutor.userId.role === "tutor" && tutor.status === "active") { %>
+                            <div class="col-lg-3 col-md-4 col-sm-6 mb-3">
+                                <div class="card border-0 shadow-sm p-2"
+                                     style="border-radius: 10px; box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.08); transition: transform 0.2s ease-in-out; width: 100%;"
+                                     onmouseover="this.style.transform='translateY(-3px)'"
+                                     onmouseout="this.style.transform='translateY(0)'">
+                                    
+                                    <!-- Featured Badge -->
+                                    <div class="position-absolute top-0 start-0 bg-warning text-dark rounded fw-bold px-1"
+                                         style="font-size: 10px; padding: 3px 5px;">
+                                        ★ Featured
+                                    </div>
+            
+                                    <!-- Profile Info -->
+                                    <div class="d-flex align-items-center mb-2">
+                                        <img src="<%= tutor.userId.profileImg || '/user/images/profile.png' %>" 
+                                             class="rounded-circle me-2"
+                                             style="width: 40px; height: 40px;">
+                                        <div>
+                                            <h6 class="text-primary m-0" style="font-size: 14px; font-weight: bold;">
+                                                <%= tutor.userId.name || "Unknown" %>
+                                            </h6> 
+                                            <small style="font-size: 12px; color: #666;">
+                                                <p class="mb-0"><span><%= tutor.userId.randomId || "Unknown" %></span></p>
+                                                Exp: <%= tutor.experience || "N/A" %> Y | Age: <%= tutor.age || "N/A" %> 
+                                            </small>
+                                            <p style="font-size: 12px; color: #666; margin-bottom: 4px;">
+                                                 <b> <%= tutor.preferredTutor || "N/A" %></b>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <p style="font-size: 12px; color: #666; margin-bottom: 4px;">
+                                        <b> class :</b> <%= tutor.class || "N/A" %>
+                                   </p>
+                                    <!-- Location -->
+                                    <p style="font-size: 12px; color: #666; margin-bottom: 4px;">
+                                        <i class="fas fa-map-marker-alt"></i> <strong>Location:</strong> 
+                                        <%= (tutor.city || "Not specified").toLowerCase().replace(/\b\w/g, char => char.toUpperCase()) %>, 
+                                        <%= (tutor.state || "Not specified").toLowerCase().replace(/\b\w/g, char => char.toUpperCase()) %>,
+                                      
+                                    </p>
+                                    <p style="font-size: 12px; color: #666; margin-bottom: 4px;"><b> Pin:</b> <%= tutor.pincode || "Not specified" %></p>
+                                    
+            
+                                    <!-- Qualification -->
+                                    <p style="font-size: 12px; color: #666; margin-bottom: 4px;">
+                                        <i class="fas fa-graduation-cap"></i> <strong>Qualification:</strong> 
+                                        <%= tutor.qualification || "N/A" %>
+                                    </p>
+            
+                                    <!-- Subjects -->
+                                    <p style="font-size: 12px; color: #666; margin-bottom: 4px;">
+                                        <i class="fas fa-book"></i> <strong>Subjects:</strong>  
+                                        <%= tutor.subject || "Various" %>
+                                    </p>
+            
+                                    <!-- Buttons -->
+                                    <div class="text-center" style="display: flex; justify-content: space-between;">
+                                        <a href="/userDetails/<%= tutor._id %>" 
+                                           class="btn btn-primary mt-1" 
+                                           style="font-size: 10px; padding: 4px 6px; border-radius: 6px; flex: 1; margin-right: 4px;">
+                                            View Profile
+                                        </a>
+            
+                                        <a href="/primum" 
+                                           class="btn btn-success mt-1" 
+                                           style="font-size: 10px; padding: 4px 6px; border-radius: 6px; flex: 1;">
+                                            Free Demo
+                                        </a>
+                                    </div>
+            
+                                </div>
+                            </div>
+                        <% } %>
+                    <% }); %>
+                </div>
+            </div>
+            
+            
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <% if (totalPages > 1) { %>
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center mt-4">
+                <% if (currentPage > 1) { %>
+                    <li class="page-item">
+                        <a class="page-link" href="?page=<%= currentPage - 1 %>">Previous</a>
+                    </li>
+                <% } %>
+                <% for (let i = 1; i <= totalPages; i++) { %>
+                    <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                        <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+                    </li>
+                <% } %>
+                <% if (currentPage < totalPages) { %>
+                    <li class="page-item">
+                        <a class="page-link" href="?page=<%= currentPage + 1 %>">Next</a>
+                    </li>
+                <% } %>
+            </ul>
+        </nav>
+    <% } %>
+
+    <div style="height: 50px;"></div>
+</section>
+
+<!-- Search Function -->
+<script>
+    document.getElementById("searchInput").addEventListener("input", function () {
+        let filter = this.value.toLowerCase();
+        let cards = document.querySelectorAll("#registrationsContainer .col-lg-4, #registrationsContainer .col-md-6");
+
+        cards.forEach(card => {
+            let name = card.querySelector("h5.text-primary")?.innerText.toLowerCase() || "";
+            let id = card.querySelector("p span")?.innerText.toLowerCase() || "";
+
+            card.style.display = (name.includes(filter) || id.includes(filter)) ? "block" : "none";
+        });
+        
+    });
+</script>
+
+<%- include('layout/footer') %>

@@ -1,0 +1,244 @@
+<%- include('layout/navbar') %>
+<%- include('layout/header') %>
+
+<form action="/listingofstudent?" method="GET" class="mb-4 w-100 d-flex justify-content-center py-5"  >
+        
+  <input type="search" 
+         name="searchQuery" 
+         placeholder="Enter Course, Subject, or Keywords to Search"
+         class="form-control rounded-pill px-4 py-2 shadow-sm"
+         style="font-size: 18px; ;width:50%;"
+         value="<%= filters.searchQuery %>">
+  <button type="submit" class="btn bg-light">
+      <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 50 50"><g fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke="#344054" d="m43.75 43.75l-9.042-9.042"/><path stroke="#306cfe" d="M22.917 39.583c9.204 0 16.666-7.462 16.666-16.666S32.121 6.25 22.917 6.25S6.25 13.712 6.25 22.917c0 9.204 7.462 16.666 16.667 16.666"/></g></svg>
+  </button>
+
+</form>
+<div style="font-family: Arial, sans-serif; background-color: #ffffff; margin: 0; padding: 50px;" class="container-fluid d-flex align-items-center justify-content-center">
+ 
+ 
+<!-- Bootstrap Toast -->
+<div aria-live="polite" aria-atomic="true" class="position-fixed bottom-0 end-0 p-3">
+  <div id="toastMessage" class="toast align-items-center text-bg-<%= message ? (message.type === 'success' ? 'success' : 'danger') : '' %> border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true">
+      <div class="d-flex">
+          <div class="toast-body">
+              <% if (message) { %>
+                  <%= message.text %>
+              <% } %>
+          </div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+      var toastEl = document.getElementById('toastMessage');
+      if (toastEl && toastEl.innerText.trim() !== "") {
+          var toast = new bootstrap.Toast(toastEl);
+          toast.show();
+      }
+  });
+</script>
+<% message = null; %>
+
+  <div style="display: flex; gap: 20px; align-items: flex-start;  margin: 0 auto;" class="container-fluid row ">
+    
+  <!-- Search Form -->
+
+
+<!-- Main Content Layout -->
+<div class="container">
+  <div class="row">
+    
+    <!-- Filter Section -->
+    <form action="/listingofstudent?" method="GET" class="col-md-3">
+      <div class="category-filter-container">
+          <button type="button" class="category-filter-search w-100" onclick="toggleFilters()">
+              <h3 class="category-filter-title">Refine Search</h3>
+              <span id="arrow-icon">▼</span>
+          </button>
+  
+          <div id="category-filter-content" class="category-filter-content" style="display: none;">
+              <div class="mb-3">
+                  <label class="form-label fw-bold">Class</label>
+                  <select class="form-control" name="classFilter">
+                      <option value="" disabled selected>Select Class/Grade</option>
+                      <% for (let i = 1; i <= 12; i++) { %>
+                          <option value="<%= i %>">Class <%= i %></option>
+                      <% } %>
+                  </select>
+              </div>
+
+              <div class="mb-3">
+                  <label class="fw-bold">Subject</label>
+                  <input type="text" class="form-control" name="subjectFilter" placeholder="Enter subject">
+              </div>
+
+              <div class="mb-3">
+                  <label class="fw-bold">City</label>
+                  <input type="text" class="form-control" name="city" placeholder="Enter city">
+              </div>
+
+              <div class="mb-3">
+                  <label class="fw-bold">Pincode</label>
+                  <input type="number" class="form-control" name="pincode" placeholder="Enter pincode">
+              </div>
+              
+  
+              <div class="text-center mt-3">
+                  <button type="submit" class="btn btn-primary w-100">Search</button>
+              </div>
+          </div>
+      </div>
+    </form>
+
+    <!-- Cards Section -->
+    <div class="col-md-9">
+      <div class="row g-2">
+        <% requirement.forEach(student => { %>
+          <div class="col-12 col-sm-6 col-md-3">
+            <div class="card p-2 shadow-sm" style="font-size: 14px;">
+              
+              <p class="text-muted small mb-1">
+                <i class="far fa-calendar-alt"></i> 
+                <%= student.createdAt.toDateString().split(' ').slice(1, 4).join(' ') %>
+              </p>
+    
+              <h6 class="text-primary mb-1">
+                <a href="#" class="text-decoration-none">Student Looking for Tutor...</a>
+              </h6>
+    
+              <p class="fw-bold mb-1" style="font-size: 13px;">
+                <%= student.userId.name %> | Class: <%= student.class %>
+              </p>
+    
+              <p class="text-muted small mb-1">
+                <i class="fas fa-clock"></i> <%= Array.isArray(student.preferredTime) ? student.preferredTime.join(", ") : student.preferredTime %> | 
+                <i class="fas fa-map-marker-alt"></i> <%= student.location %>
+              </p>
+    
+              <p class="text-danger fw-bold small mb-1">
+                Preferred Tutor: <%= student.preferredTutor %>
+              </p>
+    
+              <p class="small mb-1">
+                <i class="fas fa-book"></i> <%= student.subject %> | <%= student.board %>
+              </p>
+    
+              <p class="small mb-1">
+                <i class="fas fa-graduation-cap"></i> ID: <b><%= student.userId.randomId %></b>
+              </p>
+    
+             
+              <p class="small mb-1">
+                <i class="fas fa-map-marker-alt"></i> 
+                <%= student.city.charAt(0).toUpperCase() + student.city.slice(1).toLowerCase() %>, 
+                <%= student.state.charAt(0).toUpperCase() + student.state.slice(1).toLowerCase() %> 
+                (Pin: <%= student.pincode %>)
+              </p>
+              
+    
+              <div class="bg-light p-1 text-center small rounded">
+                <%= student.status === 'Matched' ? 'Tutor Found' : 'Tutor Not Found' %>
+              </div>
+    
+              <div class="d-flex gap-1 mt-2">
+                <a href="/userDetails/<%= student._id %>" class="btn btn-sm btn-primary w-50">VIEW</a>
+                <button class="btn btn-sm btn-success w-50">APPLY</button>
+              </div>
+    
+            </div>
+          </div>
+        <% }); %>
+      </div>
+    </div>
+    
+    
+  </div>
+
+  <!-- Pagination -->
+  <% if (totalPages > 1) { %>
+    <nav class="d-flex justify-content-center mt-4">
+      <ul class="pagination">
+        <% if (currentPage > 1) { %>
+          <li class="page-item">
+            <a class="page-link" href="?page=<%= currentPage - 1 %>">Previous</a>
+          </li>
+        <% } %>
+        <% for (let i = 1; i <= totalPages; i++) { %>
+          <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+            <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+          </li>
+        <% } %>
+        <% if (currentPage < totalPages) { %>
+          <li class="page-item">
+            <a class="page-link" href="?page=<%= currentPage + 1 %>">Next</a>
+          </li>
+        <% } %>
+      </ul>
+    </nav>
+  <% } %>
+</div>
+
+<!-- Scripts -->
+<script>
+  function toggleFilters() {
+    const filterContent = document.getElementById("category-filter-content");
+    const arrowIcon = document.getElementById("arrow-icon");
+    filterContent.style.display = (filterContent.style.display === "none") ? "block" : "none";
+    arrowIcon.innerHTML = (filterContent.style.display === "block") ? "▲" : "▼";
+  }
+</script>
+
+</div>
+
+</div>
+</div>
+<div style="height: 20vh;">
+
+</div>
+<script>
+  function toggleFilters() {
+      const filterContent = document.getElementById("category-filter-content");
+      const arrowIcon = document.getElementById("arrow-icon");
+
+      if (filterContent.style.display === "none" || filterContent.style.display === "") {
+          filterContent.style.display = "block";
+          arrowIcon.innerHTML = "▲"; // Change arrow direction
+      } else {
+          filterContent.style.display = "none";
+          arrowIcon.innerHTML = "▼"; // Reset arrow direction
+      }
+  }
+</script>
+<script>
+ document.addEventListener("DOMContentLoaded", function () {
+    const searchForm = document.getElementById("searchForm"); 
+    const tutorListContainer = document.getElementById("tutorList"); 
+
+    searchForm.addEventListener("submit", function (event) {
+        event.preventDefault(); // Prevent page reload
+        
+        const searchInput = document.getElementById("searchInput").value.trim(); // Get input value
+        const searchParams = new URLSearchParams({ search: searchInput }).toString();
+
+        fetch(`/listingoftutor?${searchParams}`, {
+            method: "GET",
+            headers: { "X-Requested-With": "XMLHttpRequest" }
+        })
+        .then(response => response.text())
+        .then(data => {
+            tutorListContainer.innerHTML = data; // Update tutor list dynamically
+        })
+        .catch(error => console.error("Error fetching tutors:", error));
+    });
+});
+
+ 
+</script>
+
+<!-- Add this below the form to display results -->
+
+
+<%- include('layout/footer') %>

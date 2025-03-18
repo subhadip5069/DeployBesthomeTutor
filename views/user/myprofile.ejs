@@ -366,101 +366,162 @@
 <div class="account-page">
         <div class="profile-container">
             <div class="profile-tabs">
-                <button class="profile-tab-button active" onclick="showTab('profile-tuitions')">Tuitions</button>
+              <button type="button" class="profile-tab-button active" onclick="showTab('profile-tuitions')">
+                Tuitions
+            </button>
+            
                 <button class="profile-tab-button" onclick="showTab('profile-profile')">My Profile</button>
                 <button class="profile-tab-button" id="acc" onclick="showTab('profile-account')">Account Info</button>
             </div>
 
             <div id="profile-tuitions" class="profile-tab-content active">
-              <div id="profile-tuitions" class="profile-tab-content active">
-                <div class="tuition-info-section">
-                   <h3 class="text-center">My Tuitions</h3>
-            
-                    <% if (orders.length > 0) { %>
-                        <% orders.forEach(order => { %>
-                            <div class="tuition-info-box" style="border: 1px solid #ddd; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
-                                <div class="tuition-info-header" style="display: flex; justify-content: space-between; align-items: center;">
-                                    <span style="font-weight: bold;">🔖 <%= order.userId.randomId || 'N/A' %> : Wanted home tutor for <%= order.subject || 'N/A' %></span>
-                                    <span>📅 <strong><%= new Date(order.createdAt).toLocaleDateString() %></strong></span>
-                                </div>
-            
-                                <div class="tuition-info-details" style="margin-top: 10px;">
-                                    <p><strong>👤 Name:</strong> <%= order.userId.name || 'N/A' %></p>
-                                    <p><strong>📧 Email:</strong> <%= order.userId.email || 'N/A' %></p>
-                                    <p><strong>📍 Location:</strong> <%= order.tuitionLocation || 'N/A' %></p>
-                                    <p><strong>⏰ Preferred Time:</strong> <%= order.preferredTime || 'AnyTime' %></p>
-                                    <p><strong>💰 Fee Type:</strong> <%= order.feeType || 'N/A' %></p>
-                                    <p><strong>💵 Fee Amount:</strong> Rs <%= order.feeAmount || 'N/A' %></p>
-                                    <p><strong>🌎 State:</strong> <%= order.state || 'N/A' %></p>
-                                    <p><strong>🏙️ City:</strong> <%= order.city || 'N/A' %></p>
-                                </div>
-            
-                                
-                            </div>
-                        <% }) %>
-                    <% } else { %>
-                        <p>No tuition orders found.</p>
-                    <% } %>
-            
-                    <!-- Pagination Section -->
-                    <% if (totalPages > 1) { %>
-                        <nav aria-label="Page navigation">
-                            <ul class="pagination" style="margin-top: 20px;">
-                                <!-- Previous Button -->
-                                <% if (currentPage > 1) { %>
-                                    <li class="page-item">
-                                        <a class="page-link" href="?page=<%= currentPage - 1 %>&limit=<%= limit %>" style="color: #007bff;">« Previous</a>
-                                    </li>
-                                <% } else { %>
-                                    <li class="page-item disabled">
-                                        <span class="page-link">« Previous</span>
-                                    </li>
-                                <% } %>
-            
-                                <!-- Page Numbers -->
-                                <% for (let i = 1; i <= totalPages; i++) { %>
+              <div class="tuition-info-section">
+                  <h3 class="text-center">My Tuitions</h3>
+          
+                  <% if (orders.length > 0) { %>
+                      <% orders.forEach(order => { %>
+                          <div class="tuition-info-box" style="border: 1px solid #ddd; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                              <div class="tuition-info-header" style="display: flex; justify-content: space-between; align-items: center;">
+                                  <span style="font-weight: bold;">🔖 <%= order.userId.randomId || 'N/A' %> : Wanted home tutor for <%= order.subject || 'N/A' %></span>
+                                  <span>📅 <strong><%= new Date(order.createdAt).toLocaleDateString() %></strong></span>
+                              </div>
+          
+                              <div class="tuition-info-details" style="margin-top: 10px;">
+                                  <p><strong>👤 Name:</strong> <%= order.userId.name || 'N/A' %></p>
+                                  <p><strong>📧 Email:</strong> <%= order.userId.email || 'N/A' %></p>
+                                  <p><strong>📍 Location:</strong> <%= order.tuitionLocation || 'N/A' %></p>
+                                  <p><strong>⏰ Preferred Time:</strong> <%= order.preferredTime || 'AnyTime' %></p>
+                                  <p><strong>💰 Fee Type:</strong> <%= order.feeType || 'N/A' %></p>
+                                  <p><strong>💵 Fee Amount:</strong> Rs <%= order.feeAmount || 'N/A' %></p>
+                                  <p><strong>🌎 State:</strong> <%= order.state || 'N/A' %></p>
+                                  <p><strong>🏙️ City:</strong> <%= order.city || 'N/A' %></p>
+                              </div>
+                          </div>
+                      <% }) %>
+                  <% } else { %>
+                      <p>No tuition orders found.</p>
+                  <% } %>
+          
+                  <!-- Pagination Section -->
+                  <% if (totalPages > 1) { %>
+                      <nav aria-label="Page navigation">
+                          <ul class="pagination" style="margin-top: 20px;">
+                              <!-- Previous Button -->
+                              <% if (currentPage > 1) { %>
+                                  <li class="page-item">
+                                      <a class="page-link" href="?page=<%= currentPage - 1 %>&limit=<%= limit %>" onclick="changePage(event, <%= currentPage - 1 %>)" style="color: #007bff;">« Previous</a>
+                                  </li>
+                              <% } else { %>
+                                  <li class="page-item disabled">
+                                      <span class="page-link">« Previous</span>
+                                  </li>
+                              <% } %>
+          
+                              <!-- Page Numbers -->
+                              <% for (let i = 1; i <= totalPages; i++) { %>
                                   <li class="page-item <%= (i == currentPage) ? 'active' : '' %>">
-                                      <a class="page-link" href="?page=<%= i %>&limit=<%= limit %>" 
+                                      <a class="page-link" href="?page=<%= i %>&limit=<%= limit %>" onclick="changePage(event, <%= i %>)"
                                          style="<%= (i == currentPage) ? 'background-color: #007bff; color: white;' : '' %>">
                                           <%= i %>
                                       </a>
                                   </li>
                               <% } %>
-                              
-            
-                                <!-- Next Button -->
-                                <% if (currentPage < totalPages) { %>
-                                    <li class="page-item">
-                                        <a class="page-link" href="?page=<%= currentPage + 1 %>&limit=<%= limit %>" style="color: #007bff;">Next »</a>
-                                    </li>
-                                <% } else { %>
-                                    <li class="page-item disabled">
-                                        <span class="page-link">Next »</span>
-                                    </li>
-                                <% } %>
-                            </ul>
-                        </nav>
-                    <% } %>
-            
-                </div>
-            </div>
-            
+          
+                              <!-- Next Button -->
+                              <% if (currentPage < totalPages) { %>
+                                  <li class="page-item">
+                                      <a class="page-link" href="?page=<%= currentPage + 1 %>&limit=<%= limit %>" onclick="changePage(event, <%= currentPage + 1 %>)" style="color: #007bff;">Next »</a>
+                                  </li>
+                              <% } else { %>
+                                  <li class="page-item disabled">
+                                      <span class="page-link">Next »</span>
+                                  </li>
+                              <% } %>
+                          </ul>
+                      </nav>
+                  <% } %>
+              </div>
           </div>
+          
           
             <div id="profile-profile" class="profile-tab-content">
                 <section class="profile-myprofile-section">
                     <% if (requirement) { %>
-                    <div class="tuition-info-title"><%= requirement.userId.name %>/Profile Id: <%= requirement.userId.randomId %>[<%= requirement.status %> ] </div>
+                      <% if (requirement.userId.role === 'student') { %>
+                        <div class="profile-myprofile-table">
+                            <div class="profile-myprofile-row" style="display: flex; justify-content: space-between; align-items: center; padding: 10px; border: 1px solid #ddd; border-radius: 8px; background: #f9f9f9;">
+                                <div class="profile-myprofile-item" style="flex: 1;">
+                                    <label style="font-weight: bold; font-size: 16px;">Your Current Requirment Status:</label>
+                                    <span id="status-label" style="font-size: 16px; font-weight: bold; color: <%= requirement.status === 'Active' ? '#28a745' : '#dc3545' %>;">
+                                        <%= requirement.status %>
+                                    </span>
+                                </div>
+                                <div class="profile-myprofile-item" style="flex: 1; display: flex; justify-content: flex-end;">
+                                    <% if (requirement.status === 'active') { %>
+                                        <button id="status-toggle-btn" class="btn"
+                                            style="padding: 8px 16px; font-size: 14px; border-radius: 5px; border: none; cursor: pointer;
+                                                background-color: #dc3545; color: white;"
+                                            data-id="<%= requirement._id %>">
+                                            Deactivate
+                                        </button>
+                                    <% } else { %>
+                                        <button class="btn" disabled
+                                            style="padding: 8px 16px; font-size: 14px; border-radius: 5px; border: none; background-color: #ccc; color: white; cursor: not-allowed;">
+                                            Inactive
+                                        </button>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                        <script>
+                            $(document).ready(function() {
+                                $("#status-toggle-btn").click(function() {
+                                    let id = $(this).data("id");
+                    
+                                    $.ajax({
+                                        url: `/requirment/updatedtuition/${id}`,
+                                        type: "POST",
+                                        data: { status: "Inactive" },
+                                        success: function(response) {
+                                            $("#status-label").text("Inactive").css("color", "#dc3545");
+                    
+                                            // Disable button and change appearance
+                                            $("#status-toggle-btn")
+                                                .text("Inactive")
+                                                .prop("disabled", true)
+                                                .css({
+                                                    "background-color": "#ccc",
+                                                    "cursor": "not-allowed"
+                                                });
+                    
+                                            alert("your requirement is not showing"); // Show success message
+                                        },
+                                        error: function() {
+                                            alert("Error updating status. Please try again.");
+                                        }
+                                    });
+                                });
+                            });
+                        </script>
+                    <% } %>
+                    
+                    
+                    
+                        
+                    <div class="tuition-info-title"><%= requirement.userId.name %>/Profile Id: <%= requirement.userId.randomId %>[<%=requirement.userId.role%> ] </div>
                     <div class="profile-myprofile-container">
                         <div class="profile-myprofile-changes">
                             
-                            <img src="<%= user.profileimage ? '/uploads/profile_images/' + user.profileimage : '/user/profile.png' %>" alt="Profile Picture">
+                            <img src="/user/images/profile.png" alt="Profile Picture">
 
                             <!-- <p class="profile-myprofile-name">Siddhartha</p> -->
                             <a href="/updatereg/<%= requirement._id %>" class="profile-myprofile-edit" style="background-color: #007bff; color: white; height: 40px;">Edit Profile</a>
                            
                         </div>
                         
+                                            
                        
                             <div class="profile-myprofile-table">
                               <!-- User Information -->
@@ -492,8 +553,9 @@
                                   <p><%= requirement.city ? requirement.city : "N/A" %></p>
                                 </div>
                                 <div class="profile-myprofile-item">
-                                  <label>Locality:</label>
-                                  <p><%= requirement.locality ? requirement.locality : "N/A" %></p>
+                                  <label>State:</label>
+                                  <p><%= requirement.state ? requirement.state.charAt(0).toUpperCase() + requirement.state.slice(1).toLowerCase() : "N/A" %>
+                                  </p>
                                 </div>
                               </div>
                               <!-- Tuition Location & Pincode -->
@@ -514,8 +576,10 @@
                               <!-- Subject & Class -->
                               <div class="profile-myprofile-row">
                                 <div class="profile-myprofile-item">
-                                  <label>Subject:</label>
-                                  <p><%= requirement.subject ? requirement.subject : "N/A" %></p>
+                                  <p style="margin-bottom: 10px; ">
+                                    <label style="color: black;">Subject:</label> <%= requirement.subject ? requirement.subject : "N/A" %>
+                                </p>
+                                
                                 </div>
                                 <div class="profile-myprofile-item">
                                   <label>Class:</label>
@@ -554,10 +618,19 @@
 
                     </div>
                     <section class="about-section mt-4">
+                      <% if (requirement.userId.role == 'tutor') { %>
+                        <div class="container">
+                          <h5>About Me</h5>
+                          <p>
+                            <%= requirement.about ? requirement.about : "N/A" %>
+                          </p>
+                        </div>
+                        <% } else if (requirement.userId.role == 'student') { %>
                       <div class="container">
                           <h5>About Me</h5>
-                          <p><%= requirement.about ? requirement.about : "Hi i am a student looking for a home tutor from my city and locality and i need help with multiple subjects for class N/A and i prefer anytime for tuition sessions" %></p>
+                          <p> "Hi i am a student looking for a home tutor from my city <%= requirement.city  %>, and locality <%= requirement.pincode  %> and i need help with multiple subjects for class <%= requirement.class || 'N/A' %> and i prefer <%= requirement.preferredTime || 'Anytime' %> for tuition sessions</p>
                       </div>
+                      <% } %>
                   </section>
                     <% } else if(user) { %>
                       <div class="tuition-info-title">
@@ -645,12 +718,19 @@
 </div>
 
 <script>
-function showTab(tabId) {
-    document.querySelectorAll('.profile-tab-content').forEach(tab => tab.classList.remove('active'));
-    document.querySelectorAll('.profile-tab-button').forEach(button => button.classList.remove('active'));
+function showTab(tabId, event) {
+  if (event) event.preventDefault(); // Prevents page refresh
 
-    document.getElementById(tabId).classList.add('active');
-    document.querySelector(`[onclick="showTab('${tabId}')"]`).classList.add('active');
+  document.querySelectorAll('.profile-tab-content').forEach(tab => tab.classList.remove('active'));
+  document.querySelectorAll('.profile-tab-button').forEach(button => button.classList.remove('active'));
+
+  document.getElementById(tabId).classList.add('active');
+  document.querySelector(`[onclick="showTab('${tabId}')"]`).classList.add('active');
+}
+function changePage(event, pageNumber) {
+    event.preventDefault(); // Prevent default link behavior
+    // Fetch new page content dynamically using AJAX or replace `window.location.href`
+    window.location.href = `?page=${pageNumber}&limit=<%= limit %>`;
 }
 </script>
 <div style="height: 20vh;">

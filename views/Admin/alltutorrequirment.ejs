@@ -9,17 +9,18 @@
         <input type="text" id="searchInput" class="form-control" placeholder="Search by Name, ID, or Email">
     </div>
     
-    <div class="table-responsive">
-        <table class="table table-bordered table-striped text-center">
-            <thead class="table-dark">
+    <div class="table-responsive" style="max-height: 700px; overflow-y: auto; overflow-x: auto; white-space: nowrap;">
+        <table class="table table-bordered table-striped text-center" style="min-width: 1200px;">
+            <thead class="table-dark" style="position: sticky; top: 0; z-index: 10;">
                 <tr>
                     <th>Name</th>
                     <th>ID</th>
                     <th>Email</th>
-                   
                     <th>Subject</th>
-                   
+                    <th>Refund Contact Credits</th>
                     <th>Location</th>
+                    <th>Class</th>
+                    <th>About</th>
                     <th>Document Status</th>
                     <th>Files</th>
                 </tr>
@@ -30,23 +31,43 @@
                         <td><%= registration.userId.name %> <span class="badge bg-success">Active</span></td>
                         <td><%= registration.userId.randomId %></td>
                         <td><%= registration.userId.email %></td>
-                       
                         <td><%= registration.subject || "N/A" %></td>
-                       
+    
+                        <!-- Input + Update Button -->
+                        <td>
+                            <form action="/admin/upadteusercontactremaining/<%= registration.userId._id %>" method="POST" class="update-unlock-form">
+                                <div class="input-group">
+                                    <input type="number" class="form-control unlock-input" 
+                                           name="additionalUnlocks"
+                                           placeholder="Enter unlocks" 
+                                           min="1" required />
+                                    <button type="submit" class="btn btn-primary">
+                                        Update
+                                    </button>
+                                </div>
+                            </form>
+                            <p class="text-muted mt-1">Current: <strong><%= registration.userId.unlockedContactsRemaining %></strong></p>
+                        </td>
+    
                         <td><%= registration.tuitionLocation?.length ? registration.tuitionLocation.join(", ") : "N/A" %></td>
-                        
+                        <td><%= registration.class || "N/A" %></td>
+                        <td><%= registration.about || "N/A" %></td>
+    
                         <td>
                             <form action="/admin/documentverification/update/<%= registration._id %>?page=<%= currentPage %>" method="POST">
                                 <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" name="status" value="active" <%= registration.documentVerificationStatus === "active" ? "checked" : "" %> onchange="this.form.submit()">
+                                    <input class="form-check-input" type="checkbox" name="status" value="active" 
+                                           <%= registration.documentVerificationStatus === "active" ? "checked" : "" %> 
+                                           onchange="this.form.submit()">
                                     <label class="form-check-label">Inactivate</label>
                                 </div>
                             </form>
                         </td>
-                        
+    
                         <td>
                             <% if (registration.attachedFiles.length > 0) { %>
-                                <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#files<%= registration._id %>">
+                                <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="collapse" 
+                                        data-bs-target="#files<%= registration._id %>">
                                     View Files
                                 </button>
                                 <div class="collapse mt-2" id="files<%= registration._id %>">
@@ -54,7 +75,8 @@
                                         <% registration.attachedFiles.forEach(file => { %>
                                             <li class="list-group-item">
                                                 <strong>File Type:</strong> <%= file.fileType %> <br>
-                                                <img src="/uploads/documents/<%= file.filePath.split('\\').pop() %>" alt="Document" class="img-fluid preview-image">
+                                                <img src="/uploads/documents/<%= file.filePath.split('\\').pop() %>" 
+                                                     alt="Document" class="img-fluid preview-image">
                                             </li>
                                         <% }); %>
                                     </ul>
@@ -68,7 +90,10 @@
             </tbody>
         </table>
     </div>
-
+    
+    
+    
+    
     <!-- Pagination -->
     <% if (totalPages > 1) { %>
         <nav aria-label="Page navigation">

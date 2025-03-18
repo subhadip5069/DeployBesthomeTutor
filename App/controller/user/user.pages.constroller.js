@@ -175,16 +175,16 @@ class userPagesController {
             if (classFilter) {
                 registrationFilter.class = { $in: classFilter.split(",").map(c => c.trim()) };
             }
+            // **Subject Filter**
             if (subjectFilter) {
-                if (Array.isArray(subjectFilter)) {
-                    // If subjectFilter is already an array (from a multi-select input), use it directly
-                    registrationFilter.subject = { $in: subjectFilter.map(s => s.trim()) };
-                } else if (typeof subjectFilter === "string") {
-                    // If subjectFilter is a comma-separated string, split it into an array
-                    const subjectsArray = subjectFilter.split(",").map(s => s.trim()).filter(Boolean);
-                    if (subjectsArray.length > 0) {
-                        registrationFilter.subject = { $in: subjectsArray };
-                    }
+                const subjectsArray = Array.isArray(subjectFilter)
+                    ? subjectFilter.map(s => s.trim())
+                    : subjectFilter.split(",").map(s => s.trim()).filter(Boolean);
+            
+                if (subjectsArray.length > 0) {
+                    registrationFilter.subject = {
+                        $in: subjectsArray.map(subject => new RegExp(`^${subject}$`, "i"))
+                    };
                 }
             }
             if (preferredTutor) {
@@ -293,18 +293,20 @@ class userPagesController {
             // Check if user is logged in
            
     
-            const userId = req.user.userId;
+            const userId = req.user;
             const roleToFetch = "student";
+
+            console.log("User ID:", userId);
     
             // Validate userId format
-            if (!mongoose.Types.ObjectId.isValid(userId)) {
-                console.error("Invalid userId format:", userId);
+            if (!mongoose.Types.ObjectId.isValid(req.user.userId)) {
+                console.error("Invalid userId format:", req.user.userId);
                 req.flash("error_msg", "Invalid user ID format.");
                 return res.redirect("/listingofstudent");
             }
     
             // Fetch user details to get city
-            let user = await Registration.findOne({ userId }).select("city");
+            let user = await Registration.findOne({ userId: req.user.userId }).select("city");
             let userCity = user ? user.city : null;
     
             console.log("User City:", userCity || "All Users Data Fetched");
@@ -342,16 +344,18 @@ class userPagesController {
             }
     
             // Subject Filter
-            if (subjectFilter) {
-                const subjectsArray = Array.isArray(subjectFilter)
-                    ? subjectFilter.map(s => s.trim())
-                    : subjectFilter.split(",").map(s => s.trim()).filter(Boolean);
-    
-                if (subjectsArray.length > 0) {
-                    registrationFilter.subject = { $in: subjectsArray };
-                }
+          // **Subject Filter**
+          if (subjectFilter) {
+            const subjectsArray = Array.isArray(subjectFilter)
+                ? subjectFilter.map(s => s.trim())
+                : subjectFilter.split(",").map(s => s.trim()).filter(Boolean);
+        
+            if (subjectsArray.length > 0) {
+                registrationFilter.subject = {
+                    $in: subjectsArray.map(subject => new RegExp(`^${subject}$`, "i"))
+                };
             }
-    
+        }
             // Preferred Tutor Filter
             if (preferredTutor) {
                 registrationFilter.preferredTutor = preferredTutor.trim();
@@ -463,6 +467,7 @@ class userPagesController {
     
         } catch (error) {
             console.error("Error in listingofstudent:", error);
+
             req.flash("error_msg", "An error occurred while fetching students.");
             res.redirect("/listingofstudent");
         }
@@ -478,7 +483,7 @@ class userPagesController {
            
       
         try {
-            const userId = req.user;
+            const userId = req.user?.userId;
             const roleToFetch = "tutor";
     
             // Extract query params with default values
@@ -510,18 +515,18 @@ class userPagesController {
     
             // **Subject Filter** (Multiple values allowed)
            
-            if (subjectFilter) {
-                if (Array.isArray(subjectFilter)) {
-                    // If subjectFilter is already an array (from a multi-select input), use it directly
-                    registrationFilter.subject = { $in: subjectFilter.map(s => s.trim()) };
-                } else if (typeof subjectFilter === "string") {
-                    // If subjectFilter is a comma-separated string, split it into an array
-                    const subjectsArray = subjectFilter.split(",").map(s => s.trim()).filter(Boolean);
-                    if (subjectsArray.length > 0) {
-                        registrationFilter.subject = { $in: subjectsArray };
-                    }
-                }
+          // **Subject Filter**
+          if (subjectFilter) {
+            const subjectsArray = Array.isArray(subjectFilter)
+                ? subjectFilter.map(s => s.trim())
+                : subjectFilter.split(",").map(s => s.trim()).filter(Boolean);
+        
+            if (subjectsArray.length > 0) {
+                registrationFilter.subject = {
+                    $in: subjectsArray.map(subject => new RegExp(`^${subject}$`, "i"))
+                };
             }
+        }
             
             // **Preferred Tutor Filter**
             if (preferredTutor) {
@@ -703,15 +708,18 @@ class userPagesController {
             }
     
             // Subject Filter
-            if (subjectFilter) {
-                const subjectsArray = Array.isArray(subjectFilter)
-                    ? subjectFilter.map(s => s.trim())
-                    : subjectFilter.split(",").map(s => s.trim()).filter(Boolean);
-    
-                if (subjectsArray.length > 0) {
-                    registrationFilter.subject = { $in: subjectsArray };
-                }
+           // **Subject Filter**
+           if (subjectFilter) {
+            const subjectsArray = Array.isArray(subjectFilter)
+                ? subjectFilter.map(s => s.trim())
+                : subjectFilter.split(",").map(s => s.trim()).filter(Boolean);
+        
+            if (subjectsArray.length > 0) {
+                registrationFilter.subject = {
+                    $in: subjectsArray.map(subject => new RegExp(`^${subject}$`, "i"))
+                };
             }
+        }
     
             // Preferred Tutor Filter
             if (preferredTutor) {
@@ -826,7 +834,7 @@ class userPagesController {
         } catch (error) {
             console.error("Error in listingoftutor:", error);
             req.flash("error_msg", "An error occurred while fetching tutors.");
-            res.redirect("/listingoftutor");
+            res.redirect("/listingoftutor?page=1");
         }
     };
     
@@ -1050,24 +1058,24 @@ class userPagesController {
     //const profile
     myprofile = async (req, res) => {
         try {
-            const userId = req.user?.userId; // Extract correct userId
+            const userId = req.user; // Extract correct userId
     
-            if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+            if (!userId || !mongoose.Types.ObjectId.isValid(req.user.userId)) {
                 console.error("Invalid userId:", userId);
                 return res.redirect("/login");
             }
     
             // Fetch user data
-            const user = await User.findById(userId).lean();
+            const user = await User.findById(req.user.userId).lean();
             if (!user) {
-                console.error("User not found:", userId);
+                console.error("User not found:", req.user.userId);
                 return res.redirect("/login");
             }
     
             // Fetch user requirement
-            const requirement = await Registration.findOne({ userId: new mongoose.Types.ObjectId(userId) })
-                .populate("userId", "name email randomId")
-                .select("userId tuitionLocation preferredTime preferredTutor feeType feeAmount state city pincode locality subject class sorted attachedFiles board qualification experience age about")
+            const requirement = await Registration.findOne({ userId: new mongoose.Types.ObjectId(req.user.userId) })
+                .populate("userId", "name email randomId role")
+                .select("userId tuitionLocation preferredTime preferredTutor feeType feeAmount state city pincode locality subject class sorted attachedFiles board qualification experience age about status ")
                 .lean();
     
             // Pagination setup
@@ -1082,7 +1090,7 @@ class userPagesController {
     
             // Fetch orders based on unlocked IDs
             const orders = await Registration.find({ _id: { $in: allIds } })
-                .populate("userId", "name email randomId")
+                .populate("userId", "name email randomId role")
                 .select("userId tuitionLocation preferredTime preferredTutor feeType feeAmount state city pincode locality subject class sorted attachedFiles board qualification experience age")
                 .skip(skip)
                 .limit(limit)
@@ -1197,6 +1205,333 @@ class userPagesController {
     }
 
 
+    alltutors=async(req,res)=>{
+        try {
+            const userId = req.user;
+            const roleToFetch = "tutor";
+    
+            // Extract query params with default values
+            let {
+                classFilter = "",
+                subjectFilter = "",
+                preferredTutor = "",
+                state = "",
+                cityFilter = "",
+                pincode = "",
+                priceRange = "",
+                page = "1",
+                limit = "15",
+                searchQuery = ""
+            } = req.query;
+    
+            // Convert numeric values
+            page = parseInt(page) || 1;
+            limit = parseInt(limit) || 15;
+            const skip = (page - 1) * limit;
+    
+            // Define the filter for active tutors
+            let registrationFilter = { status: "active" };
+    
+            // **Class Filter** (Multiple values allowed)
+            if (classFilter && typeof classFilter === "string") {
+                registrationFilter.class = { $in: classFilter.split(",").map(c => c.trim()) };
+            }
+    
+            // **Subject Filter** (Multiple values allowed)
+           
+            if (subjectFilter) {
+                const subjectsArray = Array.isArray(subjectFilter)
+                    ? subjectFilter.map(s => s.trim())
+                    : subjectFilter.split(",").map(s => s.trim()).filter(Boolean);
+            
+                if (subjectsArray.length > 0) {
+                    registrationFilter.subject = {
+                        $in: subjectsArray.map(subject => new RegExp(`^${subject}$`, "i"))
+                    };
+                }
+            }
+            
+            
+            // **Preferred Tutor Filter**
+            if (preferredTutor) {
+                registrationFilter.preferredTutor = preferredTutor.trim();
+            }
+    
+            // **State Filter (Case-Insensitive)**
+            if (state) {
+                registrationFilter.state = { $regex: new RegExp(state.trim(), "i") };
+            }
+    
+            // **City Filter (Case-Insensitive)**
+            if (cityFilter) {
+                registrationFilter.city = { $regex: new RegExp(cityFilter.trim(), "i") };
+            }
+    
+            // **Pincode Filter (Must be a number)**
+            if (pincode && /^\d+$/.test(pincode)) {
+                registrationFilter.pincode = Number(pincode);
+            }
+    
+            // **Price Range Filter**
+            if (priceRange && priceRange.includes("-")) {
+                const [minPrice, maxPrice] = priceRange.split("-").map(Number);
+                if (!isNaN(minPrice) && !isNaN(maxPrice)) {
+                    registrationFilter.feeAmount = { $gte: minPrice, $lte: maxPrice };
+                }
+            }
+    
+            // **Global Search Query (Matches Various Fields)**
+            if (searchQuery && typeof searchQuery === "string") {
+                const regex = new RegExp(searchQuery.trim(), "i");
+                registrationFilter.$or = [
+                    { tuitionLocation: regex },
+                    { preferredTime: regex },
+                    { preferredTutor: regex },
+                    { feeType: regex },
+                    { state: regex },
+                    { city: regex },
+                    { locality: regex },
+                    { pincode: regex },
+                    { subject: regex },
+                    { class: regex },
+                    { board: regex },
+                    { qualification: regex }
+                ];
+    
+                if (!isNaN(searchQuery)) {
+                    registrationFilter.$or.push(
+                        { pincode: Number(searchQuery) },
+                        { experience: Number(searchQuery) },
+                        { age: Number(searchQuery) }
+                    );
+                }
+            }
+    
+            // **User Filter (Random ID for Tutor Users)**
+            let userFilter = { role: roleToFetch };
+    
+            // Fetch total count for pagination
+            const totalTutors = await Registration.countDocuments(registrationFilter);
+            const totalPages = Math.ceil(totalTutors / limit);
+    
+            // Fetch filtered tutors with pagination
+            let registrations = await Registration.find(registrationFilter)
+                .populate({
+                    path: "userId",
+                    select: "name role  randomId",
+                    match: userFilter // Ensure user has the correct role
+                })
+                .skip(skip)
+                .limit(limit)
+                .lean();
+    
+            // Fetch all active registrations for requirements
+            const requirement = await Registration.find({ status: "active" })
+                .populate("userId")
+                .lean();
+    
+            // Remove tutors without user data
+            registrations = registrations.filter(reg => reg.userId);
+    
+            // Flash messages
+            if (registrations.length === 0) {
+                req.flash("error_msg", "No tutors found matching your search criteria.");
+            } else {
+                req.flash("success_msg", "Tutors retrieved successfully.");
+            }
+    
+            console.log("Received cityFilter:", req.query.cityFilter);
+            console.log("Final Query Filter:", JSON.stringify(registrationFilter, null, 2));
+            console.log("Tutors:", registrations);
+    
+            const message = req.session.message;
+            req.session.message = null;
+    
+            // Render the page with results
+            res.render("user/alltutor", {
+                title: "/ All Tutors",
+                userId,
+                requirement:registrations,
+                registrations,
+                currentPage: page,
+                message,
+                totalPages,
+                filters: {
+                    classFilter,
+                    subjectFilter,
+                    preferredTutor,
+                    state,
+                    cityFilter,
+                    pincode,
+                    priceRange,
+                    searchQuery,
+                },
+                success_msg: req.flash("success_msg"),
+                error_msg: req.flash("error_msg"),
+            });
+    
+        } catch (error) {
+            console.error("Error in listingoftutor:", error);
+            req.flash("error_msg", "An error occurred while fetching tutors.");
+            res.redirect("/listingoftutor");
+        }
+    }
+
+    allstudents = async (req, res) => {
+        try {
+            const userId = req.user;
+            const roleToFetch = "student"; // Fetch only students
+    
+            let {
+                classFilter,
+                subjectFilter,
+                preferredTutor,
+                state,
+                city,
+                pincode,
+                priceRange,
+                page = 1,
+                limit = 21,
+                searchQuery
+            } = req.query;
+    
+            page = parseInt(page);
+            limit = parseInt(limit);
+            const skip = (page - 1) * limit;
+    
+            let registrationFilter = { status: "active" }; // Fetch only active students
+    
+            // **Ensure Only "Students" are Fetched**
+            registrationFilter["userId.role"] = roleToFetch;
+    
+            // **Class Filter**
+            if (classFilter) {
+                registrationFilter.class = { $in: classFilter.split(",").map(c => c.trim()) };
+            }
+    
+            // **Subject Filter**
+            if (subjectFilter) {
+                const subjectsArray = Array.isArray(subjectFilter)
+                    ? subjectFilter.map(s => s.trim())
+                    : subjectFilter.split(",").map(s => s.trim()).filter(Boolean);
+            
+                if (subjectsArray.length > 0) {
+                    registrationFilter.subject = {
+                        $in: subjectsArray.map(subject => new RegExp(`^${subject}$`, "i"))
+                    };
+                }
+            }
+            
+            // **Preferred Tutor**
+            if (preferredTutor) {
+                registrationFilter.preferredTutor = preferredTutor.trim();
+            }
+    
+            // **State & City Filter (Case-Insensitive)**
+            if (state) {
+                registrationFilter.state = { $regex: new RegExp(state.trim(), "i") };
+            }
+            if (city) {
+                registrationFilter.city = { $regex: new RegExp(city.trim(), "i") };
+            }
+    
+            // **Pincode Filter**
+            if (pincode && /^\d+$/.test(pincode)) {
+                registrationFilter.pincode = Number(pincode);
+            }
+    
+            // **Price Range Filter**
+            if (priceRange && priceRange.includes("-")) {
+                const [minPrice, maxPrice] = priceRange.split("-").map(Number);
+                if (!isNaN(minPrice) && !isNaN(maxPrice)) {
+                    registrationFilter.feeAmount = { $gte: minPrice, $lte: maxPrice };
+                }
+            }
+    
+            // **Global Search Query (Matches Multiple Fields)**
+            if (searchQuery) {
+                const regex = new RegExp(searchQuery.trim(), "i");
+    
+                registrationFilter.$or = [
+                    { tuitionLocation: regex },
+                    { preferredTime: regex },
+                    { preferredTutor: regex },
+                    { feeType: regex },
+                    { state: regex },
+                    { city: regex },
+                    { locality: regex },
+                    { subject: regex },
+                    { class: regex },
+                    { board: regex },
+                    { qualification: regex }
+                ];
+    
+                if (!isNaN(searchQuery)) {
+                    registrationFilter.$or.push(
+                        { pincode: Number(searchQuery) },
+                        { experience: Number(searchQuery) },
+                        { age: Number(searchQuery) }
+                    );
+                }
+            }
+    
+            // **Count Total Students for Pagination**
+            const totalStudents = await Registration.countDocuments(registrationFilter);
+            const totalPages = Math.ceil(totalStudents / limit);
+    
+            // **Fetch Students with Pagination**
+            let students = await Registration.find(registrationFilter)
+                .populate({
+                    path: "userId",
+                    select: "name role randomId",
+                    match: { role: roleToFetch } // Ensures only students are matched
+                })
+                .skip(skip)
+                .limit(limit)
+                .lean();
+    
+            // **Filter Out Registrations Without User Data**
+            students = students.filter(student => student.userId);
+    
+            const message = req.session.message;
+            req.session.message = null;
+    
+            // **Flash Messages for Better UX**
+            if (students.length === 0) {
+                req.flash("error_msg", "No students found matching your search criteria.");
+            } else {
+                req.flash("success_msg", "Students retrieved successfully.");
+            }
+    
+            // **Render the Page with Students**
+            res.render("user/allstudent", {
+                title: "/All Students",
+                userId,
+                requirements: students,
+                requirement: students,
+                currentPage: page,
+                message,
+                totalPages,
+                filters: {
+                    classFilter: classFilter || "",
+                    subjectFilter: subjectFilter || "",
+                    preferredTutor: preferredTutor || "",
+                    state: state || "",
+                    city: city || "",
+                    pincode: pincode || "",
+                    priceRange: priceRange || "",
+                    searchQuery: searchQuery || "",
+                },
+                success_msg: req.flash("success_msg"),
+                error_msg: req.flash("error_msg"),
+            });
+        } catch (error) {
+            console.error("Error in listing students:", error);
+            req.flash("error_msg", "An error occurred while fetching students.");
+            res.redirect("/listingofstudent");
+        }
+    };
+    
            
 
 
