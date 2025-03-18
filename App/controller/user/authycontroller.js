@@ -70,7 +70,7 @@ class UserAuthController {
         }
         const userexists = await User.findOne({ phone });
         if (userexists) {
-            req.session.message = { type: "danger", text: "Phone is already registered. Please log in." };
+          req.session.message = { type: "danger", text: "Phone is already registered. Please log in." };
             return res.redirect("/login");
         }
 
