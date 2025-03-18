@@ -28,8 +28,17 @@ class FilterationController {
                 registrationFilter.class = { $in: classFilter.split(",").map(c => c.trim()) };
             }
             if (subjectFilter) {
-                registrationFilter.subject = { $in: subjectFilter.split(",").map(s => s.trim()) };
+                const subjectsArray = Array.isArray(subjectFilter)
+                    ? subjectFilter.map(s => s.trim()).filter(Boolean)
+                    : subjectFilter.split(",").map(s => s.trim()).filter(Boolean);
+            
+                if (subjectsArray.length > 0) {
+                    registrationFilter.$or = subjectsArray.map(subject => ({
+                        subject: { $regex: subject, $options: "i" } // Case-insensitive match
+                    }));
+                }
             }
+            
             if (preferredTutor) {
                 registrationFilter.preferredTutor = preferredTutor.trim();
             }

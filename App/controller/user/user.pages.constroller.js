@@ -178,15 +178,16 @@ class userPagesController {
             // **Subject Filter**
             if (subjectFilter) {
                 const subjectsArray = Array.isArray(subjectFilter)
-                    ? subjectFilter.map(s => s.trim())
+                    ? subjectFilter.map(s => s.trim()).filter(Boolean)
                     : subjectFilter.split(",").map(s => s.trim()).filter(Boolean);
             
                 if (subjectsArray.length > 0) {
-                    registrationFilter.subject = {
-                        $in: subjectsArray.map(subject => new RegExp(`^${subject}$`, "i"))
-                    };
+                    registrationFilter.$or = subjectsArray.map(subject => ({
+                        subject: { $regex: subject, $options: "i" } // Case-insensitive match
+                    }));
                 }
             }
+            
             if (preferredTutor) {
                 registrationFilter.preferredTutor = preferredTutor.trim();
             }
@@ -347,15 +348,16 @@ class userPagesController {
           // **Subject Filter**
           if (subjectFilter) {
             const subjectsArray = Array.isArray(subjectFilter)
-                ? subjectFilter.map(s => s.trim())
+                ? subjectFilter.map(s => s.trim()).filter(Boolean)
                 : subjectFilter.split(",").map(s => s.trim()).filter(Boolean);
         
             if (subjectsArray.length > 0) {
-                registrationFilter.subject = {
-                    $in: subjectsArray.map(subject => new RegExp(`^${subject}$`, "i"))
-                };
+                registrationFilter.$or = subjectsArray.map(subject => ({
+                    subject: { $regex: subject, $options: "i" } // Case-insensitive match
+                }));
             }
         }
+        
             // Preferred Tutor Filter
             if (preferredTutor) {
                 registrationFilter.preferredTutor = preferredTutor.trim();
@@ -518,16 +520,15 @@ class userPagesController {
           // **Subject Filter**
           if (subjectFilter) {
             const subjectsArray = Array.isArray(subjectFilter)
-                ? subjectFilter.map(s => s.trim())
+                ? subjectFilter.map(s => s.trim()).filter(Boolean)
                 : subjectFilter.split(",").map(s => s.trim()).filter(Boolean);
         
             if (subjectsArray.length > 0) {
-                registrationFilter.subject = {
-                    $in: subjectsArray.map(subject => new RegExp(`^${subject}$`, "i"))
-                };
+                registrationFilter.$or = subjectsArray.map(subject => ({
+                    subject: { $regex: subject, $options: "i" } // Case-insensitive match
+                }));
             }
         }
-            
             // **Preferred Tutor Filter**
             if (preferredTutor) {
                 registrationFilter.preferredTutor = preferredTutor.trim();
@@ -711,15 +712,16 @@ class userPagesController {
            // **Subject Filter**
            if (subjectFilter) {
             const subjectsArray = Array.isArray(subjectFilter)
-                ? subjectFilter.map(s => s.trim())
+                ? subjectFilter.map(s => s.trim()).filter(Boolean)
                 : subjectFilter.split(",").map(s => s.trim()).filter(Boolean);
         
             if (subjectsArray.length > 0) {
-                registrationFilter.subject = {
-                    $in: subjectsArray.map(subject => new RegExp(`^${subject}$`, "i"))
-                };
+                registrationFilter.$or = subjectsArray.map(subject => ({
+                    subject: { $regex: subject, $options: "i" } // Case-insensitive match
+                }));
             }
         }
+        
     
             // Preferred Tutor Filter
             if (preferredTutor) {
@@ -947,8 +949,17 @@ class userPagesController {
                 registrationFilter.class = { $in: classFilter.split(",").map(c => c.trim()) };
             }
             if (subjectFilter) {
-                registrationFilter.subject = { $in: subjectFilter.split(",").map(s => s.trim()) };
+                const subjectsArray = Array.isArray(subjectFilter)
+                    ? subjectFilter.map(s => s.trim()).filter(Boolean)
+                    : subjectFilter.split(",").map(s => s.trim()).filter(Boolean);
+            
+                if (subjectsArray.length > 0) {
+                    registrationFilter.$or = subjectsArray.map(subject => ({
+                        subject: { $regex: `^${subject}$`, $options: "i" } // Case-insensitive match
+                    }));
+                }
             }
+            
             if (preferredTutor) {
                 registrationFilter.preferredTutor = preferredTutor.trim();
             }
@@ -1241,15 +1252,16 @@ class userPagesController {
            
             if (subjectFilter) {
                 const subjectsArray = Array.isArray(subjectFilter)
-                    ? subjectFilter.map(s => s.trim())
+                    ? subjectFilter.map(s => s.trim()).filter(Boolean)
                     : subjectFilter.split(",").map(s => s.trim()).filter(Boolean);
             
                 if (subjectsArray.length > 0) {
-                    registrationFilter.subject = {
-                        $in: subjectsArray.map(subject => new RegExp(`^${subject}$`, "i"))
-                    };
+                    registrationFilter.$or = subjectsArray.map(subject => ({
+                        subject: { $regex: subject, $options: "i" } // Case-insensitive match
+                    }));
                 }
             }
+            
             
             
             // **Preferred Tutor Filter**
@@ -1409,18 +1421,18 @@ class userPagesController {
                 registrationFilter.class = { $in: classFilter.split(",").map(c => c.trim()) };
             }
     
-            // **Subject Filter**
             if (subjectFilter) {
                 const subjectsArray = Array.isArray(subjectFilter)
-                    ? subjectFilter.map(s => s.trim())
+                    ? subjectFilter.map(s => s.trim()).filter(Boolean)
                     : subjectFilter.split(",").map(s => s.trim()).filter(Boolean);
             
                 if (subjectsArray.length > 0) {
-                    registrationFilter.subject = {
-                        $in: subjectsArray.map(subject => new RegExp(`^${subject}$`, "i"))
-                    };
+                    registrationFilter.$or = subjectsArray.map(subject => ({
+                        subject: { $regex: subject, $options: "i" } // Case-insensitive match
+                    }));
                 }
             }
+            
             
             // **Preferred Tutor**
             if (preferredTutor) {

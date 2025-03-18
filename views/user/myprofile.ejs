@@ -541,10 +541,15 @@
                                   <label>Gender:</label>
                                   <p><%= requirement.preferredTutor ? requirement.preferredTutor : "N/A" %></p>
                                 </div>
-                                <div class="profile-myprofile-item">
-                                  <label>Age:</label>
-                                  <p><%= requirement.age ? requirement.age : "N/A" %></p>
-                                </div>
+                                <% if (!requirement.age) { %>
+                                  
+                              <% } else { %>
+                                  <div class="profile-myprofile-item">
+                                      <label>Age:</label>
+                                      <p><%= requirement.age %></p>
+                                  </div>
+                              <% } %>
+                              
                               </div>
                               <!-- City & Locality -->
                               <div class="profile-myprofile-row">
