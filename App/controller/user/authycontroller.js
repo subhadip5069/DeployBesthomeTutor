@@ -193,6 +193,7 @@ class UserAuthController {
       return res.render("user/verifyemail", {
           title: "Verify Email",
           email,
+          userId: null,
           message: { type: "danger", text: "Something went wrong. Please try again." }
       });
   }
@@ -212,7 +213,8 @@ class UserAuthController {
             return res.render("user/verifyemail", {
                 title: "Verify Email",
                 email,
-                userId: null
+                userId: null,
+                message: { type: "danger", text: "User not found." }
             });
         }
 
@@ -247,7 +249,7 @@ class UserAuthController {
                 return res.render("user/verifyemail", {
                     title: "Verify Email",
                     email,
-                    userId: user._id
+                    userId: user._id,message: { type: "danger", text: "Error sending OTP. Please try again." }
                 });
             }
 
@@ -256,7 +258,8 @@ class UserAuthController {
             return res.render("user/verifyemail", {
                 title: "Verify Email",
                 email,
-                userId: user._id
+                userId: user._id,
+                message: { type: "success", text: "New OTP sent successfully. Please check your email." }
             });
         });
 
@@ -266,7 +269,8 @@ class UserAuthController {
         return res.render("user/verifyemail", {
             title: "Verify Email",
             email,
-            userId: null
+            userId: null,
+            message: { type: "danger", text: "Something went wrong. Please try again." }
         });
     }
 };
@@ -284,6 +288,7 @@ class UserAuthController {
         return res.render("user/verifyemail", {
           title: "Verify Email",
           email,
+          message: { type: "danger", text: "No OTP found for this email. Please request a new one." },
           error: "No OTP found for this email. Please request a new one.",
         });
       }
@@ -294,6 +299,7 @@ class UserAuthController {
         return res.render("user/verifyemail", {
           title: "Verify Email",
           email,
+          message: { type: "danger", text: "Invalid OTP. Please try again." },
           error: "Invalid OTP. Please try again.",
         });
       }
@@ -305,6 +311,7 @@ class UserAuthController {
         return res.render("user/verifyemail", {
           title: "Verify Email",
           email,
+          message: { type: "danger", text: "OTP has expired. Please request a new one." },
           error: "OTP has expired. Please request a new one.",
         });
       }
@@ -321,6 +328,7 @@ class UserAuthController {
         return res.render("user/verifyemail", {
           title: "Verify Email",
           email,
+          message: { type: "danger", text: "User not found." },
           error: "User not found.",
         });
       }
@@ -335,6 +343,7 @@ class UserAuthController {
       return res.render("user/verifyemail", {
         title: "Verify Email",
         email,
+        message: { type: "danger", text: "Something went wrong! Please try again." },
         error: "Something went wrong! Please try again.",
       });
     }
