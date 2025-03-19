@@ -367,7 +367,16 @@
         <div class="profile-container">
             <div class="profile-tabs">
               <button type="button" class="profile-tab-button active" onclick="showTab('profile-tuitions')">
-                <%if( requirement.userId.role == 'tutor'){ %> Tuitions <% }else{ %>Tutor<% } %>
+                <% if (requirement && requirement.userId) { %>
+                  <% if (requirement.userId.role == 'tutor') { %> 
+                      Tuitions 
+                  <% } else { %> 
+                      Tutor 
+                  <% } %>
+              <% } else { %>
+                  Tutor <!-- Default text if requirement is undefined -->
+              <% } %>
+              
             </button>
             
                 <button class="profile-tab-button" onclick="showTab('profile-profile')">My Profile</button>
