@@ -385,8 +385,11 @@ updateRegistration=async(req, res)=> {
             const updatedRegistration = await Registration.findByIdAndUpdate(id, { status }, { new: true });
             if (!updatedRegistration) {
                 req.session.message = { type: "error", text: "Something went wrong. Please try again." };
+
+                res.json({success: true, message: "Something went wrong. Please try again." });
                 return res.redirect("/myprofile");
             }
+            res.json({success: true, message: "Thank you for your response." });
              req.session.message = { type: "error", text: "Thank you for your response." };
              return res.redirect("/myprofile");
         } catch (error) {

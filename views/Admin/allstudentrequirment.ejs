@@ -88,7 +88,7 @@
                             button.text(newStatus === "Active" ? "Deactivate" : "Activate")
                                 .toggleClass("btn-danger btn-success");
                             
-                            alert(response.message); // Show success message
+                            alert("Status updated successfully."); // Show success message
                         },
                         error: function() {
                             alert("Error updating status. Please try again.");

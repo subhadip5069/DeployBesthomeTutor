@@ -97,6 +97,9 @@
     <div class="col-md-9">
       <div class="row g-2">
         <% requirement.forEach(student => { %>
+         <% if (student.status === 'active') { %>
+            
+          
           <div class="col-12 col-sm-6 col-md-3">
             <div class="card p-2 shadow-sm" style="font-size: 14px;">
               
@@ -150,6 +153,7 @@
     
             </div>
           </div>
+          <% } %>
         <% }); %>
       </div>
     </div>
