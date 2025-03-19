@@ -71,7 +71,7 @@
                     let button = $(this);
                     let id = button.data("id");
                     let currentStatus = button.text().trim();
-                    let newStatus = currentStatus === "Deactivate" ? "Inactive" : "Active";
+                    let newStatus = currentStatus === "Deactivate" ? "inactive" : "active";
         
                     $.ajax({
                         url: `/admin/adminupdatedtuition/${id}`,

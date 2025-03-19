@@ -428,7 +428,7 @@
           
                               <!-- Page Numbers -->
                               <% for (let i = 1; i <= totalPages; i++) { %>
-                                  <li class="page-item <%= (i == currentPage) ? 'active' : '' %>">
+                                  <li class="page-item <%= (i == currentPage) ? 'Active' : '' %>">
                                       <a class="page-link" href="?page=<%= i %>&limit=<%= limit %>" onclick="changePage(event, <%= i %>)"
                                          style="<%= (i == currentPage) ? 'background-color: #007bff; color: white;' : '' %>">
                                           <%= i %>
@@ -461,7 +461,7 @@
                             <div class="profile-myprofile-row" style="display: flex; justify-content: space-between; align-items: center; padding: 10px; border: 1px solid #ddd; border-radius: 8px; background: #f9f9f9;">
                                 <div class="profile-myprofile-item" style="flex: 1;">
                                     <label style="font-weight: bold; font-size: 16px;">Your Current Requirment Status:</label>
-                                    <span id="status-label" style="font-size: 16px; font-weight: bold; color: <%= requirement.status === 'Active' ? '#28a745' : '#dc3545' %>;">
+                                    <span id="status-label" style="font-size: 16px; font-weight: bold; color: <%= requirement.status === 'active' ? '#28a745' : '#dc3545' %>;">
                                         <%= requirement.status %>
                                     </span>
                                 </div>

@@ -15,7 +15,7 @@ const uploadPath = path.join(__dirname, "uploads/profile_images");
 })();
 
 // Allowed image types (JPG, PNG only)
-const allowedTypes = ["image/jpeg", "image/png", "image/jpg", "image/webp", "image/gif", "image/svg+xml"];
+const allowedTypes = ["image/jpeg", "image/png", "image/jpg", "image/webp", "image/gif", "image/svg+xml",];
 
 // Multer storage with 2MB limit
 const storage = multer.diskStorage({
