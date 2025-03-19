@@ -1411,16 +1411,13 @@ class userPagesController {
             limit = parseInt(limit);
             const skip = (page - 1) * limit;
     
-            let registrationFilter = { status: "active" }; // Fetch only active students
+            let registrationFilter = {};
+            let userFilter = { role: roleToFetch };
     
-            // **Ensure Only "Students" are Fetched**
-            registrationFilter["userId.role"] = roleToFetch;
-    
-            // **Class Filter**
             if (classFilter) {
                 registrationFilter.class = { $in: classFilter.split(",").map(c => c.trim()) };
             }
-    
+            // **Subject Filter**
             if (subjectFilter) {
                 const subjectsArray = Array.isArray(subjectFilter)
                     ? subjectFilter.map(s => s.trim()).filter(Boolean)
@@ -1433,34 +1430,25 @@ class userPagesController {
                 }
             }
             
-            
-            // **Preferred Tutor**
             if (preferredTutor) {
                 registrationFilter.preferredTutor = preferredTutor.trim();
             }
-    
-            // **State & City Filter (Case-Insensitive)**
             if (state) {
-                registrationFilter.state = { $regex: new RegExp(state.trim(), "i") };
+                registrationFilter.state = { $regex: state.trim(), $options: "i" };
             }
             if (city) {
-                registrationFilter.city = { $regex: new RegExp(city.trim(), "i") };
+                registrationFilter.city = { $regex: city.trim(), $options: "i" };
             }
-    
-            // **Pincode Filter**
-            if (pincode && /^\d+$/.test(pincode)) {
+            if (pincode && !isNaN(pincode)) {
                 registrationFilter.pincode = Number(pincode);
             }
-    
-            // **Price Range Filter**
-            if (priceRange && priceRange.includes("-")) {
+            if (priceRange) {
                 const [minPrice, maxPrice] = priceRange.split("-").map(Number);
                 if (!isNaN(minPrice) && !isNaN(maxPrice)) {
                     registrationFilter.feeAmount = { $gte: minPrice, $lte: maxPrice };
                 }
             }
     
-            // **Global Search Query (Matches Multiple Fields)**
             if (searchQuery) {
                 const regex = new RegExp(searchQuery.trim(), "i");
     
@@ -1485,42 +1473,43 @@ class userPagesController {
                         { age: Number(searchQuery) }
                     );
                 }
+    
+                // **Search by randomId inside userId**
+                userFilter.randomId = regex;
             }
     
-            // **Count Total Students for Pagination**
+            // Count total matching students for pagination
             const totalStudents = await Registration.countDocuments(registrationFilter);
             const totalPages = Math.ceil(totalStudents / limit);
     
-            // **Fetch Students with Pagination**
-            let students = await Registration.find(registrationFilter)
+            // Fetch paginated student registrations
+            let requirements = await Registration.find(registrationFilter)
                 .populate({
                     path: "userId",
                     select: "name role randomId",
-                    match: { role: roleToFetch } // Ensures only students are matched
+                    match: userFilter // Ensures search by `randomId`
                 })
                 .skip(skip)
                 .limit(limit)
                 .lean();
     
-            // **Filter Out Registrations Without User Data**
-            students = students.filter(student => student.userId);
-    
+            // Filter out registrations that have no associated user
+            requirements = requirements.filter(req => req.userId);
             const message = req.session.message;
             req.session.message = null;
-    
-            // **Flash Messages for Better UX**
-            if (students.length === 0) {
+            // **Flash messages for better UX**
+            if (requirements.length === 0) {
                 req.flash("error_msg", "No students found matching your search criteria.");
             } else {
                 req.flash("success_msg", "Students retrieved successfully.");
             }
     
-            // **Render the Page with Students**
             res.render("user/allstudent", {
-                title: "/All Students",
+                title: "/ Students",
+                
                 userId,
-                requirements: students,
-                requirement: students,
+                requirements,
+                requirement: requirements,
                 currentPage: page,
                 message,
                 totalPages,
@@ -1538,7 +1527,7 @@ class userPagesController {
                 error_msg: req.flash("error_msg"),
             });
         } catch (error) {
-            console.error("Error in listing students:", error);
+            console.error("Error in listingofstudent:", error);
             req.flash("error_msg", "An error occurred while fetching students.");
             res.redirect("/listingofstudent");
         }

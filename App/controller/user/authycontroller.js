@@ -22,130 +22,99 @@ function generateOTP() {
   return otp;
 }
 
-// Nodemailer setup
+// ✅ Fix SMTP (Use App Password)
 const transporter = nodemailer.createTransport({
-  host: process.env.EMAIL_HOST || "smtp.gmail.com",
-  port: parseInt(process.env.EMAIL_PORT) || 587,
-  secure: process.env.EMAIL_SECURE === "true",
+  host: "smtp.gmail.com",
+  port: 465, // ✅ Use 465 for SSL (587 sometimes fails)
+  secure: true, // ✅ Set true for SSL
   auth: {
-        user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS 
+    user: process.env.EMAIL_USER || "besthometutor7@gmail.com",
+    pass: process.env.EMAIL_PASS || "crdq befx cttb qdgc",
   },
 });
 
 class UserAuthController {
-  // Generate OTP and save to database
-  // async generateAndSaveOTP(email) {
-  //   const otp = crypto.randomInt(100000, 999999).toString();
-  //   const expiresAt = Date.now() + 5 * 60 * 1000; // 5 min expiry
-
-  //   await User.findOneAndUpdate(
-  //     { email },
-  //     { otp, otpExpiresAt: expiresAt },
-  //     { new: true }
-  //   );
-
-  //   return otp;
-  // }
-
-  // Signup and Send OTP
- 
-  
   signup = async (req, res) => {
     try {
-        const { name, email, password, phone, role, password2 } = req.body;
-        const profileimage = req.file ? req.file.filename : "/user/images/profile.png";
+      const { name, email, password, phone, role, password2 } = req.body;
+      const profileimage = req.file ? req.file.filename : "/user/images/profile.png";
 
-        // Check if passwords match
-        if (password !== password2) {
-            req.session.message = { type: "danger", text: "Passwords do not match." };
+      // ✅ Password Match Validation
+      if (password !== password2) {
+        req.session.message = { type: "danger", text: "Passwords do not match." };
+        return res.redirect("/register");
+      }
+
+      // ✅ Check if User Exists (Email or Phone)
+      const userExists = await User.findOne({ $or: [{ email }, { phone }] });
+      if (userExists) {
+        req.session.message = { type: "danger", text: "Email or Phone already registered. Please log in." };
+        return res.redirect("/login");
+      }
+
+      // ✅ Hash Password
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const randomId = crypto.randomBytes(4).toString("hex").toUpperCase();
+      const otp = generateOTP();
+
+      // ✅ Save New User
+      const newUser = new User({
+        name,
+        email,
+        password: hashedPassword,
+        phone,
+        role,
+        randomId,
+        isVerified: false,
+        profileimage,
+        createdAt: new Date(), // Save signup time
+      });
+      await newUser.save();
+
+      // ✅ Store OTP in Database
+      await Otp.create({ email, otp, createdAt: Date.now() });
+
+      // ✅ Send OTP Email
+      const mailOptions = {
+        from: `"Best Home Tutor" <${process.env.EMAIL_USER}>`,
+        to: email,
+        subject: "Verify Your Email - Tutor",
+        html: `
+          <div style="max-width: 400px; margin: auto; padding: 20px; border-radius: 10px; box-shadow: 0px 4px 10px rgba(0, 255, 221, 0.73); font-family: Arial, sans-serif; text-align: center; background-color:rgb(24, 22, 22); border: 1px solid #ddd;">
+          <h2 style="color: #333; margin-bottom: 10px;">Verify Your Email</h2>
+          <p style="color: #555;">Hello,</p>
+          <p style="color: #555;">Thank you for signing up at <strong style="color:rgb(166, 255, 0);">Best home tutor</strong>. Enter the OTP below to verify your email:</p>
+          <div style="font-size: 22px; font-weight: bold; color: red; background:rgb(222, 248, 215); padding: 10px; display: inline-block; border-radius: 5px; margin: 10px 0;">${otp}</div>
+          <p style="color: #555;">This OTP will expire in 5 minutes.</p>
+          </div>
+        `,
+      };
+
+      transporter.sendMail(mailOptions, async (err, info) => {
+        if (err) {
+            console.error("❌ Email Error:", err);  // Log the full error
+            req.session.message = { type: "danger", text: `Error sending OTP: ${err.message}` };
+            await User.deleteOne({ _id: newUser._id }); // Delete user if email fails
             return res.redirect("/register");
         }
-
-        // Check if user already exists
-        const userExists = await User.findOne({ email });
-        if (userExists) {
-            req.session.message = { type: "danger", text: "Email is already registered. Please log in." };
-            return res.redirect("/login");
-        }
-        const userexists = await User.findOne({ phone });
-        if (userexists) {
-          req.session.message = { type: "danger", text: "Phone is already registered. Please log in." };
-            return res.redirect("/login");
-        }
-
-        // Hash password
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        // Generate an 8-digit unique alphanumeric ID
-        const randomId = crypto.randomBytes(4).toString("hex").toUpperCase();
-
-        // Generate OTP
-        const otp = generateOTP();
-
-        // Save new user with creation timestamp
-        const newUser = new User({
-            name,
+    
+        console.log("✅ Email sent:", info.response);
+        req.session.message = { type: "success", text: "OTP verification successful please login to continue." };
+    
+        return res.render("user/verifyemail", {
+            title: "Tutor",
             email,
-            password: hashedPassword,
-            phone,
-            role,
-            randomId,
-            isVerified: false,
-            profileimage,
-            createdAt: new Date(), // Save signup time
+            message: { type: "success", text: "OTP sent successfully. Please check your email." },
+            userId: newUser._id
         });
-
-        await newUser.save();
-
-        // Store OTP in database
-        await Otp.create({ email, otp, createdAt: Date.now() });
-
-        // Send OTP Email
-        const mailOptions = {
-            from: `"A-world" <${process.env.EMAIL_USER}>`,
-            to: email,
-            subject: "Verify Your Email - Tutor",
-            html: `
-                <div style="max-width: 400px; margin: auto; padding: 20px; border-radius: 10px; box-shadow: 0px 4px 10px rgba(0, 255, 221, 0.73); font-family: Arial, sans-serif; text-align: center; background-color:rgb(24, 22, 22); border: 1px solid #ddd;">
-    <h2 style="color: #333; margin-bottom: 10px;">Verify Your Email</h2>
-    <p style="color: #555;">Hello,</p>
-    <p style="color: #555;">Thank you for signing up at <strong style="color:rgb(166, 255, 0);">Best home tutor</strong>. Enter the OTP below to verify your email:</p>
-    <div style="font-size: 22px; font-weight: bold; color: red; background:rgb(222, 248, 215); padding: 10px; display: inline-block; border-radius: 5px; margin: 10px 0;">
-        ${otp}
-    </div>
-    <p style="color: #555;">This OTP will expire in 5 minutes.</p>
-</div>
-
-            `,
-        };
-
-        transporter.sendMail(mailOptions, async (err, info) => {
-            if (err) {
-                console.error("Error sending email:", err);
-                req.session.message = { type: "danger", text: "Error sending OTP. Please try again." };
-                await User.deleteOne({ _id: newUser._id }); // Delete user if email fails
-                return res.redirect("/register");
-            }
-
-            console.log("Email sent:", info.response);
-            req.session.message = { type: "success", text: "" };
-
-            return res.render("user/verifyemail", {
-                title: "Tutor",
-                email,
-                message: { type: "success", text: "OTP sent successfully. Please check your email." },
-                userId: newUser._id
-            });
-        });
-
+    });
+    
     } catch (error) {
-        console.error("Signup Error:", error);
-        req.session.message = { type: "danger", text: "Something went wrong. Please try again." };
-        return res.redirect("/register");
+      console.error("❌ Signup Error:", error);
+      req.session.message = { type: "danger", text: "Something went wrong. Please try again." };
+      return res.redirect("/register");
     }
-};
-
+  };
 
  verifyOtp = async (req, res) => {
   try {

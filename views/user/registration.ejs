@@ -276,8 +276,12 @@
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-bold">Locality <span class="text-warning">*</span></label>
-                            <input type="text" class="form-control" name="locality" placeholder="Enter Locality" required>
+                            <input type="text" class="form-control" name="locality" placeholder="Enter Locality" required 
+                                   pattern="[A-Za-z\s]+" 
+                                   title="Only letters and spaces are allowed"
+                                   oninput="this.value = this.value.replace(/[0-9]/g, '')">
                         </div>
+                        
                     </div>
                 
                     <!-- Submit Button -->
@@ -562,8 +566,12 @@ document.addEventListener("DOMContentLoaded", function () {
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-bold">Locality <span class="text-warning">*</span></label>
-                            <input type="text" class="form-control" name="locality" placeholder="Enter Locality" required>
+                            <input type="text" class="form-control" name="locality" placeholder="Enter Locality" required 
+                                   pattern="[A-Za-z\s]+" 
+                                   title="Only letters and spaces are allowed"
+                                   oninput="this.value = this.value.replace(/[0-9]/g, '')">
                         </div>
+                        
                     </div>
                     <!-- uploade documents -->
                 

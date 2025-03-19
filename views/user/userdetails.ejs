@@ -164,7 +164,7 @@
                         <span>(TutorId: <b><%= requirement.userId.randomId %></b>)</span>
                         <img src="/user/verified.png" alt="verified">
                     </h1>
-                    <p>Location: <%= requirement.city || 'Online' %>,| <%= requirement.state || 'Online' %></p>
+                    <p>Location: Near <%= requirement.locality || 'Online' %> | <%= requirement.city || 'Online' %>,| <%= requirement.state || 'Online' %></p>
                 </div>
                 <div class="profilepicture">
                     <img src="<%= requirement.userId.profilePicture || '/user/images/profile.png' %>" alt="profile">
@@ -234,7 +234,7 @@
                         <span>(TutorId: <b><%= requirement.userId.randomId %></b>)</span>
                         <img src="/user/verified.png" alt="verified">
                     </h1>
-                    <p>Location: <%= requirement.city || 'Online' %>,| <%= requirement.state || 'Online' %></p>
+                    <p>Location:Near <%= requirement.locality || 'Online' %> | <%= requirement.city || 'Online' %>,| <%= requirement.state || 'Online' %></p>
                 </div>
                 <div class="profilepicture">
                     <img src="<%= requirement.userId.profilePicture || '/user/images/profile.png' %>" alt="profile">
