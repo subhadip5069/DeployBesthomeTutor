@@ -27,10 +27,10 @@
                 <tbody id="paymentTable">
                     <% payments.forEach(payment => { %>
                         <tr class="payment-row">
-                            <td><%= payment.userId.name %></td>
+                            <td><%= payment.userId && payment.userId.name ? payment.userId.name : "Unknown User" %></td>
                             <td>₹<%= (payment.amount / 100).toFixed(2) %></td>
                             <td><%= payment.planId ? payment.planId.planName : "N/A" %></td>
-                            <td><%= payment.createdAt.toDateString() %></td>
+                            <td><%= payment.createdAt ? payment.createdAt.toDateString() : "N/A" %></td>
                             <td>
                                 <span class="badge <%= payment.paymentStatus === 'successful' ? 'bg-success' : payment.paymentStatus === 'pending' ? 'bg-warning' : 'bg-danger' %>">
                                     <%= payment.paymentStatus %>
@@ -44,12 +44,13 @@
                         </tr>
                         <tr id="details-<%= payment._id %>" class="collapse">
                             <td colspan="6">
-                                <strong>Email:</strong> <%= payment.userId.email %> <br>
+                                <strong>Email:</strong> <%= payment.userId && payment.userId.email ? payment.userId.email : "N/A" %> <br>
                                 <strong>Payment ID:</strong> <%= payment.razorpayPaymentId || "N/A" %>
                             </td>
                         </tr>
                     <% }) %>
                 </tbody>
+                
             </table>
         </div>
 
