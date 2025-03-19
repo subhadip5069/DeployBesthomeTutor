@@ -132,7 +132,7 @@ class UserAuthController {
             }
 
             console.log("Email sent:", info.response);
-            req.session.message = { type: "success", text: " OTP verification Successful Please check your email." };
+            req.session.message = { type: "success", text: " OTP verification Successful . Please login to your account." };
 
             return res.render("user/verifyemail", {
                 title: "Tutor",

@@ -336,7 +336,7 @@ class userPagesController {
     
             // If userCity exists, filter students by it; otherwise, show all students
             if (userCity) {
-                registrationFilter.city = userCity;
+                registrationFilter.city = { $regex: new RegExp(`^${userCity}$`, "i") }; // Case-insensitive match
             }
     
             // Class Filter
@@ -699,9 +699,10 @@ class userPagesController {
             let registrationFilter = { status: "active" };
             
             // If userCity exists, filter tutors by it; otherwise, show all tutors
-            if (userCity) {
-                registrationFilter.city = userCity;
-            }
+           // **Ensure case-insensitive city filtering**
+                if (userCity) {
+                      registrationFilter.city = { $regex: new RegExp(`^${userCity}$`, "i") };
+                   }
     
             // Class Filter
             if (classFilter && typeof classFilter === "string") {
