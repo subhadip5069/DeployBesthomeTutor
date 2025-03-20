@@ -55,146 +55,137 @@
     <div class="col-md-9">
         <div class="row g-3">
             <% if (requirements.length > 0) { %>
-                <% requirements.reverse().forEach(tutor => { %>
-                    <% if (tutor && tutor.userId.role== "tutor" && tutor.status == "active" ||tutor.status == "Active") { %>
+                <% requirements.reverse().forEach(user => { %>
+                    <% if (user && user.userId.role === "tutor" && (user.status === "active" || user.status === "Active")) { %>
+                        <!-- Tutor Card -->
                         <div class="col-lg-3 col-md-4 col-sm-6 mb-3">
                             <div class="card border-0 shadow-sm p-2"
-                                 style="border-radius: 10px; box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.08); transition: transform 0.2s ease-in-out; width: 100%;"
-                                 onmouseover="this.style.transform='translateY(-3px)'"
-                                 onmouseout="this.style.transform='translateY(0)'">
-                                
-                                <!-- Featured Badge -->
+                                style="border-radius: 10px; box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.08); transition: transform 0.2s ease-in-out; width: 100%;"
+                                onmouseover="this.style.transform='translateY(-3px)'"
+                                onmouseout="this.style.transform='translateY(0)'">
+    
                                 <div class="position-absolute top-0 start-0 bg-warning text-dark rounded fw-bold px-1"
-                                     style="font-size: 10px; padding: 3px 5px;">
+                                    style="font-size: 10px; padding: 3px 5px;">
                                     ★ Featured
                                 </div>
-        
-                                <!-- Profile Info -->
+    
                                 <div class="d-flex align-items-center mb-2">
-                                    <img src="<%= tutor.userId.profileImg || '/user/images/profile.png' %>" 
-                                         class="rounded-circle me-2"
-                                         style="width: 40px; height: 40px;">
+                                    <img src="<%= user.userId.profileImg || '/user/images/profile.png' %>" 
+                                        class="rounded-circle me-2"
+                                        style="width: 40px; height: 40px;">
                                     <div>
                                         <h6 class="text-primary m-0" style="font-size: 14px; font-weight: bold;">
-                                            <%= tutor.userId.name || "Unknown" %>
+                                            <%= user.userId.name || "Unknown" %>
                                         </h6> 
                                         <small style="font-size: 12px; color: #666;">
-                                            <p class="mb-0"><span><%= tutor.userId.randomId || "Unknown" %></span></p>
-                                            Exp: <%= tutor.experience || "N/A" %> Y | Age: <%= tutor.age || "N/A" %> 
+                                            <p class="mb-0"><span><%= user.userId.randomId || "Unknown" %></span></p>
+                                            Exp: <%= user.experience || "N/A" %> Y | Age: <%= user.age || "N/A" %> 
                                         </small>
                                         <p style="font-size: 12px; color: #666; margin-bottom: 4px;">
-                                             <b> <%= tutor.preferredTutor || "N/A" %></b>
+                                            <b><%= user.preferredTutor || "N/A" %></b>
                                         </p>
                                     </div>
                                 </div>
+    
                                 <p style="font-size: 12px; color: #666; margin-bottom: 4px;">
-                                    <b> class :</b> <%= tutor.class || "N/A" %>
-                               </p>
-                                <!-- Location -->
+                                    <b>Class:</b> <%= user.class || "N/A" %>
+                                </p>
+    
                                 <p style="font-size: 12px; color: #666; margin-bottom: 4px;">
                                     <i class="fas fa-map-marker-alt"></i> <strong>Location:</strong> 
-                                    <%= (tutor.city || "Not specified").toLowerCase().replace(/\b\w/g, char => char.toUpperCase()) %>, 
-                                    <%= (tutor.state || "Not specified").toLowerCase().replace(/\b\w/g, char => char.toUpperCase()) %>,
-                                  
+                                    <%= (user.city || "Not specified").toLowerCase().replace(/\b\w/g, char => char.toUpperCase()) %>, 
+                                    <%= (user.state || "Not specified").toLowerCase().replace(/\b\w/g, char => char.toUpperCase()) %>
                                 </p>
-                                <p style="font-size: 12px; color: #666; margin-bottom: 4px;"><b> Pin:</b> <%= tutor.pincode || "Not specified" %></p>
-                                
-        
-                                <!-- Qualification -->
+    
+                                <p style="font-size: 12px; color: #666; margin-bottom: 4px;">
+                                    <b>Pin:</b> <%= user.pincode || "Not specified" %>
+                                </p>
+    
                                 <p style="font-size: 12px; color: #666; margin-bottom: 4px;">
                                     <i class="fas fa-graduation-cap"></i> <strong>Qualification:</strong> 
-                                    <%= tutor.qualification || "N/A" %>
+                                    <%= user.qualification || "N/A" %>
                                 </p>
-        
-                                <!-- Subjects -->
+    
                                 <p style="font-size: 12px; color: #666; margin-bottom: 4px;">
                                     <i class="fas fa-book"></i> <strong>Subjects:</strong>  
-                                    <%= tutor.subject || "Various" %>
+                                    <%= user.subject || "Various" %>
                                 </p>
-        
-                                <!-- Buttons -->
-                                <div class="text-center" style="display: flex; justify-content: space-between;">
-                                    <a href="/userDetails/<%= tutor._id %>" 
-                                       class="btn btn-primary mt-1" 
-                                       style="font-size: 10px; padding: 4px 6px; border-radius: 6px; flex: 1; margin-right: 4px;">
+    
+                                <div class="text-center d-flex justify-content-between">
+                                    <a href="/userDetails/<%= user._id %>" 
+                                        class="btn btn-primary mt-1" 
+                                        style="font-size: 10px; padding: 4px 6px; border-radius: 6px; flex: 1; margin-right: 4px;">
                                         View Profile
                                     </a>
-        
+    
                                     <a href="/primum" 
-                                       class="btn btn-success mt-1" 
-                                       style="font-size: 10px; padding: 4px 6px; border-radius: 6px; flex: 1;">
+                                        class="btn btn-success mt-1" 
+                                        style="font-size: 10px; padding: 4px 6px; border-radius: 6px; flex: 1;">
                                         Free Demo
                                     </a>
                                 </div>
-        
+    
                             </div>
                         </div>
+    
+                    <% } else if (user && user.userId.role === "student" && user.status === "Active" || user.status === "active") { %>
+                        <!-- Student Card -->
+                        <div class="col-lg-3 col-md-4 col-sm-6 mb-3">
+                            <div class="card p-2 shadow-sm" style="font-size: 14px;">
+    
+                                <p class="text-muted small mb-1">
+                                    <i class="far fa-calendar-alt"></i> 
+                                    <%= user.createdAt ? new Date(user.createdAt).toDateString().split(' ').slice(1, 4).join(' ') : "N/A" %>
+                                </p>
+    
+                                <h6 class="text-primary mb-1">
+                                    <a href="#" class="text-decoration-none">Student Looking for Tutor...</a>
+                                </h6>
+    
+                                <p class="fw-bold mb-1" style="font-size: 13px;">
+                                    <%= user.userId.name || "Unknown" %> | Class: <%= user.class || "N/A" %>
+                                </p>
+    
+                                <p class="text-muted small mb-1">
+                                    <i class="fas fa-clock"></i> <%= Array.isArray(user.preferredTime) ? user.preferredTime.join(", ") : user.preferredTime || "N/A" %> | 
+                                    <i class="fas fa-map-marker-alt"></i> <%= user.location || "Not specified" %>
+                                </p>
+    
+                                <p class="text-danger fw-bold small mb-1">
+                                    Preferred Tutor: <%= user.preferredTutor || "N/A" %>
+                                </p>
+    
+                                <p class="small mb-1">
+                                    <i class="fas fa-book"></i> <%= user.subject || "N/A" %> | <%= user.board || "N/A" %>
+                                </p>
+    
+                                <p class="small mb-1">
+                                    <i class="fas fa-map-marker-alt"></i> 
+                                    <%= (user.city || "N/A").charAt(0).toUpperCase() + (user.city || "N/A").slice(1).toLowerCase() %>, 
+                                    <%= (user.state || "N/A").charAt(0).toUpperCase() + (user.state || "N/A").slice(1).toLowerCase() %> 
+                                    (Pin: <%= user.pincode || "N/A" %>)
+                                </p>
+    
+                                <div class="bg-light p-1 text-center small rounded">
+                                    <%= user.status === 'Matched' ? 'Tutor Found' : 'Tutor Not Found' %>
+                                </div>
+    
+                                <div class="d-flex gap-1 mt-2">
+                                    <a href="/userDetails/<%= user._id %>" class="btn btn-sm btn-primary w-50">VIEW</a>
+                                    <button class="btn btn-sm btn-success w-50">APPLY</button>
+                                </div>
+    
+                            </div>
+                        </div>
+                    <% } %>
+                <% }) %>
             <% } else { %>
-                 <!-- Four cards per row: 25% width each (minus 20px gap) -->
-                 <div class="col-md-9">
-                    <div class="row g-2">
-                     
-                        <div class="col-12 col-sm-6 col-md-3">
-                          <div class="card p-2 shadow-sm" style="font-size: 14px;">
-                            
-                            <p class="text-muted small mb-1">
-                              <i class="far fa-calendar-alt"></i> 
-                              <%= tutor.createdAt.toDateString().split(' ').slice(1, 4).join(' ') %>
-                            </p>
-                  
-                            <h6 class="text-primary mb-1">
-                              <a href="#" class="text-decoration-none">tutor Looking for Tutor...</a>
-                            </h6>
-                  
-                            <p class="fw-bold mb-1" style="font-size: 13px;">
-                              <%= tutor.userId.name %> | Class: <%= tutor.class %>
-                            </p>
-                  
-                            <p class="text-muted small mb-1">
-                              <i class="fas fa-clock"></i> <%= Array.isArray(tutor.preferredTime) ? tutor.preferredTime.join(", ") : tutor.preferredTime %> | 
-                              <i class="fas fa-map-marker-alt"></i> <%= tutor.location %>
-                            </p>
-                  
-                            <p class="text-danger fw-bold small mb-1">
-                              Preferred Tutor: <%= tutor.preferredTutor %>
-                            </p>
-                  
-                            <p class="small mb-1">
-                              <i class="fas fa-book"></i> <%= tutor.subject %> | <%= tutor.board %>
-                            </p>
-                  
-                            <p class="small mb-1">
-                              <i class="fas fa-graduation-cap"></i> ID: <b><%= tutor.userId.randomId %></b>
-                            </p>
-                  
-                           
-                            <p class="small mb-1">
-                              <i class="fas fa-map-marker-alt"></i> 
-                              <%= tutor.city.charAt(0).toUpperCase() + tutor.city.slice(1).toLowerCase() %>, 
-                              <%= tutor.state.charAt(0).toUpperCase() + tutor.state.slice(1).toLowerCase() %> 
-                              (Pin: <%= tutor.pincode %>)
-                            </p>
-                            
-                  
-                            <div class="bg-light p-1 text-center small rounded">
-                              <%= tutor.status === 'Matched' ? 'Tutor Found' : 'Tutor Not Found' %>
-                            </div>
-                  
-                            <div class="d-flex gap-1 mt-2">
-                              <a href="/userDetails/<%= tutor._id %>" class="btn btn-sm btn-primary w-50">VIEW</a>
-                              <button class="btn btn-sm btn-success w-50">APPLY</button>
-                            </div>
-                  
-                          </div>
-                        </div>
-                      
-                    </div>
-                  </div>
-            <% } %>
-        <% }) %>
+                <p>No tutors or students found.</p>
             <% } %>
         </div>
     </div>
+    
+    
 </section>
 
 <!-- Pagination -->
