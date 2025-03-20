@@ -15,7 +15,41 @@ const uploadPath = path.join(__dirname, "uploads/documents");
 })();
 
 // Allowed file types
-const allowedMimeTypes = ["image/jpeg", "image/png", "application/pdf"];
+const allowedMimeTypes = [ "image/jpeg",
+  "image/png",
+  "image/jpg",
+  "image/webp",
+  "image/gif",
+  "image/svg+xml",
+  "image/bmp",
+  "image/tiff",
+  "image/x-icon",
+  "image/vnd.microsoft.icon",
+  "image/vnd.adobe.photoshop",
+  "image/vnd.djvu",
+  "image/vnd.wap.wbmp",
+  "image/x-cmu-raster",
+  "image/x-coreldraw",
+  "image/x-corelphoto",
+  "image/x-jg",
+  "image/x-ms-bmp",
+  "image/x-ms-wmf",
+  "image/x-pcx",
+  "image/x-pict",
+  "image/x-portable-anymap",
+  "image/x-portable-bitmap",
+  "image/x-portable-graymap",
+  "image/x-portable-pixmap",
+  "image/x-rgb",
+  // pdf
+  "application/pdf",
+  // word
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  // excel
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  // powerpoint
+  "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+];
 
 // Multer storage configuration
 const storage = multer.diskStorage({

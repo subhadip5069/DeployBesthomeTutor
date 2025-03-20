@@ -55,12 +55,16 @@ login = async (req, res) => {
     }
 };
 
+logout = async (req, res) => {
+    res.clearCookie("token"); // Remove authentication cookie
+    console.log("Logout successful!");
+
+    // Store a success message in session (if needed)
+    req.session.message = { type: "success", text: "Logout successful!" }; 
     
-      logout= async (req, res) => {
-        res.clearCookie('token');
-        req.session.message = { type: 'success', text: 'Logout successful!' };
-        res.redirect('/admin/', { message: 'Logout successful!' });
-      };
-    }    
+    // Correctly redirect to the admin login page
+    res.redirect("/admin/");
+};
+}
 
 module.exports = new AdminAuthController();

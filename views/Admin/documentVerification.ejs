@@ -29,11 +29,12 @@
                 <% registrations.reverse().forEach(registration => { %>
                     <tr>
                         <td>
-                            <%= registration.userId.name %> 
+                            <%= registration.userId ? registration.userId.name : "N/A" %> 
                             <span class="badge bg-danger">Inactive</span>
                         </td>
-                        <td><%= registration.userId.randomId %></td>
-                        <td><%= registration.userId.email %></td>
+                        <td><%= registration.userId ? registration.userId.randomId : "N/A" %></td>
+                        <td><%= registration.userId ? registration.userId.email : "N/A" %></td>
+
                         <td><%= registration.subject || "N/A" %></td>
                         <td><%= registration.tuitionLocation?.length ? registration.tuitionLocation.join(", ") : "N/A" %></td>
                         <td><%= registration.class || "N/A" %></td>

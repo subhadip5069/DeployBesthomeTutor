@@ -179,7 +179,7 @@ class AdminPagesController {
             status: "inactive",
             attachedFiles: { $exists: true, $not: { $size: 0 } }
         })
-            .populate("userId", "name email randomId")
+            .populate("userId", "name email randomId ")
             .select("userId tuitionLocation subject attachedFiles documentVerificationStatus class about")
             .skip(skip)
             .limit(limit)

@@ -195,7 +195,7 @@
                     <!-- Subject & Class -->
                     <div class="row mb-3">
                         <div class="mb-3 col-md-6">
-                            <label class="form-label fw-bold">Subject <span class="text-warning">*</span></label>
+                            <label class="form-label fw-bold">Subject (using',') <span class="text-warning">*</span></label>
                             <input type="text" class="form-control" name="subject" placeholder="Enter Subject" required>
                         </div>
                         <div class="col-md-6">
@@ -579,10 +579,10 @@ document.addEventListener("DOMContentLoaded", function () {
                         <label class="form-label fw-bold">
                             Upload Documents (Aadhar & Pancard) <span class="text-warning">*</span>
                         </label>
-                        
+                    
                         <!-- File Input -->
-                        <label for="fileInput">Select exactly 2 files (jpg/png/jpeg)</label>
-                        <input type="file" name="attachedFiles" id="fileInput" multiple accept=".jpg,.jpeg,.png" required>
+                        <label for="fileInput">Select exactly 2 files (jpg, png, jpeg or webp)</label>
+                        <input type="file" name="attachedFiles" id="fileInput" multiple accept="image/*" required>
                         <small id="fileError" class="text-danger"></small>
                     </div>
                     
@@ -600,16 +600,16 @@ document.addEventListener("DOMContentLoaded", function () {
                     
                             fileInput.addEventListener('change', function () {
                                 const files = fileInput.files;
-                                const allowedExtensions = /(\.jpg|\.jpeg|\.png)$/i;
+                                const allowedExtensions = /\.(jpg|jpeg|png|webp|gif|svg|bmp|tiff|ico|pdf)$/i;
                                 let valid = true;
                     
                                 if (files.length !== 2) {
-                                    errorMsg.textContent = "Please select exactly 2 files.";
+                                    errorMsg.textContent = "Please select exactly 2 image files.";
                                     valid = false;
                                 } else {
                                     for (let file of files) {
                                         if (!allowedExtensions.test(file.name)) {
-                                            errorMsg.textContent = "Only JPG, JPEG, or PNG files are allowed.";
+                                            errorMsg.textContent = "Only image files are allowed (JPG, PNG, WEBP, GIF, SVG, BMP, TIFF, ICO or PDF).";
                                             valid = false;
                                             break;
                                         }
