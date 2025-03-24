@@ -1,0 +1,23 @@
+
+<%- include('partial/header') %>
+<section class="container d-flex justify-content-center align-items-center flex-column min-vh-100">
+    <h2 class="mb-4">Marquee <hr></h2>
+    <div class=" container " style="background-color: rgba(0, 0, 0, 0.438); backdrop-filter: blur(15px); padding: 30px; border-radius: 10px;">
+
+        <h2>Update Marquee Message</h2>
+
+  
+
+  
+        <form action="/admin/marquee/Update" method="post">
+            <div class="mb-3">
+                <marquee behavior="scroll" direction=" left" style="background-color: rgb(255, 255, 59); padding: 30px; color: rgb(255, 63, 63); font-weight: bold; border-radius: 10px; font-size: 30px ;"><%= marquee.message %></marquee>
+                <label for="marqueeText" class="form-label">Marquee Text</label>
+                <input type="text" class="form-control bg-white" id="marqueeText" name="message" value="<%= marquee.message %>" >
+            </div>
+            <button type="submit" class="btn btn-primary">Update</button>
+        </form>
+    </div>
+
+</section>
+<%- include('partial/footer') %>

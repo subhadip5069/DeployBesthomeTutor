@@ -18,6 +18,7 @@ router.get("/allstudentrequirment",AdminauthMiddleware, AdminPagesController.all
 router.get("/alltutorrequirment",AdminauthMiddleware, AdminPagesController.alltutorrequirment);
 router.post("/adminupdatedtuition/:id",AdminauthMiddleware, AdminPagesController.adminupdatedtuition);
 router.post("/upadteusercontactremaining/:id",AdminauthMiddleware, AdminPagesController.updateUserContactRemaining);
+router.get("/marquee",AdminauthMiddleware, AdminPagesController.marquee);
 
 
 

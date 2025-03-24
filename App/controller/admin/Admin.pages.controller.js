@@ -3,6 +3,7 @@ const PurchasePlan = require('../../model/purchaceplane');
 const Registration = require('../../model/registration');
 const User = require('../../model/user.model');
 const userModel = require('../../model/user.model');
+const Marquee = require('../../model/marquee');
 
 class AdminPagesController {
 
@@ -441,6 +442,22 @@ class AdminPagesController {
         } catch (error) {
             console.error("Error fetching purchase plans:", error);
             
+        }
+    };
+
+    marquee = async (req, res) => {
+        try {
+            const userId = req.user;
+            const marquee = await Marquee.findOne(); // Get only one marquee instead of all
+    
+            res.render("Admin/marquee", {
+                title: "Marquee",
+                marquee,
+                userId
+            });
+        } catch (error) {
+            console.error("Error fetching marquee:", error);
+            res.redirect("/admin/marquee?error=Error fetching marquee");
         }
     };
     

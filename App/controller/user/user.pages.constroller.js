@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const Registration = require("../../model/registration");
 const User = require("../../model/user.model");
 const PurchasePlan = require("../../model/purchaceplane");
+const Marquee = require("../../model/marquee");
 
 
 class userPagesController {
@@ -11,10 +12,12 @@ class userPagesController {
             const userId = req.user;
             const message = req.session.message;
         req.session.message = null;
+        const marquee = await Marquee.findOne().sort({ createdAt: -1 });
         res.render("user/index",{
             title:"/ Home",
             user: userId,
             userId,
+            marquee,
             message
 
         });
